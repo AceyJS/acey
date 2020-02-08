@@ -1,5 +1,13 @@
+
+https://i.ibb.co/ZYGcvCs/ascey.png
 <p align="center">
-  <h1 align="center">Redux MVC</h1>
+  <a href="https://rnds.netlify.com/">
+    <img alt="react-ascey" src="https://i.ibb.co/ZYGcvCs/ascey.png" width="500">
+  </a>
+</p>
+
+<p align="center">
+  <h1 align="center">React Ascey</h1>
   <p align="center">Increase your productivity and the scalability of your medium and large React apps.</p>
 </p>
 
