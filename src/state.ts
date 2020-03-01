@@ -7,30 +7,28 @@ interface IParams {
 
 export default abstract class State extends Model {
     
-    private storeKey: string
-    private defaultState: any 
+    private _storeKey: string
+    private _defaultState: any 
 
     abstract new(state: any): State 
 
     constructor(state: any, storeKey: string){
         super(state)
-        this.storeKey = storeKey
-        this.defaultState = this.toPlain()
+        this._storeKey = storeKey
+        this._defaultState = this.toPlain()
     }
 
-    public getStoreKey = (): string => this.storeKey
-    public getDefaultState = (): any => this.defaultState
+    public storeKey = (): string => this._storeKey
+    public defaultState = (): any => this._defaultState
 
     /*
-        Get the reducer config to add in the array expected by the initialize function
-        the creation of the store.
-        eg: https://github.com/Fantasim/react-ascey-example/blob/master/src/redux/store.ts#L5&L13
+        eg: https://github.com/Fantasim/react-ascey/blob/master/src/reducer.ts#L15
     */
 
     public getReducerConfig = (): IParams => {
         return {
-            STORE_KEY: this.getStoreKey(),
-            DEFAULT_STATE: this.getDefaultState()
+            STORE_KEY: this.storeKey(),
+            DEFAULT_STATE: this.defaultState()
         }
     }
 }

@@ -13,22 +13,22 @@ export default class Controller {
     public getAttachedStateClass = () => this.stateClass
     private _getReducerKey = (): string => this.getAttachedStateClass().getStoreKey()
 
-    public getStore = () => STORE.get()
+    public state = () => this.extendLocal()
+    public store = () => STORE.get()
 
-    //get the current (whole) redux store
-    public getState = (): any => CurrentState.get()
+    //get the current (whole) store
+    public storeObject = (): any => CurrentState.get()
 
     //get the current state binded with the controller
-    public getAttachedState = (): any => CurrentState.get()[this._getReducerKey()]
+    public stateObject = (): any => CurrentState.get()[this._getReducerKey()]
 
     /*
         function to call to dispatch a new state
-        e.g: https://github.com/Fantasim/react-ascey-example/blob/master/src/redux/controllers/user.ts#L44
     */
     public dispatch = (action: (state: State) => any) => {
         let state = this.extendLocal()
         action(state)
-        this.getStore().dispatch({
+        this.store().dispatch({
             type: this._getReducerKey(),
             payload: state.toPlain()
         })
@@ -39,11 +39,11 @@ export default class Controller {
         so don't expect any thing as a parameter.
     */
     public extendLocal = (): any => {
-        return this.getAttachedStateClass().new(this.getAttachedState())
+        return this.getAttachedStateClass().new(this.stateObject())
     }
 
     /*
-        take as parameter the entire redux state
+        take as parameter the entire store object
         select and return the right State binded with the controller.
         
         info: this function is used most of the time in the mapStateToProps function
@@ -54,8 +54,6 @@ export default class Controller {
                 token: UserController.extend(state).GetToken()
             }
         }
-
-        eg2: https://github.com/Fantasim/react-ascey-example/blob/master/src/scenes/Home/index.js#L103
     */
     public extend = (store: any): any => {
         const key = this._getReducerKey()

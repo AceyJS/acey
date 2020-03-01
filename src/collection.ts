@@ -3,7 +3,7 @@ import Model from './model'
 
 type Constructor<T> = new(...args: any[]) => T;
 
-//!\ This is a class to improve /!\
+//  i) this class can be improved by adding more than you can usually find in lists.
 //It aims to be the parent of any model class representing a list of object/classes
 //for example in a todolist it would be the parent of the TodoList class containing a list of Todos
 //This can be useful to avoid redundant functions like sorting, filtering, pushing, deleting, updating etc...
