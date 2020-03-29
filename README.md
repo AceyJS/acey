@@ -27,11 +27,12 @@ This is also why Ascey is build on top of it, using its API to work.
 - Middlewares ([saga](https://github.com/redux-saga/redux-saga), [thunk](https://github.com/reduxjs/redux-thunk), [logger](https://github.com/LogRocket/redux-logger))
 - Util formatting functions
 - Redundant imports in your components (actions, selectors, utils formatting)
-<br />
 
-## This is a lot.
+
+### This is too much.
 The redux boilerplate is clean and enable you to make a good organization on small apps. 
 Still, more and more, you add actions and reducers (and so data to handle), more you find yourself feeling the architecture messy, hard to maintain, and a significant drop concerning your productivity working on the project.
+
 
 ### Why ?
 
