@@ -1,1 +1,5 @@
 theme: jekyll-theme-minimal
+title: React Ascey
+description: A MVC oriented state manager for medium and large React apps
+logo: https://i.postimg.cc/wvCsGXdM/ascey.png
+show_downloads: true
