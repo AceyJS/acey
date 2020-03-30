@@ -11,10 +11,8 @@ export default class Controller {
     }
 
     private _getReducerKey = (): string => this.getAttachedStateClass().storeKey()
-    //get the current state binded with the controller
     private _getStateObject = (): any => this._store().getState()[this._getReducerKey()]
     private _store = () => STORE.get()
-
 
     public getStoreObject = () => this._store().getState()
     public getAttachedStateClass = () => this._stateClass
