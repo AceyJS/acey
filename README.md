@@ -57,7 +57,7 @@ Here are the summary of the different parts of Ascey:
 ### 1. Model
 ### 2. State
 ### 3. Controller
-### 4. Component connection
+### 4. Connect with component
 ### 5. Store
 ### 6. Wrap with Ascey
 
@@ -70,13 +70,6 @@ Here are the summary of the different parts of Ascey:
 #### A Model is a class built with an object of data. 
 
 It allows you to create all the methods you need related to a specific type of data (utils, getters (selectors), setters) 
-
-Here are the native methods of Model: 
-- get = (): Object
-- set = (state: Object)
-- run = (action: (newState: any) => void): Object
-- toPlain = (): any
-- isArray = (): boolean
 
 #### Example of a Model:
 `./src/ascey/model/window.ts`
@@ -107,12 +100,13 @@ export default Window
 ```
 
 #### Methods: 
-- get = (): Object
-- set = (state: Object)
-- run = (action: (newState: any) => void): Object
-- toPlain = (): any
-- isArray = (): boole
+- `get = (): Object` : return the state of the model.
+- `set = (state: Object)` : set the new state of the model.
+- `run = (action: (newState: any) => void): Object` : Execute the function passed in parameter and then set the new state  with the state from the action function parameter. 
+- `toPlain = (): Object` : return the state of model as a plain javascript object
+- `isArray = (): boolean` : return true if the state of the model is an array
 
+<br />
 
 ## 2. State
 
@@ -180,18 +174,19 @@ export default new UIState(DEFAULT_DATA)
 ```
 
 #### Methods :
-- storeKey = (): string
-- defaultState = (): any
+- `storeKey = (): string` : return the uniq id key of the State.
+- `defaultState = (): any` : return the state the State class has been built with.
 
 #### + the ones from Model :
-- get = (): Object | Array
-- set = (state: Object | Array )
-- run = (action: (newState: any) => void): Object | Array
-- toPlain = (): any
-- isArray = (): boolean
+- `get = (): Object` : return the state of the model.
+- `set = (state: Object)` : set the new state of the model.
+- `run = (action: (newState: any) => void): Object` : Execute the function passed in parameter and then set the new state  with the state from the action function parameter. 
+- `toPlain = (): Object` : return the state of model as a plain javascript object
+- `isArray = (): boolean` : return true if the state of the model is an array
 
+<br />
 
-## Controller
+## 3. Controller
 
 ### `class Controller`
 
@@ -236,28 +231,28 @@ export default new UIController(UIState)
 ```
 
 #### Methods: 
-- getAttachedStateClass = ()
-- state = ()
-- store = ()
-- storeObject = (): any
-- stateObject = (): any
-- dispatch = (action: (state: State) => any)
-- extendLocal = (): any
-- extend = (store: any): any
+- `getAttachedStateClass = (): State` : return the instanced State bound with it.
+- `state = (): Object` : return a fresh copy of the instanced State bound with it.
+- `stateObject = (): Object`: return the state object from the State bound with it.
+- `store = (): Object` : return the state object from the Ascey Store
+- `dispatch = (action: (state: State) => any)` : Execute the function passed in parameter, then dispatch the State from the action function parameter and update the Ascey Store.
+- `extend = (store: any): State` : Take the whole Ascey Store object as parameter and return a fresh instanced State with the state bound with the Controller.
 
+<br />
 
-## Connect with your component
+## 4. Connect with your component
 
 #### Here is a simple React component : 
 - displaying the width of the window.
 - updating the dimensions of the window in your Ascey state through your controller when it changes. 
 
+`./src/home.js`
 ```
 import { connect } from 'react-ascey'
 import { UIController } from '../ascey/controllers/ui'
 import $ from 'jquery'
 
-const Index = (props) => {
+const Home = (props) => {
 
   /* on window size change */
   const onWindowUpdate = () => {
@@ -296,32 +291,56 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(Index)
+export default connect(mapStateToProps)(Home)
 ```
 
+<br />
 
-## Create the store
 
+## 5. Create the store
+`./src/ascey/store.ts`
 ```
 import { createStore, bindStates } from 'react-ascey'
-import { UIState } from '../states'
+import UIState from '../states/ui'
 
-export default createStore(bindStates([UIState]))
+/* 
+   bindStates is bindinng the states with the store, 
+   it takes two parameters: 
+     - 1. An array of instanced States 
+     - 2. Object of reducers. (if you still want to work with in a redux way on some parts. 
+         E.g if you want to connect your router with the store)
+*/
+const store = bindStates([ UIState ] /*, { router: connectRouter(history) } */  ),
+
+export default store
 ```
 
-## Wrap with Ascey
+<br />
 
+## 6. Wrap with Ascey
+`./src/index.js`
 ```
 import store from './ascey/store';
 import { Provider } from 'react-ascey';
+import Home from './home.js'
 
 const App = () => {
     return (
         <Provider store={store}>
-          <Index />
+          <Home />
         </Provider>
     )
 }
+
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
+<br />
+
+## Ascey functions
+
+- [applyMiddleware](https://redux.js.org/api/applymiddleware) - Same than redux
+- [createStore](https://redux.js.org/api/createstore) - Same than redux
+- bindStates - `bindStates(states: []State, extraReducer = {}) `
+- [connect](https://react-redux.js.org/7.1/api/connect#connect) - Same than react-redux
 
