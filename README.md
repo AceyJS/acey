@@ -232,11 +232,10 @@ export default new UIController(UIState)
 
 #### Methods: 
 - `getAttachedStateClass = (): State` : return the instanced State bound with it.
-- `state = (): Object` : return a fresh copy of the instanced State bound with it.
-- `stateObject = (): Object`: return the state object from the State bound with it.
-- `store = (): Object` : return the state object from the Ascey Store
+- `getStoreObject = (): Object` : return the state object from the Ascey Store
 - `dispatch = (action: (state: State) => any)` : Execute the function passed in parameter, then dispatch the State from the action function parameter and update the Ascey Store.
-- `extend = (store: any): State` : Take the whole Ascey Store object as parameter and return a fresh instanced State with the state bound with the Controller.
+- `extend = (store: any): State` : Take the whole Ascey Store object as parameter and return a fresh instanced of the State bound with the Controller.
+- `extendLocal = (store: any): State` : return a fresh instanced of the State bound with the Controller.
 
 <br />
 
