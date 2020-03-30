@@ -4,31 +4,28 @@ import { STORE } from './store'
 import _ from 'lodash'
 
 export default class Controller {
-    private stateClass: any
+    private _stateClass: any
 
     constructor(stateClass: any){
-        this.stateClass = stateClass
+        this._stateClass = stateClass
     }
-    
-    public getAttachedStateClass = () => this.stateClass
-    private _getReducerKey = (): string => this.getAttachedStateClass().getStoreKey()
 
-    public state = () => this.extendLocal()
-    public store = () => STORE.get()
-
-    //get the current (whole) store
-    public storeObject = (): any => CurrentState.get()
-
+    private _getReducerKey = (): string => this.getAttachedStateClass().storeKey()
     //get the current state binded with the controller
-    public stateObject = (): any => CurrentState.get()[this._getReducerKey()]
+    private _getStateObject = (): any => this._store().getState()[this._getReducerKey()]
+    private _store = () => STORE.get()
+
+
+    public getStoreObject = () => this._store().getState()
+    public getAttachedStateClass = () => this._stateClass
 
     /*
         function to call to dispatch a new state
     */
     public dispatch = (action: (state: State) => any) => {
-        let state = this.extendLocal()
+        const state = this.extendLocal()
         action(state)
-        this.store().dispatch({
+        this._store().dispatch({
             type: this._getReducerKey(),
             payload: state.toPlain()
         })
@@ -39,7 +36,7 @@ export default class Controller {
         so don't expect any thing as a parameter.
     */
     public extendLocal = (): any => {
-        return this.getAttachedStateClass().new(this.stateObject())
+        return this.getAttachedStateClass().new(this._getStateObject())
     }
 
     /*
@@ -62,7 +59,7 @@ export default class Controller {
             throw new Error("You must bind " + Object.getPrototypeOf(this.getAttachedStateClass()).constructor.name + " to your store")
         }
         try {
-            return this.stateClass.new(store[key])
+            return this.getAttachedStateClass().new(store[key])
         } catch (e){
             console.log(e)
         }
