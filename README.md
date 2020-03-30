@@ -19,7 +19,7 @@ It is built on top of Redux and makes easy the maintenance of an organized and s
 Redux is a great state manager and this is the reason why it got so much success and created a new whole ecosystem of open source libraries.
 This is also why Ascey is build on top of it, using its API to work.
 
-#### Redux has for weekness, its strength : The boilerplate 
+#### But Redux has for weekness, its strength : The boilerplate 
 - Actions function / type
 - Reducers
 - Connect
@@ -30,7 +30,8 @@ This is also why Ascey is build on top of it, using its API to work.
 
 
 ### This is too much.
-The redux boilerplate is clean and enable you to make a good organization on small apps. 
+The redux boilerplate is clean and enable you to make a good organization on small apps.
+#### But one change require code update at many different place that makes editing awful when you either didn't write the code or your app is just big.
 Still, more and more, you add actions and reducers (and so data to handle), more you find yourself feeling the architecture messy, hard to maintain, and a significant drop concerning your productivity working on the project.
 
 
@@ -47,57 +48,91 @@ That means that iterating on this app is painful, and your ability to keep devel
 
 # Ascey
 
-## Model
+## Get Started
 
-example: 
-```
-import { Model } from 'react-ascey'
-class Window extends Model {
-    
-    constructor(dimensions = {width: window.innerWidth, height: window.innerHeight}){
-        super(dimensions)
-    }
-    
-    width = () => this.get().width
-    height = () => this.get().height
+The documentation of this library is written by a long time Redux user, so at least a basic understanding is strongly recommended to understand the logic behind Ascey.  
 
-    public isXS = () => this.width() < SM_MIN_WIDTH 
-    public isSM = () => this.width() >= SM_MIN_WIDTH && this.width() < MD_MIN_WIDTH
-    public isMD = () => this.width() >= MD_MIN_WIDTH && this.width() < LG_MIN_WIDTH
-    public isLG = () => this.width() >= LG_MIN_WIDTH && this.width() < XL_MIN_WIDTH
-    public isXL = () => this.width() >= XL_MIN_WIDTH
+Here are the summary of the different parts of Ascey:
 
-    public isGreaterThanXS = () => this.width() >= SM_MIN_WIDTH
-    public isGreaterThanSM = () => this.width() >= MD_MIN_WIDTH
-    public isGreaterThanMD = () => this.width() >= LG_MIN_WIDTH
-    public isGreaterThanLG = () => this.width() >= XL_MIN_WIDTH
+### 1. Model
+### 2. State
+### 3. Controller
+### 4. Component connection
+### 5. Store
+### 6. Wrap with Ascey
 
-    public isGreaterOrEqualThanSM = () => this.width() >= SM_MIN_WIDTH
-    public isGreaterOrEqualThanMD = () => this.width() >= MD_MIN_WIDTH
-    public isGreaterOrEqualThanLG = () => this.width() >= LG_MIN_WIDTH
-    
-    public isLowerThanSM = () => this.width() < SM_MIN_WIDTH
-    public isLowerThanMD = () => this.width() < MD_MIN_WIDTH
-    public isLowerThanLG = () => this.width() < LG_MIN_WIDTH
-    public isLowerThanXL = () => this.width() < XL_MIN_WIDTH
-}
-```
+<br />
 
-Methods: 
-- get = (): Object | Array
-- set = (state: Object | Array )
-- run = (action: (newState: any) => void): Object | Array
+## 1. Model
+
+### `class Model`
+
+#### A Model is a class built with an object of data. 
+
+It allows you to create all the methods you need related to a specific type of data (utils, getters (selectors), setters) 
+
+Here are the native methods of Model: 
+- get = (): Object
+- set = (state: Object)
+- run = (action: (newState: any) => void): Object
 - toPlain = (): any
 - isArray = (): boolean
 
+#### Example of a Model:
+`./src/ascey/model/window.ts`
+```
+import { Model } from 'react-ascey'
 
-## State
+const DEFAULT_DATA = {
+   width: window.innerWidth, 
+   height: window.innerHeight
+}
 
+class Window extends Model {
+    
+    constructor(dimensions = DEFAULT_DATA){
+        super(dimensions)
+    }
+    
+    /* getters */
+    getWidth = () => this.get().width
+    getHeight = () => this.get().height
+    
+    /* setters */
+    setWidth = (width) => this.run((state) => state.width = width)
+    setHeight = (height) => this.run((state) => state.height = height)
+}
+
+export default Window
+```
+
+#### Methods: 
+- get = (): Object
+- set = (state: Object)
+- run = (action: (newState: any) => void): Object
+- toPlain = (): any
+- isArray = (): boole
+
+
+## 2. State
+
+### `class State extends Model`
+
+#### A State is comparable with a Reducer.
+This class is a child of the Model class.
+You build this class from a data object connected with the your Ascey Store and then your components (like Redux).
+
+This class can contain methods interacting with State's data like getters or setters.
+The Controller bound with its State will then be able to call the State's method to update the Store (see part. 3)
+
+#### Exemple of a State:
+`./src/ascey/states/ui.ts`
 ```
 import { State } from 'react-ascey'
-import { Window } from '../models'
+import Window from '../models/window'
 
-const DEFAULT_STATE = {
+/* A default object of data */
+const DEFAULT_DATA = {
     window: {
         width: window.innerWidth, 
         height: window.innerHeight,
@@ -106,35 +141,76 @@ const DEFAULT_STATE = {
 
 class UIState extends State {
 
-    //Should be implemented in every state class
-    public new = (initial = DEFAULT_STATE): UIState => new UIState(initial)
+    /* This method returns a new State of the current one and must be in all State class. */
+    public new = (initial = DEFAULT_DATA): UIState => new UIState(initial)
 
-    constructor(initial = DEFAULT_STATE){
-        super({
-            window: new Window(initial.window)
-        }, 'ui')
+    constructor(initial = DEFAULT_DATA){
+        /*
+        You must instanciate the parent with 2 parameters:
+          1. An object of data
+          2. An uniq key identifying your State.
+        */
+        
+        super(
+           { window: new Window(initial.window) }, /* See part. 2 */ 
+           'ui'
+        )
     }
 
-    public setWindow = (window: any) => {
-        this.run((state) => state.window = window)
+    /* Setter the Window Model in the State */
+    public setWindow = (dimensions = DEFAULT_DATA.window) => {
+
+      /* 
+         "run" is a Model's method allowing you to update data in your state
+         It takes a function with the state object in the parameter
+      */
+      this.run((state) => {
+        state.window.setWidth(dimensions.width)
+        state.window.setHeight(dimensions.height)
+      })
+      
     }
     
+    /* Getter of our window model in the State */
     public getWindow(): Window => this.get().window
 }
 
-export default new UIState(DEFAULT_STATE)
+/* Initialization of the State with a default data. */
+export default new UIState(DEFAULT_DATA)
 ```
 
-Same methods than Model + :
+#### Methods :
 - storeKey = (): string
 - defaultState = (): any
+
+#### + the ones from Model :
+- get = (): Object | Array
+- set = (state: Object | Array )
+- run = (action: (newState: any) => void): Object | Array
+- toPlain = (): any
+- isArray = (): boolean
 
 
 ## Controller
 
+### `class Controller`
+
+#### A Controller is comparable with a grouping of Actions.
+You build this class from the instanced State you want to bind with.
+
+A Controller is necessary to update your data in the Store, and to access your Store's data in real-time inside your components
+
+#### Exemple of a Controller:
+`./src/ascey/controllers/ui.ts`
+
 ```
 import { Controller } from 'react-ascey'
-import { UIState } from '../states'
+import UIState from '../states/ui'
+
+const DEFAULT_DATA = {
+   width: window.innerWidth, 
+   height: window.innerHeight
+}
 
 class UIController extends Controller {
 
@@ -142,17 +218,24 @@ class UIController extends Controller {
         super(stateClass)
     }
 
-    updateWindow = (window = {width: 0, height: 0}) => {
-       this.dispatch( 
-          (state: any) => state.setWindow(window) 
-       )
+    /* {Method|Action} setting new window dimensions to the store */
+    updateWindow = (window = DEFAULT_DATA) => {
+      /* 
+         dispatch is a Controller's method updating the Ascey Store when
+         the function passed in parameter has been executed
+         The function passed in parameter takes a parameter: the State Model
+      */
+      
+       this.dispatch( (state: any) => state.setWindow(window) )
     }
 }
 
+/* 
+Instantiation of your Controller with its State. */
 export default new UIController(UIState)
 ```
 
-Methods: 
+#### Methods: 
 - getAttachedStateClass = ()
 - state = ()
 - store = ()
@@ -162,6 +245,59 @@ Methods:
 - extendLocal = (): any
 - extend = (store: any): any
 
+
+## Connect with your component
+
+#### Here is a simple React component : 
+- displaying the width of the window.
+- updating the dimensions of the window in your Ascey state through your controller when it changes. 
+
+```
+import { connect } from 'react-ascey'
+import { UIController } from '../ascey/controllers/ui'
+import $ from 'jquery'
+
+const Index = (props) => {
+
+  /* on window size change */
+  const onWindowUpdate = () => {
+    $( window ).resize( function(){
+      const width = $(window).width()
+      const height = $(window).height()
+      
+      /* 
+         Here is where call the update window dimensions method 
+         
+         i) Contrary to Redux, you don't need to bind it.
+         You can call your method anywhere in your app.
+      */
+      UIController.updateWindow({width, height})
+    });
+  }
+
+  /* componentDidMount */
+  useEffect(() => onWindowUpdate(), [])
+
+  return (
+    <div>
+      width: {this.props.window.getWidth()} {/* the getter method you defined in your Model class */}
+    </div>
+  );
+}
+
+const mapStateToProps = (state) => {
+    return {
+        /*
+           The extend methods are native from the Controller class.
+           This methods pick up in the whole state object, the state object linked with the controller
+           and then transform it into the instanced State class
+        */
+        window: UIController.extend(state).getWindow() /* the getter method you defined in your State class */
+    }
+}
+
+export default connect(mapStateToProps)(Index)
+```
 
 
 ## Create the store
@@ -186,42 +322,6 @@ const App = () => {
         </Provider>
     )
 }
-```
-
-## Connect with your component
-```
-import { connect } from 'react-ascey'
-import { UIController } from '../ascey/controllers'
-import $ from 'jquery'
-
-const Index = (props) => {
-
-  const onWindowUpdate = () => {
-    $( window ).resize( function(){
-      const width = $(window).width()
-      const height = $(window).height()
-      UIController.updateWindow({width, height})
-    });
-  }
-
-  useEffect(() => {
-    onWindowUpdate()
-  }, [])
-
-  return (
-    <div>
-      width: {this.props.window.width()}
-    </div>
-  );
-}
-
-const mapStateToProps = (state) => {
-    return {
-        window: UIController.extend(state).window
-    }
-}
-
-export default connect(mapStateToProps)(Index)
 ```
 
 
