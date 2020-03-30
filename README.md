@@ -48,24 +48,24 @@ That means that iterating on this app is painful, and your ability to keep devel
 
 # Ascey
 
-## Get Started
+## Documentation
 
 The documentation of this library is written by a long time Redux user, so at least a basic understanding is strongly recommended to understand the logic behind Ascey.  
 
 Here are the summary of the different parts of Ascey:
 
-### 1. Model
-### 2. State
-### 3. Controller
-### 4. Connect with component
-### 5. Store
-### 6. Wrap with Ascey
+#### 1. Model
+#### 2. State
+#### 3. Controller
+#### 4. Connect with component
+#### 5. Store
+#### 6. Wrap with Ascey
 
 <br />
 
 ## 1. Model
 
-### `class Model`
+#### prototype: `class Model`
 
 #### A Model is a class built with an object of data. 
 
@@ -110,7 +110,7 @@ export default Window
 
 ## 2. State
 
-### `class State extends Model`
+#### prototype: `class State extends Model`
 
 #### A State is comparable with a Reducer.
 This class is a child of the Model class.
@@ -188,7 +188,7 @@ export default new UIState(DEFAULT_DATA)
 
 ## 3. Controller
 
-### `class Controller`
+#### prototype: `class Controller`
 
 #### A Controller is comparable with a grouping of Actions.
 You build this class from the instanced State you want to bind with.
