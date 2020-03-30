@@ -1,12 +1,12 @@
 {
   "name": "react-ascey",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "publish": "yarn clean && yarn build",
+    "publish": "yarn clean && yarn build && npm publish",
     "clean": "rm -rf dist"
   },
   "author": "",
