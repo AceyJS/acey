@@ -53,12 +53,12 @@ That means that iterating on this app is painful, and your ability to keep devel
 The documentation of this library is written by a long time Redux user, so at least a basic understanding is strongly recommended to understand the logic behind Ascey.  
 
 ### Table of contents
-* [Model](#model)
-* [State](#state)
-* [Controller](#controller)
-* [Connect with component](#connnect-with-component)
-* [Store](#store)
-* [Wrap with Ascey](#wrap-with-ascey)
+* [Model](#1-model)
+* [State](#2-state)
+* [Controller](#3-controller)
+* [Connect with component](#4-connnect-with-component)
+* [Store](#5-store)
+* [Wrap with Ascey](#6-wrap-with-ascey)
 
 
 <br />
