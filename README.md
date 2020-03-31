@@ -56,7 +56,7 @@ The documentation of this library is written by a long time Redux user, so at le
 * [Model](#1-model)
 * [State](#2-state)
 * [Controller](#3-controller)
-* [Connect with component](#4-connnect-with-component)
+* [Connect with component](#4-connect-with-component)
 * [Store](#5-store)
 * [Wrap with Ascey](#6-wrap-with-ascey)
 
@@ -239,7 +239,7 @@ export default new UIController(UIState)
 
 <br />
 
-## 4. Connect with your component
+## 4. Connect with component
 
 #### Here is a simple React component : 
 - displaying the width of the window.
@@ -296,7 +296,7 @@ export default connect(mapStateToProps)(Home)
 <br />
 
 
-## 5. Create the store
+## 5. Store
 `./src/ascey/store.ts`
 ```
 import { createStore, bindStates } from 'react-ascey'
