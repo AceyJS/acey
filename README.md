@@ -48,24 +48,24 @@ That means that iterating on this app is painful, and your ability to keep devel
 
 # Ascey
 
-## Get Started
+## Documentation
 
 The documentation of this library is written by a long time Redux user, so at least a basic understanding is strongly recommended to understand the logic behind Ascey.  
 
-Here are the summary of the different parts of Ascey:
+### Table of contents
+* [Model](#1-model)
+* [State](#2-state)
+* [Controller](#3-controller)
+* [Connect with component](#4-connect-with-component)
+* [Store](#5-store)
+* [Wrap with Ascey](#6-wrap-with-ascey)
 
-### 1. Model
-### 2. State
-### 3. Controller
-### 4. Connect with component
-### 5. Store
-### 6. Wrap with Ascey
 
 <br />
 
 ## 1. Model
 
-### `class Model`
+#### prototype: `class Model`
 
 #### A Model is a class built with an object of data. 
 
@@ -110,7 +110,7 @@ export default Window
 
 ## 2. State
 
-### `class State extends Model`
+#### prototype: `class State extends Model`
 
 #### A State is comparable with a Reducer.
 This class is a child of the Model class.
@@ -188,7 +188,7 @@ export default new UIState(DEFAULT_DATA)
 
 ## 3. Controller
 
-### `class Controller`
+#### prototype: `class Controller`
 
 #### A Controller is comparable with a grouping of Actions.
 You build this class from the instanced State you want to bind with.
@@ -239,7 +239,7 @@ export default new UIController(UIState)
 
 <br />
 
-## 4. Connect with your component
+## 4. Connect with component
 
 #### Here is a simple React component : 
 - displaying the width of the window.
@@ -296,7 +296,7 @@ export default connect(mapStateToProps)(Home)
 <br />
 
 
-## 5. Create the store
+## 5. Store
 `./src/ascey/store.ts`
 ```
 import { createStore, bindStates } from 'react-ascey'
