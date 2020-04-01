@@ -1,5 +1,5 @@
 {
-  "name": "todolist",
+  "name": "counter",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -10,10 +10,10 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
-    "react": "^16.13.0",
-    "react-ascey": "1.0.5",
-    "react-dom": "^16.13.0",
-    "react-scripts": "3.4.0",
+    "react": "^16.13.1",
+    "react-ascey": "^1.0.7",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1",
     "typescript": "~3.7.2"
   },
   "scripts": {
