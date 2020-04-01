@@ -48,9 +48,28 @@ That means that iterating on this app is painful, and your ability to keep devel
 
 # Ascey
 
-## Documentation
+## Get started
 
-The documentation of this library is written by a long time Redux user, so at least a basic understanding is strongly recommended to understand the logic behind Ascey.  
+### Installation
+
+```
+npm i react-ascey
+```
+or
+```
+yarn add react-ascey
+```
+<br />
+
+___
+Here are 3 step-by-step tutorials in order of difficulty, allowing you to understand the logic and the possibilities of Ascey.
+
+1. [Counter App](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9)
+
+
+<br />
+
+## Documentation
 
 ### Table of contents
 * [Model](#1-model)
