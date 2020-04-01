@@ -279,14 +279,14 @@ const Home = (props) => {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (storeObject) => {
     return {
         /*
            The extend methods are native from the Controller class.
            This methods pick up in the whole state object, the state object linked with the controller
            and then transform it into the instanced State class
         */
-        window: UIController.extend(state).getWindow() /* the getter method you defined in your State class */
+        window: UIController.extend(storeObject).getWindow() /* the getter method you defined in your State class */
     }
 }
 
