@@ -11,9 +11,10 @@ type Constructor<T> = new(...args: any[]) => T;
 export default class Collection extends Model  {
     private nodeClass: Constructor<any>
 
-    constructor(list: Model[] = [], nodeClass: Constructor<Model>){
-        super(list)
+    constructor(list: any[] = [], nodeClass: Constructor<Model>){
+        super([])
         this.nodeClass = nodeClass
+        this.set(this.toListClass(list))
     }
 
     //Return the number of element in the array
@@ -31,33 +32,31 @@ export default class Collection extends Model  {
     public toListClass = (elem: any[]): Model[] => {
         let ret: Model[] = []
         for (let i = 0; i < elem.length; i++)
-            ret.push(new this.nodeClass(elem[i]))
+            if (!(elem[i] instanceof this.nodeClass)) {
+                ret.push(new this.nodeClass(elem[i]))
+            } else {
+                ret.push(elem[i])
+            }
         return ret
     }
 
     //add an element to the list
-    public post = (v: Model) => this.run((list) => {
-        list.push(v)
-    })
+    public post = (v: Model) => this.get().push(v)
 
     /*
         Update the element if it already exists by the keys passed in parameters.
         If it doesn't exist, it's added in the list.
     */
-    public put = (v: Model, ...keys: any) => this.run((list) => {
+    public put = (v: Model, ...keys: any) => {
         const index = this.findIndex(this._getByUniqKey(v, keys))
         if (index == -1)
             this.post(v)
         else 
-            list[index] = v
-    })
+            this.get()[index] = v
+    }
 
     // Update an element at the index passed in parameters.
-    public updateAtIndex = (v: Model, index: number) => this.run((list) => {
-        if (list[index]){
-            list[index] = v
-        }
-    })
+    public updateAtIndex = (v: Model, index: number) => this.get()[index] = v
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
     public orderBy = (iteratees: any[], orders: any[]): any[] => {
@@ -81,10 +80,10 @@ export default class Collection extends Model  {
     public deleteAll = (predicate: any) => _.remove(this.toPlain(), predicate)
 
     //delete a node if it exists in the list.
-    public delete = (v: Model) => this.run((list) => {
+    public delete = (v: Model) => {
         const index = this.getIndex(v)
-        index > -1 && list.splice(index, 1)
-    })
+        index > -1 && this.get().splice(index, 1)
+    }
 
     //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
     public findIndex = (predicate: any): number => _.findIndex(this.toPlain(), predicate)

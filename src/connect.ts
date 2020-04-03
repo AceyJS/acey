@@ -2,17 +2,14 @@ import _ from 'lodash'
 import { connect as nativeConnect } from 'react-redux'
 import { mapStateToPropsMiddleware } from './middleware'
 
-type mapStateToPropsType = null | Function
+export default (stateToProps: any, ...props: any /* actionBinder: any, param: any, options: any */) => {
+    const mps = (state: any) => {
+        return mapStateToPropsMiddleware(stateToProps)
+    }
 
-export default (mapStateToProps: mapStateToPropsType, ...props: any /* actionBinder: any, param: any, options: any */) => {
-    const mapSTP = mapStateToProps ? (state: object) => {
-        return mapStateToPropsMiddleware(state, mapStateToProps)
-    } : null
+    const actionBinder = null
+    const param: any = null
+    const options = props[0] || {}
 
-
-    const actionBinder = props[0] || null
-    const param: any = props[1] || null
-    const options = props[2] || {}
-
-    return nativeConnect(mapSTP, actionBinder, param, options)
+    return nativeConnect(mps, actionBinder, param, options)
 }

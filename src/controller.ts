@@ -1,65 +1,48 @@
 import State from './state'
-import { CurrentState } from './reducer'
 import { STORE } from './store'
 import _ from 'lodash'
 
-export default class Controller {
-    private _stateClass: any
+interface Type<T> extends Function { new (...args: any[]): T; }
 
-    constructor(stateClass: any){
+export default class Controller {
+
+    private _IDKey : string
+    private _state: State
+    private _stateClass: Type<State>
+
+    constructor(stateClass: Type<State>, IDKey: string){
+        this._IDKey = IDKey
+        this._state = new stateClass(undefined)
         this._stateClass = stateClass
     }
 
-    private _getReducerKey = (): string => this.getAttachedStateClass().storeKey()
-    private _getStateObject = (): any => this._store().getState()[this._getReducerKey()]
     private _store = () => STORE.get()
 
-    public getStoreObject = () => this._store().getState()
-    public getAttachedStateClass = () => this._stateClass
+    private _updateState = () => {
+        const store = this.getStore()
+        const key = this.getIDKey()
+
+        const newState = new (this.getStateClass())(store[key])
+        this.getState().copyDeep(newState)
+    }
+
+    public getStore = (): any => this._store().getState()
+    public getIDKey = () => this._IDKey
+
+    public getStateClass = (): Type<State> => this._stateClass
+    public getState = (): any => this._state
 
     /*
         function to call to dispatch a new state
     */
-    public dispatch = (action: (state: State) => any) => {
-        const state = this.extendLocal()
+    public dispatch = (action: (state: any) => any) => {
+        const state = this.getState()
         action(state)
+
         this._store().dispatch({
-            type: this._getReducerKey(),
+            type: this.getIDKey(),
             payload: state.toPlain()
         })
-    }
-
-    /*
-        same than the extend function, but use the current store updated by react-ascey directly.
-        so don't expect any thing as a parameter.
-    */
-    public extendLocal = (): any => {
-        return this.getAttachedStateClass().new(this._getStateObject())
-    }
-
-    /*
-        take as parameter the entire store object
-        select and return the right State binded with the controller.
-        
-        info: this function is used most of the time in the mapStateToProps function
-        in the components.
-        eg: 
-        const mapStateToProps = (state) => {
-            return {
-                token: UserController.extend(state).GetToken()
-            }
-        }
-    */
-    public extend = (store: any): any => {
-        const key = this._getReducerKey()
-
-        if (!store[key]){
-            throw new Error("You must bind " + Object.getPrototypeOf(this.getAttachedStateClass()).constructor.name + " to your store")
-        }
-        try {
-            return this.getAttachedStateClass().new(store[key])
-        } catch (e){
-            console.log(e)
-        }
+        this._updateState()
     }
 }
