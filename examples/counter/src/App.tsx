@@ -13,42 +13,27 @@ function App(props: any) {
   */
   const onClickDecrement = () => CounterController.updateCounter(false)
   const onClickIncrement = () => CounterController.updateCounter(true)
+
   return (
     <div className="App">
       <button onClick={onClickDecrement}>decrement</button>
-      {props.counter}
+      {props.counter.getCounter()}
       <button onClick={onClickIncrement}>increment</button>
     </div>
   );
 }
 
 /* 
-  Same working system than redux, you need to select the data you want to pick up
-  from your store, add them in the return object.
+  Same working system than redux, you need to select the data 
+  you want to pick up from your states
 */
 
-/*
-mstp = {
-  counter: CounterController.getState().toPlain()
-}
-*/
 const mapStateToProps = () => {
   return {
-    counter: CounterController.getState().getCounter()
+    /* get the instanced state bound with the controller. */
+    counter: CounterController.getState()
   }
 }
-
-// const mapStateToProps = (storeObject: Object) => {
-//   return {
-//       /*
-//         The extend method is native from the Controller class.
-//         This methods pick up in the whole state, the right object and then transform 
-//         it into the instanced State class, bound with the Controller called from.
-//       */
-//       counter: CounterController.extend(storeObject),
-//       n: Math.random()
-//   }
-// }
 
 /* Connect the component with Ascey. */ 
 export default connect(mapStateToProps)(App)
