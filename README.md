@@ -73,11 +73,13 @@ Here are 3 step-by-step tutorials in order of difficulty, allowing you to unders
 
 ### Table of contents
 * [Model](#1-model)
-* [State](#2-state)
-* [Controller](#3-controller)
-* [Connect with component](#4-connect-with-component)
-* [Store](#5-store)
-* [Wrap with Ascey](#6-wrap-with-ascey)
+* [Collection](#2-collection)
+* [State](#3-state)
+* [Controller](#4-controller)
+* [Connect with component](#5-connect-with-component)
+* [Store](#6-store)
+* [Wrap with Ascey](#7-wrap-with-ascey)
+* [Other](#8-other)
 
 
 <br />
@@ -338,7 +340,7 @@ export default store
 
 <br />
 
-## 6. Wrap with Ascey
+## 7. Wrap with Ascey
 `./src/index.js`
 ```
 import store from './ascey/store';
@@ -358,7 +360,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 <br />
 
-## 7. Ascey functions
+## 8. Other
 
 - [applyMiddleware](https://redux.js.org/api/applymiddleware) - Same than redux
 - [createStore](https://redux.js.org/api/createstore) - Same than redux
