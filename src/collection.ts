@@ -29,7 +29,7 @@ export default class Collection extends Model  {
         the class used to instance the objects is the one passed in parameters as nodeClass in the constructor.
 
     */
-    public toListClass = (elem: any[]): Model[] => {
+    public toListClass = (elem: any[] = []): Model[] => {
         let ret: Model[] = []
         for (let i = 0; i < elem.length; i++)
             if (!(elem[i] instanceof this.nodeClass)) {
@@ -53,7 +53,7 @@ export default class Collection extends Model  {
    }
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
-    public orderBy = (iteratees: any[], orders: any[]): any[] => {
+    public orderBy = (iteratees: any[] = [], orders: any[] = []): any[] => {
         const ret = _.orderBy(this.toPlain(), iteratees, orders)
         return this.toListClass(ret)
     }
