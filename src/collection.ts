@@ -43,20 +43,14 @@ export default class Collection extends Model  {
     //add an element to the list
     public post = (v: Model) => this.get().push(v)
 
-    /*
-        Update the element if it already exists by the keys passed in parameters.
-        If it doesn't exist, it's added in the list.
-    */
-    public put = (v: Model, ...keys: any) => {
-        const index = this.findIndex(this._getByUniqKey(v, keys))
-        if (index == -1)
-            this.post(v)
-        else 
-            this.get()[index] = v
-    }
-
-    // Update an element at the index passed in parameters.
-    public updateAtIndex = (v: Model, index: number) => this.get()[index] = v
+    // Update the element at index or post it.
+   public put = (v: Model, index: number) => {
+       if (this.get()[index]){
+           this.get()[index] = v
+       } else {
+           this.post(v)
+       }
+   }
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
     public orderBy = (iteratees: any[], orders: any[]): any[] => {
@@ -75,7 +69,10 @@ export default class Collection extends Model  {
         }
         return o
     }
-    
+
+    //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
+    public findIndex = (predicate: any): number => _.findIndex(this.toPlain(), predicate)
+
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
     public deleteAll = (predicate: any) => _.remove(this.toPlain(), predicate)
 
@@ -85,18 +82,7 @@ export default class Collection extends Model  {
         index > -1 && this.get().splice(index, 1)
     }
 
-    //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
-    public findIndex = (predicate: any): number => _.findIndex(this.toPlain(), predicate)
-
     //return the index of the element passed in parameters if it exists in the list.
     public getIndex = (v: Model): number => _.findIndex(this.toPlain(), v.get())
-
-    //get the value of the keys of a model of the keys passed in parameters 
-    private _getByUniqKey = (v: Model, ...keys: any) => {
-        const search: any = {}
-        for (let i = 0; i < keys.length; i++)
-            search[keys[i]] = v.toPlain()[keys[i]]
-        return search
-    }
 
 }
