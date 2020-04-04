@@ -2,9 +2,14 @@ import _ from 'lodash'
 import { connect as nativeConnect } from 'react-redux'
 import { mapStateToPropsMiddleware } from './middleware'
 
-export default (stateToProps: any, ...props: any /* actionBinder: any, param: any, options: any */) => {
+let ID = 0
+export default (mapStateToProps: Function, ...props: any /* actionBinder: any, param: any, options: any */) => {
+    //id of the connected component.
+    const mstpID = ID
+    ID += 1
+
     const mps = (state: any) => {
-        return mapStateToPropsMiddleware(stateToProps)
+        return mapStateToPropsMiddleware(mapStateToProps(state), mstpID)
     }
 
     const actionBinder = null

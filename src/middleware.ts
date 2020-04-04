@@ -5,7 +5,6 @@ const CONNEXION_KEY = '__connexionKEY'
 const ASCEY_ID = '__asceyID'
 
 let COUNT = 2000
-let LAST_ID = 0
 let arrayStateToProps: any = [];
 
 const toPlainFull = (v: any) => {
@@ -34,27 +33,25 @@ const dupObject = (o: any) => {
 const getCounter = () => COUNT
 const incrementCounter = () => COUNT++
 
-const getLastID = () => LAST_ID
-const incrementLastID = () => LAST_ID++
-
-export const mapStateToPropsMiddleware = (state: any) => {
+export const mapStateToPropsMiddleware = (state: any, connexionKey: number) => {
 
     //if the state has never been recorded
-    if (!state[CONNEXION_KEY]){
+    if (!arrayStateToProps[connexionKey]){
         //add to the state a new ID
-        state[CONNEXION_KEY] = getLastID()
+        state[CONNEXION_KEY] = connexionKey
         state[ASCEY_ID] = getCounter()
         incrementCounter()
-        incrementLastID()
         //assign it in the array
-        arrayStateToProps[state[CONNEXION_KEY]] = toPlainFull(state)
+        arrayStateToProps[connexionKey] = toPlainFull(state)
         return dupObject(state)
     }
 
     let hasChanged = false
 
     //last state JS object typed
-    const lastState = arrayStateToProps[state[CONNEXION_KEY]]
+    const lastState = arrayStateToProps[connexionKey]
+    //merging the ascey elements not present in the new state
+    state = Object.assign({}, lastState, state)
     //current state JS object typed
     const plainedState = toPlainFull(state)
 
@@ -74,9 +71,10 @@ export const mapStateToPropsMiddleware = (state: any) => {
         //we change the counter ID
         state[ASCEY_ID] = getCounter()
         //we set the prev state with the current one
-        arrayStateToProps[state[CONNEXION_KEY]] = toPlainFull(state)
+        arrayStateToProps[connexionKey] = toPlainFull(state)
         incrementCounter()
     }
+
 
     //we return the state duplicated
     return dupObject(state)

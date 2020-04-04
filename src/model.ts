@@ -5,17 +5,17 @@ export default class Model {
 
     private state: any
     constructor(state: any){
-        if (this._isObject(state) || this._isArray(state)){
-            this.state = state
-        } else {
-            throw new Error(`Model and State can only be instanced with an array or object type.`)
-        }
+        this.set(state)
     }
 
     public get = (): any => this.state
 
     public set = (state: any) => {
-        this.state = state
+        if (this._isObject(state) || this._isArray(state)){
+            this.state = state
+        } else {
+            throw new Error(`The state of Model and State, can only be instanced and replaced with an array or object type.`)
+        }
         return this.state
     }
 
