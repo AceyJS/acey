@@ -132,7 +132,11 @@ export default Window
 
 <br />
 
-## 2. State
+## 2. Collection
+
+A collection is a model.
+
+## 3. State
 
 #### prototype: `class State extends Model`
 
@@ -213,7 +217,7 @@ export default UIState
 
 <br />
 
-## 3. Controller
+## 4. Controller
 
 #### prototype: `class Controller`
 
@@ -262,7 +266,7 @@ export default new UIController(UIState)
 - `dispatch = (action: (state: State) => any)` : Execute the function passed in parameter, then dispatch the State from the action function parameter and update the Ascey Store.
 <br />
 
-## 4. Connect with component
+## 5. Connect with component
 
 #### Here is a simple React component : 
 - displaying the width of the window.
@@ -314,7 +318,7 @@ export default connect(mapStateToProps)(Home)
 <br />
 
 
-## 5. Store
+## 6. Store
 `./src/ascey/store.ts`
 ```
 import { createStore, bindControllers } from 'react-ascey'
@@ -354,7 +358,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 <br />
 
-## Ascey functions
+## 7. Ascey functions
 
 - [applyMiddleware](https://redux.js.org/api/applymiddleware) - Same than redux
 - [createStore](https://redux.js.org/api/createstore) - Same than redux
