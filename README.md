@@ -73,11 +73,13 @@ Here are 3 step-by-step tutorials in order of difficulty, allowing you to unders
 
 ### Table of contents
 * [Model](#1-model)
-* [State](#2-state)
-* [Controller](#3-controller)
-* [Connect with component](#4-connect-with-component)
-* [Store](#5-store)
-* [Wrap with Ascey](#6-wrap-with-ascey)
+* [Collection](#2-collection)
+* [State](#3-state)
+* [Controller](#4-controller)
+* [Connect with component](#5-connect-with-component)
+* [Store](#6-store)
+* [Wrap with Ascey](#7-wrap-with-ascey)
+* [Other](#8-other)
 
 
 <br />
@@ -89,6 +91,8 @@ Here are 3 step-by-step tutorials in order of difficulty, allowing you to unders
 #### A Model is a class built with an object of data. 
 
 It allows you to create all the methods you need related to a specific type of data (utils, getters (selectors), setters) 
+
+You build a Model from a data object.
 
 #### Example of a Model:
 `./src/ascey/model/window.ts`
@@ -121,22 +125,31 @@ export default Window
 #### Methods: 
 - `get = (): Object` : return the state of the model.
 - `set = (state: Object)` : set the new state of the model.
+- `setState = (obj: Object)` : update the state by assigning the current state with the obj parameter. (like React)
 - `run = (action: (newState: any) => void): Object` : Execute the function passed in parameter and then set the new state  with the state from the action function parameter. 
+- `deleteKey = (key: string)` : delete the value linked with a key in your state object.
+- `copyDeep = (src: Model)` : copy the src into the current state without changing the references of the values nested inside the current model.
 - `toPlain = (): Object` : return the state of model as a plain javascript object
-- `isArray = (): boolean` : return true if the state of the model is an array
+- `isCollection = (): boolean` : return true if the Model is a Collection.
 
 <br />
 
-## 2. State
+## 2. Collection
+
+A collection is a model.
+
+## 3. State
 
 #### prototype: `class State extends Model`
 
 #### A State is comparable with a Reducer.
-This class is a child of the Model class.
-You build this class from a data object connected with the your Ascey Store and then your components (like Redux).
+This class is a child of the Model class, and is 98% similar.
+The difference with a Model is that a State is going to bound with a Controller that will connect the State's data with the Ascey Store.
 
-This class can contain methods interacting with State's data like getters or setters.
-The Controller bound with its State will then be able to call the State's method to update the Store (see part. 3)
+As its parent, you build this class with a data object.
+
+This class can contain methods interacting with State's data like utils, getters and setters.
+
 
 #### Exemple of a State:
 `./src/ascey/states/ui.ts`
@@ -188,31 +201,34 @@ class UIState extends State {
     public getWindow(): Window => this.get().window
 }
 
-/* Initialization of the State with a default data. */
-export default new UIState(DEFAULT_DATA)
+export default UIState
 ```
 
 #### Methods :
-- `storeKey = (): string` : return the uniq id key of the State.
-- `defaultState = (): any` : return the state the State class has been built with.
+- `defaultState = (): any` : return the default state
 
 #### + the ones from Model :
 - `get = (): Object` : return the state of the model.
 - `set = (state: Object)` : set the new state of the model.
+- `setState = (obj: Object)` : update the state by assigning the current state with the obj parameter. (like React)
 - `run = (action: (newState: any) => void): Object` : Execute the function passed in parameter and then set the new state  with the state from the action function parameter. 
+- `deleteKey = (key: string)` : delete the value linked with a key in your state object.
+- `copyDeep = (src: Model)` : copy the src into the current state without changing the references of the values nested inside the current model.
 - `toPlain = (): Object` : return the state of model as a plain javascript object
-- `isArray = (): boolean` : return true if the state of the model is an array
+
 
 <br />
 
-## 3. Controller
+## 4. Controller
 
 #### prototype: `class Controller`
 
 #### A Controller is comparable with a grouping of Actions.
-You build this class from the instanced State you want to bind with.
+You build this class from:
+1. the State class you want to bind it with
+2. An uniq key (that serves to identify the controller in the Ascey Store.)
 
-A Controller is necessary to update your data in the Store, and to access your Store's data in real-time inside your components
+A Controller is made to update your data in the Store through the State it is bound with.
 
 #### Exemple of a Controller:
 `./src/ascey/controllers/ui.ts`
@@ -221,26 +237,21 @@ A Controller is necessary to update your data in the Store, and to access your S
 import { Controller } from 'react-ascey'
 import UIState from '../states/ui'
 
-const DEFAULT_DATA = {
-   width: window.innerWidth, 
-   height: window.innerHeight
-}
-
 class UIController extends Controller {
 
-    constructor(stateClass: any){
-        super(stateClass)
+    constructor(uiState: any){
+        super(uiState, 'ui')
     }
 
     /* {Method|Action} setting new window dimensions to the store */
-    updateWindow = (window = DEFAULT_DATA) => {
+    updateWindow = (window: any) => {
       /* 
          dispatch is a Controller's method updating the Ascey Store when
          the function passed in parameter has been executed
          The function passed in parameter takes a parameter: the State Model
       */
       
-       this.dispatch( (state: any) => state.setWindow(window) )
+       this.dispatch( (state: UIState) => state.setWindow(window) )
     }
 }
 
@@ -250,15 +261,14 @@ export default new UIController(UIState)
 ```
 
 #### Methods: 
-- `getAttachedStateClass = (): State` : return the instanced State bound with it.
-- `getStoreObject = (): Object` : return the state object from the Ascey Store
+- `getIDKey = (): string` : return the controller's uniq key.
+- `getStateClass = (): Type<State>` : return the State class the controller is bound with.
+- `getStore = (): Object` : return the Ascey Store into a plain object
+- `getState = (): State`: return the current instanced State of the Controller.
 - `dispatch = (action: (state: State) => any)` : Execute the function passed in parameter, then dispatch the State from the action function parameter and update the Ascey Store.
-- `extend = (store: any): State` : Take the whole Ascey Store object as parameter and return a fresh instanced of the State bound with the Controller.
-- `extendLocal = (store: any): State` : return a fresh instanced of the State bound with the Controller.
-
 <br />
 
-## 4. Connect with component
+## 5. Connect with component
 
 #### Here is a simple React component : 
 - displaying the width of the window.
@@ -298,14 +308,9 @@ const Home = (props) => {
   );
 }
 
-const mapStateToProps = (storeObject) => {
+const mapStateToProps = () => {
     return {
-        /*
-           The extend methods are native from the Controller class.
-           This methods pick up in the whole state object, the state object linked with the controller
-           and then transform it into the instanced State class
-        */
-        window: UIController.extend(storeObject).getWindow() /* the getter method you defined in your State class */
+        window: UIController.getState().getWindow() /* the getter method you defined in your State class */
     }
 }
 
@@ -315,27 +320,27 @@ export default connect(mapStateToProps)(Home)
 <br />
 
 
-## 5. Store
+## 6. Store
 `./src/ascey/store.ts`
 ```
-import { createStore, bindStates } from 'react-ascey'
-import UIState from '../states/ui'
+import { createStore, bindControllers } from 'react-ascey'
+import UIController from '../controllers/ui'
 
 /* 
-   bindStates is bindinng the states with the store, 
+   bindControllers is binding the controllers with the store, 
    it takes two parameters: 
-     - 1. An array of instanced States 
-     - 2. Object of reducers. (if you still want to work with in a redux way on some parts. 
+     - 1. An array of instanced Controllers 
+     - 2. Object of reducers. (if you still want to work in a redux way on some parts. 
          E.g if you want to connect your router with the store)
 */
-const store = bindStates([ UIState ] /*, { router: connectRouter(history) } */  ),
+const store = bindControllers([ UIController ] /*, { router: connectRouter(history) } */  ),
 
 export default store
 ```
 
 <br />
 
-## 6. Wrap with Ascey
+## 7. Wrap with Ascey
 `./src/index.js`
 ```
 import store from './ascey/store';
@@ -355,10 +360,10 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 <br />
 
-## Ascey functions
+## 8. Other
 
 - [applyMiddleware](https://redux.js.org/api/applymiddleware) - Same than redux
 - [createStore](https://redux.js.org/api/createstore) - Same than redux
-- bindStates - `bindStates(states: []State, extraReducer = {}) `
+- bindControllers - `bindControllers(states: []Controller, extraReducer = {}) `
 - [connect](https://react-redux.js.org/7.1/api/connect#connect) - Same than react-redux
 
