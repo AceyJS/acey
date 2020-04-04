@@ -65,6 +65,7 @@ ___
 Here are 3 step-by-step tutorials in order of difficulty, allowing you to understand the logic and the possibilities of Ascey.
 
 1. [Counter App](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9)
+2. [User Management App](https://medium.com/@siuoly/part-2-practice-with-react-ascey-user-management-in-10-steps-6717fbbd8a2e)
 
 
 <br />
@@ -136,7 +137,53 @@ export default Window
 
 ## 2. Collection
 
-A collection is a model.
+#### prototype: `class Collection extends Model`
+
+#### A Collection is a Model that has for state an array of Model. (Example: a Todolist is a Collection of Todo Model.)
+
+You build a collection with :
+1. An array of Model or Objects.
+2. An uninstanced model class that reprensents the model of the elements in the array.
+
+```
+import {Collection} from 'react-ascey'
+import TodoModel from '../models/todo'
+
+type sortType = 'asc' | 'desc'
+
+export default class TodoCollection extends Collection {
+    
+    constructor(list = []){
+        super(list, TodoModel)
+    }
+
+    sortByContent = (type: sortType = 'asc') => new TodoList(this.orderBy(['content'], [type]))
+    sortByCreateDate = (type: sortType = 'asc') => new TodoList(this.orderBy(['created_at'], [type]))
+}
+
+export default TodoCollection
+```
+
+#### Methods :
+- `count = (): number` - Return the length of the array
+- `toListClass = (elem: any[]): Model[]` - Transform an object array into an instanced Model array.
+- `post = (v: Model)` - Add an element in the array
+- `put = (v: Model, index: number)` - Update the model at index with the one passed in parameter
+- `orderBy = (iteratees: any[], orders: any[]): Model[]` - Return a sorted array of instanced Model upon the parameters passed
+- `filter = (predicate: any): Model[]` - Pick up a list of node matching the predicate
+- `find = (predicate: any): Model | undefined` - Find the first node matching the predicate
+- `findIndex = (predicate: any): number` - Return the index of the first node matching the predicate
+- `deleteAll = (predicate: any)` - Delete all the nodes matching the predicate
+- `delete = (v: Model)` - Delete the model passed in parameter in the list.
+- `getIndex = (v: Model): number` - Get the index of a node in the list.
+
+#### + the ones from Model :
+- `get = (): Object` : return the state of the model.
+- `set = (state: Object)` : set the new state of the model.
+- `run = (action: (newState: any) => void): Object` : Execute the function passed in parameter and then set the new state  with the state from the action function parameter. 
+- `copyDeep = (src: Model)` : copy the src into the current state without changing the references of the values nested inside the current model.
+- `toPlain = (): Object` : return the state of model as a plain javascript object
+
 
 ## 3. State
 
