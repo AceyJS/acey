@@ -66,7 +66,7 @@ Here are 3 step-by-step tutorials in order of difficulty, allowing you to unders
 
 1. [Counter App](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9)
 2. [User Management App](https://medium.com/@siuoly/part-2-practice-with-react-ascey-user-management-in-10-steps-6717fbbd8a2e)
-
+3. [Todolist App](https://medium.com/@siuoly/part-3-practice-with-react-ascey-todolist-step-by-step-9ca5dd068328)
 
 <br />
 
@@ -180,6 +180,7 @@ There is a room for other methods, please feel free to open a pull request if yo
 - `findIndex = (predicate: any): number` - Return the index of the first node matching the predicate
 - `deleteAll = (predicate: any)` - Delete all the nodes matching the predicate
 - `delete = (v: Model)` - Delete the model passed in parameter in the list.
+- `deleteIndex = (index: number)` - Remove an element at index.
 - `getIndex = (v: Model): number` - Get the index of a node in the list.
 
 #### + the ones from Model :
