@@ -32,8 +32,8 @@ export default class Collection extends Model  {
     public toListClass = (elem: any[] = []): Model[] => {
         let ret: Model[] = []
         for (let i = 0; i < elem.length; i++)
-            if (!(elem[i] instanceof this.nodeClass)) {
-                ret.push(new this.nodeClass(elem[i]))
+            if (!this._isNodeModel(elem[i])) {
+                ret.push(new (this._getNodeModel())(elem[i]))
             } else {
                 ret.push(elem[i])
             }
@@ -41,22 +41,35 @@ export default class Collection extends Model  {
     }
 
     //add an element to the list
-    public post = (v: Model) => this.get().push(v)
+    public push = (v: Model) => this.get().push(v)
 
     // Update the element at index or post it.
-   public put = (v: Model, index: number) => {
+    public update = (v: Model, index: number) => {
        if (this.get()[index]){
            this.get()[index] = v
        } else {
-           this.post(v)
+           this.push(v)
        }
-   }
+    }
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
     public orderBy = (iteratees: any[] = [], orders: any[] = []): any[] => {
         const ret = _.orderBy(this.toPlain(), iteratees, orders)
         return this.toListClass(ret)
     }
+
+    public map = (callback: (v: Model, index: number) => any) => { 
+        const array = this.get()
+        let ret = []
+        for (let i = 0; i < array.length; i++){
+            const v = callback(array[i], i)
+            v && ret.push(v)
+        }
+        return ret
+    }
+
+    public pop = () => this.get().pop()
+    public shift = () => this.get().shift()
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
     public filter = (predicate: any) => this.toListClass(_.filter(this.toPlain(), predicate))
@@ -65,8 +78,9 @@ export default class Collection extends Model  {
     public find = (predicate: any) => {
         const o = _.find(this.toPlain(), predicate)
         if (o){
-            return new this.nodeClass(o)
+            return new (this._getNodeModel())(o)
         }
+        let p = []
         return o
     }
 
@@ -79,10 +93,26 @@ export default class Collection extends Model  {
     //delete a node if it exists in the list.
     public delete = (v: Model) => {
         const index = this.getIndex(v)
-        index > -1 && this.get().splice(index, 1)
+        if (index > -1){
+            const v = this.get().splice(index, 1)
+            if (v){
+                return v[0]
+            }
+        }
+        return null
+    }
+
+    public deleteIndex = (index: number) => {
+        const v = this.get().splice(index, 1)
+        if (v){
+            return v[0]
+        }
+        return null
     }
 
     //return the index of the element passed in parameters if it exists in the list.
     public getIndex = (v: Model): number => _.findIndex(this.toPlain(), v.get())
 
+    private _isNodeModel = (value: any) => value instanceof this._getNodeModel()
+    private _getNodeModel = () => this.nodeClass
 }

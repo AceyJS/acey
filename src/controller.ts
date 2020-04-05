@@ -26,7 +26,7 @@ export default class Controller {
         this.getState().copyDeep(newState)
     }
 
-    public getStore = (): any => this._store().getState()
+    protected getStore = (): any => this._store().getState()
     public getIDKey = () => this._IDKey
 
     public getStateClass = (): Type<State> => this._stateClass
