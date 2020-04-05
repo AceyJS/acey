@@ -139,11 +139,11 @@ export default Window
 
 #### prototype: `class Collection extends Model`
 
-#### A Collection is a Model that has for state an array of Model. (Example: a Todolist is a Collection of Todo Model.)
+#### A Collection is a Model that has for state an array of Models. (Example: a Todolist is a Collection of Todo Models.)
 
 You build a collection with :
-1. An array of Model or Objects.
-2. An uninstanced model class that reprensents the model of the elements in the array.
+1. An array of Models or Objects.
+2. A non-instanced Model class that represents the Model of the elements in the array.
 
 ```
 import {Collection} from 'react-ascey'
@@ -164,11 +164,16 @@ export default class TodoCollection extends Collection {
 export default TodoCollection
 ```
 
+There is a room for other methods, please feel free to open a pull request if you want to add other useful methods.
+
 #### Methods :
 - `count = (): number` - Return the length of the array
 - `toListClass = (elem: any[]): Model[]` - Transform an object array into an instanced Model array.
-- `post = (v: Model)` - Add an element in the array
-- `put = (v: Model, index: number)` - Update the model at index with the one passed in parameter
+- `push = (v: Model)` - Add an element in the array
+- `update = (v: Model, index: number)` - Update the model at index with the one passed in parameter
+- `pop = ()` - Remove the last element
+- `shif = ()` - Remove the first item
+- `map = (callback: (v: Model, index: number) => any)` - creates a new array with the results of calling a function for every array element (same than javascript map on arrays)
 - `orderBy = (iteratees: any[], orders: any[]): Model[]` - Return a sorted array of instanced Model upon the parameters passed
 - `filter = (predicate: any): Model[]` - Pick up a list of node matching the predicate
 - `find = (predicate: any): Model | undefined` - Find the first node matching the predicate
