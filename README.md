@@ -11,13 +11,13 @@
 # A MVC oriented state manager. (Better than Redux)
 
 Ascey is a-based-MVC state manager for your React apps.
-It is built on top of Redux and makes easy the maintenance of an organized and scalable architecture on medium and large apps.
+It is built on top of Redux and makes accessible the maintenance of an organized and scalable architecture on medium and large apps.
 
 
-## Better than Redux, how ?
+## Better than Redux, how?
 
-Redux is a great state manager and this is the reason why it got so much success and created a new whole ecosystem of open source libraries.
-This is also why Ascey is build on top of it, using its API to work.
+Redux is a great state manager, and this is the reason why it got so much success and created a new whole ecosystem of open source libraries.
+It is also why Ascey is built on top of it, using its API to work.
 
 #### But Redux has for weekness, its strength : The boilerplate 
 - Actions function / type
@@ -31,16 +31,16 @@ This is also why Ascey is build on top of it, using its API to work.
 
 ### This is too much.
 The redux boilerplate is clean and enable you to make a good organization on small apps.
-#### But one change require code update at many different place that makes editing awful when you either didn't write the code or your app is just big.
+#### But one change require code update at many different places that makes editing awful when you didn't write the code or your app is just big.
 Still, more and more, you add actions and reducers (and so data to handle), more you find yourself feeling the architecture messy, hard to maintain, and a significant drop concerning your productivity working on the project.
 
 
-### Why ?
+### Why?
 
 Because your app has "100" different action types, "12" different reducers, "70" differents action functions, and I'm not talking about your selectors and utility functions distributed in dozen of files.
 That means that iterating on this app is painful, and your ability to keep developing your app while maintaining a high standard in terms of organization decreases.
 
-#### In other words, you lose productivity, and you don't like what you are doing anymore because your app.
+#### In other words, you lose productivity, and you don't like what you are doing anymore.
 
 <br />
 
@@ -96,31 +96,30 @@ It allows you to create all the methods you need related to a specific type of d
 You build a Model from a data object.
 
 #### Example of a Model:
-`./src/ascey/model/window.ts`
+`./src/ascey/models/todo.ts`
 ```
 import { Model } from 'react-ascey'
 
+/*
+    1. Create a default data object for our Model
+   /!\ Must always be an object. /!\
+*/
 const DEFAULT_DATA = {
-   width: window.innerWidth, 
-   height: window.innerHeight
+    content: '',
+    created_at: new Date()
 }
 
-class Window extends Model {
-    
-    constructor(dimensions = DEFAULT_DATA){
-        super(dimensions)
+class TodoModel extends Model {
+
+    constructor(todo = DEFAULT_DATA){
+        super(todo)
     }
-    
-    /* getters */
-    getWidth = () => this.get().width
-    getHeight = () => this.get().height
-    
-    /* setters */
-    setWidth = (width) => this.run((state) => state.width = width)
-    setHeight = (height) => this.run((state) => state.height = height)
+
+    getContent = () => this.get().content
+    getCreatedAt = () => this.get().created_at
 }
 
-export default Window
+export default TodoModel
 ```
 
 #### Methods: 
@@ -145,26 +144,41 @@ You build a collection with :
 1. An array of Models or Objects.
 2. A non-instanced Model class that represents the Model of the elements in the array.
 
+#### Example of a Collection:
+`./src/ascey/collections/todo.ts`
 ```
-import {Collection} from 'react-ascey'
+import { Collection } from 'react-ascey'
 import TodoModel from '../models/todo'
 
-type sortType = 'asc' | 'desc'
+/*
+    1. Create a default data object for our Collectiono
+   /!\ Must always be an array. /!\
+*/
+const DEFAULT_DATA = []
 
-export default class TodoCollection extends Collection {
-    
-    constructor(list = []){
+class TodoCollection extends Collection {
+
+    constructor(list: any = DEFAULT_DATA){
         super(list, TodoModel)
     }
 
-    sortByContent = (type: sortType = 'asc') => new TodoList(this.orderBy(['content'], [type]))
-    sortByCreateDate = (type: sortType = 'asc') => new TodoList(this.orderBy(['created_at'], [type]))
+    sortByCreateDate = (sortType: any = 'asc' || 'desc') => {
+        /*
+            - orderBy sort the list by data and return an array
+            of model.
+            - We return a fresh instance of a collection with the array
+            returned by orderBy
+        */
+        return new TodoCollection(
+            this.orderBy(['created_at'], [sortType])
+        )
+    }
 }
 
 export default TodoCollection
 ```
 
-There is a room for other methods, please feel free to open a pull request if you want to add other useful methods.
+There is room for other methods; please feel free to open a pull request if you want to add other useful methods.
 
 #### Methods :
 - `count = (): number` - Return the length of the array
@@ -201,60 +215,36 @@ The difference with a Model is that a State is going to bound with a Controller 
 
 As its parent, you build this class with a data object.
 
-This class can contain methods interacting with State's data like utils, getters and setters.
+This class can contain methods interacting with State's data like utils, getters and, setters.
 
 
 #### Exemple of a State:
-`./src/ascey/states/ui.ts`
+`./src/ascey/states/todo.ts`
 ```
 import { State } from 'react-ascey'
-import Window from '../models/window'
+import TodoCollection from '../collections/todo'
 
-/* A default object of data */
+/*
+    1. Create a default data object for our State
+   /!\ Must always be an object. /!\
+*/
 const DEFAULT_DATA = {
-    window: {
-        width: window.innerWidth, 
-        height: window.innerHeight,
-    }
+    todolist: []
 }
 
-class UIState extends State {
+class TodoState extends State {
 
-    /* This method returns a new State of the current one and must be in all State class. */
-    public new = (initial = DEFAULT_DATA): UIState => new UIState(initial)
-
-    constructor(initial = DEFAULT_DATA){
-        /*
-        You must instanciate the parent with 2 parameters:
-          1. An object of data
-          2. An uniq key identifying your State.
-        */
-        
-        super(
-           { window: new Window(initial.window) }, /* See part. 2 */ 
-           'ui'
-        )
+    constructor(data = DEFAULT_DATA){
+        super({
+          /* transform data into Models/Collections */
+          todolist: new TodoCollection(data.todolist)
+        })
     }
 
-    /* Setter the Window Model in the State */
-    public setWindow = (dimensions = DEFAULT_DATA.window) => {
-
-      /* 
-         "run" is a Model's method allowing you to update data in your state
-         It takes a function with the state object in the parameter
-      */
-      this.run((state) => {
-        state.window.setWidth(dimensions.width)
-        state.window.setHeight(dimensions.height)
-      })
-      
-    }
-    
-    /* Getter of our window model in the State */
-    public getWindow(): Window => this.get().window
+    getTodolist = (): TodoCollection => this.get().todolist
 }
 
-export default UIState
+export default TodoState
 ```
 
 #### Methods :
@@ -279,38 +269,66 @@ export default UIState
 #### A Controller is comparable with a grouping of Actions.
 You build this class from:
 1. the State class you want to bind it with
-2. An uniq key (that serves to identify the controller in the Ascey Store.)
+2. A unique key (that serves to identify the controller in the Ascey Store.)
 
 A Controller is made to update your data in the Store through the State it is bound with.
 
 #### Exemple of a Controller:
-`./src/ascey/controllers/ui.ts`
+`./src/ascey/controllers/todo.ts`
 
 ```
 import { Controller } from 'react-ascey'
-import UIState from '../states/ui'
+import TodoState from '../states/todo'
+import TodoModel from '../models/todo'
 
-class UIController extends Controller {
+class TodoController extends Controller {
 
-    constructor(uiState: any){
-        super(uiState, 'ui')
+    constructor(todoState: any){
+       /* 
+         The Controller class requires 2 parameters:
+         1. The state class bound with the controller
+         2. A unique key to identify the controller. 
+       */ 
+       super(todoState, 'todo')
     }
 
-    /* {Method|Action} setting new window dimensions to the store */
-    updateWindow = (window: any) => {
-      /* 
-         dispatch is a Controller's method updating the Ascey Store when
-         the function passed in parameter has been executed
-         The function passed in parameter takes a parameter: the State Model
-      */
-      
-       this.dispatch( (state: UIState) => state.setWindow(window) )
+   /*
+       Dispatching to store:
+       
+       1. The dispatch method takes a callback parameter
+          sending the instanced State bound with the 
+          Controller
+       2. Then you are free to execute the method you want 
+          from the State that is going to update the data.
+       3. At the end of the callback execution, the change 
+          is saved, transformed into a plain javascript 
+          object, and sent to the Store.
+   */
+   
+    createTodo = (content: string): TodoModel => {        
+        const todo = new TodoModel({
+            content,
+            created_at: new Date()
+        })
+        
+        this.dispatch((state: TodoState) => {
+            state.getTodolist().push(todo)
+        })
+        return todo
     }
+
+    deleteTodo = (todo: TodoModel): TodoModel => {
+        let v: any;
+        this.dispatch((state: TodoState) => {
+            v = state.getTodolist().delete(todo)
+        })
+        return v
+    }
+
 }
 
-/* 
-Instantiation of your Controller with its State. */
-export default new UIController(UIState)
+/* We export the instanced Controller initialized with TodoState */
+export default new TodoController(TodoState)
 ```
 
 #### Methods: 
@@ -323,51 +341,56 @@ export default new UIController(UIState)
 
 ## 5. Connect with component
 
-#### Here is a simple React component : 
-- displaying the width of the window.
-- updating the dimensions of the window in your Ascey state through your controller when it changes. 
-
+#### Here is a simple React component (todolist) : 
 `./src/home.js`
 ```
+import React, { useState } from 'react';
+import TodoModel from './ascey/models/todo
+import TodoController from './ascey/controllers/todo'
 import { connect } from 'react-ascey'
-import { UIController } from '../ascey/controllers/ui'
-import $ from 'jquery'
 
-const Home = (props) => {
 
-  /* on window size change */
-  const onWindowUpdate = () => {
-    $( window ).resize( function(){
-      const width = $(window).width()
-      const height = $(window).height()
-      
-      /* 
-         Here is where call the update window dimensions method 
-         
-         i) Contrary to Redux, you don't need to bind it.
-         You can call your method anywhere in your app.
-      */
-      UIController.updateWindow({width, height})
-    });
-  }
-
-  /* componentDidMount */
-  useEffect(() => onWindowUpdate(), [])
-
-  return (
-    <div>
-      width: {this.props.window.getWidth()} {/* the getter method you defined in your Model class */}
-    </div>
-  );
+function App(props: any) {
+   const { todolist } = props
+   const [text, setText] = useState('')
+   
+   const onChangeInput = (e: any) => setText(e.target.value)
+   const addTodo = () => TodoController.createTodo(text) && setText('')
+   
+   const renderInput = () => (
+      <div style={{margin: 20}}>
+          <input 
+             onChange={onChangeInput} 
+             style={{width: 300, height: 20}} 
+             value={text}
+          />
+          <button onClick={addTodo}>Add</button>
+      </div>
+   )
+   
+   const renderTodo = (todo: TodoModel, idx: number) => (
+       <div key={idx} style={{margin: 10}}>
+          <span>{todo.getContent()}</span>
+          <span> - </span>
+          <span>{todo.getCreatedAt().getMinutes() + ':' + todo.getCreatedAt().getSeconds() }</span>
+       </div>
+    )
+   
+   return (
+      <div style={{flexDirection: 'column', display: 'flex', alignItems: 'center'}}>
+         {renderInput()}
+         {todolist.map(renderTodo)}
+      </div>
+   )
 }
 
 const mapStateToProps = () => {
-    return {
-        window: UIController.getState().getWindow() /* the getter method you defined in your State class */
-    }
+   return {
+      todolist: TodoController.getState().getTodolist()
+   }
 }
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps)(App)
 ```
 
 <br />
@@ -377,7 +400,7 @@ export default connect(mapStateToProps)(Home)
 `./src/ascey/store.ts`
 ```
 import { createStore, bindControllers } from 'react-ascey'
-import UIController from '../controllers/ui'
+import TodoController from '../controllers/todo'
 
 /* 
    bindControllers is binding the controllers with the store, 
@@ -386,7 +409,7 @@ import UIController from '../controllers/ui'
      - 2. Object of reducers. (if you still want to work in a redux way on some parts. 
          E.g if you want to connect your router with the store)
 */
-const store = bindControllers([ UIController ] /*, { router: connectRouter(history) } */  ),
+const store = bindControllers([ TodoController ] /*, { router: connectRouter(history) } */  ),
 
 export default store
 ```
