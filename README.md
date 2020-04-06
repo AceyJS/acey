@@ -19,7 +19,7 @@ It is built on top of Redux and makes accessible the maintenance of an organized
 Redux is a great state manager, and this is the reason why it got so much success and created a new whole ecosystem of open source libraries.
 It is also why Ascey is built on top of it, using its API to work.
 
-#### But Redux has for weekness, its strength : The boilerplate 
+#### But Redux has for weakness, its strength : The boilerplate 
 - Actions function / type
 - Reducers
 - Connect
