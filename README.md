@@ -116,6 +116,13 @@ ___
 
 ## 1. Model
 
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="react-ascey" src="https://i.postimg.cc/B6gLpLM4/model.png" width="100%">
+  </a>
+</p>
+
+
 #### prototype: `class Model` 🌱
 
 #### A Model is a class built with an object of data. 
@@ -164,6 +171,12 @@ export default TodoModel
 <br />
 
 ## 2. Collection
+
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="react-ascey" src="https://i.postimg.cc/V6Z8RzQd/collection.png" width="100%">
+  </a>
+</p>
 
 #### prototype: `class Collection extends Model` 🌿
 
@@ -236,6 +249,12 @@ There is room for other methods; please feel free to open a pull request if you 
 
 ## 3. State
 
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="react-ascey" src="https://i.postimg.cc/FK75H2Jv/state.png" width="100%">
+  </a>
+</p>
+
 #### prototype: `class State extends Model` 🌳
 
 #### A State is comparable with a Reducer.
@@ -292,6 +311,12 @@ export default TodoState
 <br />
 
 ## 4. Controller
+
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="react-ascey" src="https://i.postimg.cc/ZKKfm6Nt/controller.png" width="100%">
+  </a>
+</p>
 
 #### prototype: `class Controller` 🌎
 
@@ -370,6 +395,12 @@ export default new TodoController(TodoState)
 
 ## 5. Connect with component
 
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="react-ascey" src="https://i.postimg.cc/fT8049cP/connect.png" width="100%">
+  </a>
+</p>
+
 #### Here is a simple React component (todolist) : 
 `./src/home.js`
 ```
@@ -426,6 +457,13 @@ export default connect(mapStateToProps)(App)
 
 
 ## 6. Store
+
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="react-ascey" src="https://i.postimg.cc/02j7ynyv/store.png" width="100%">
+  </a>
+</p>
+
 `./src/ascey/store.ts`
 ```
 import { createStore, bindControllers } from 'react-ascey'
@@ -477,6 +515,12 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 # Questions / Answers
 
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="react-ascey" src="https://i.postimg.cc/FsgFwdSL/band.png" width="100%">
+  </a>
+</p>
+
 #### All the example are in Typescript, does the library works with Javascript?
 Yes, it does! The library is written in Typescript, but you can use react-ascey if you are writing a react app in javascript.
 
@@ -488,9 +532,3 @@ You might need to adapt some parts; for example, a logger doesn't exist on Ascey
 Another example, if you used redux-saga or redux-thunk until there, you can get rid of them, You can do everything you used to do this two middleware with react-ascey features themselves.
 
 If you have any question or you would like to see a feature, feel free to create an issue or email me: siuol@gmx.com
-
-
-
-
-
-
