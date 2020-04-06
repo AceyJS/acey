@@ -1,6 +1,6 @@
 
 <p align="center" font-style="italic" >
-  <a href="https://rnds.netlify.com/">
+  <a>
     <img alt="react-ascey" src="https://i.postimg.cc/wvCsGXdM/ascey.png" width="100%">
   </a>
 + Control. | - Code. | + Scalability. | - Debugging. | + Productivity.
@@ -50,6 +50,32 @@ That means that iterating on this app is painful, and your ability to keep devel
 <br />
 
 # Ascey
+
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="react-ascey" src="https://i.postimg.cc/q7DtM51H/schema.png" width="100%">
+  </a>
+</p>
+
+### How works Ascey in 5 steps.
+
+1. Ascey **centralizes** your data inside **Models** (object) and **Collections** (array of Models), you are then free to create the **methods** you need to interact with these data. **One time**, and in **One place**.  🏴‍☠️
+
+2. You need then to add these Models and Collections inside **States**, that are **big Models** (objects), **connected** with the Ascey **Store**.  ⛓️
+
+3. **States** **groups** different data around something **specific** (like a **reducer**). Example: a User State gathering Models and Collections about your current user's data: personal information, device information, statistics, etc..  📦
+
+4. Then, in your **components**, you use a Controller **linking** with the **State** to **interact** with the data.  📽️
+
+5. The **Controller** welcomes the **methods** to **update** data in its bound **State** (like redux **actions**). At the same time, you can access your **State** to read the (updated continuously) data you want to display in your component.  🎛️
+
+<br />
+
+Ascey's MVC architecture makes your code **organized**, **scalable** and easy to **keep tidy up**.
+
+<br />
+
+
 
 ## Get started
 
