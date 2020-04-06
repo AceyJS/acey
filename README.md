@@ -11,7 +11,7 @@
 ### A quick starter step-by-step here : [Counter App](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9)
 _____
 
-# A MVC oriented state manager. (Better than Redux)
+# An MVC oriented state manager. (Better than Redux)
 
 Ascey is a-based-MVC state manager for your React apps.
 It is built on top of Redux and makes accessible the maintenance of an organized and scalable architecture on medium and large apps.
