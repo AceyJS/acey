@@ -19,7 +19,7 @@ It is built on top of Redux and makes accessible the maintenance of an organized
 Redux is a great state manager, and this is the reason why it got so much success and created a new whole ecosystem of open source libraries.
 It is also why Ascey is built on top of it, using its API to work.
 
-#### But Redux has for weakness, its strength : The boilerplate 
+#### But Redux's weakness is its strength : The boilerplate 
 - Actions function / type
 - Reducers
 - Connect
@@ -37,7 +37,7 @@ Still, more and more, you add actions and reducers (and so data to handle), more
 
 ### Why?
 
-Because your app has "100" different action types, "12" different reducers, "70" differents action functions, and I'm not talking about your selectors and utility functions distributed in dozen of files.
+Because your app has "100" different action types, "12" different reducers, "70" different action functions, and I'm not talking about your selectors and utility functions distributed in dozen of files.
 That means that iterating on this app is painful, and your ability to keep developing your app while maintaining a high standard in terms of organization decreases.
 
 #### In other words, you lose productivity, and you don't like what you are doing anymore.
