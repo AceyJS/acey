@@ -446,3 +446,25 @@ ReactDOM.render(<App />, document.getElementById('root'));
 - bindControllers - `bindControllers(states: []Controller, extraReducer = {}) `
 - [connect](https://react-redux.js.org/7.1/api/connect#connect) - Same than react-redux
 
+<br />
+<br />
+
+# Questions / Answers
+
+#### All the example are in Typescript, does the library works with Javascript?
+Yes, it does! The library is written in Typescript, but you can use react-ascey if you are writing a react app in javascript.
+
+<br />
+
+#### I come from Redux, I'm interested in the lib but don't want to give up the Redux ecosystem, and Redux related libraries how I should do?
+First of all, react-ascey uses the Redux API to work; that is to say that theoretically, you could use any Redux tool library on Ascey. 
+You might need to adapt some parts; for example, a logger doesn't exist on Ascey, but you could create one inspired on redux-logger and release it on Github for the community. 
+Another example, if you used redux-saga or redux-thunk until there, you can get rid of them, You can do everything you used to do this two middleware with react-ascey features themselves.
+
+If you have any question or you would like to see a feature, feel free to create an issue or email me: siuol@gmx.com
+
+
+
+
+
+
