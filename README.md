@@ -62,11 +62,11 @@ yarn add react-ascey
 <br />
 
 ___
-Here are 3 step-by-step tutorials in order of difficulty, allowing you to understand the logic and the possibilities of Ascey.
+#### Here are 3 step-by-step tutorials in order of difficulty, allowing you to understand the logic and the possibilities of Ascey.
 
-1. [Counter App](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9)
-2. [User Management App](https://medium.com/@siuoly/part-2-practice-with-react-ascey-user-management-in-10-steps-6717fbbd8a2e)
-3. [Todolist App](https://medium.com/@siuoly/part-3-practice-with-react-ascey-todolist-step-by-step-9ca5dd068328)
+### 1. [Counter App](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9)
+### 2. [User Management App](https://medium.com/@siuoly/part-2-practice-with-react-ascey-user-management-in-10-steps-6717fbbd8a2e)
+### 3. [Todolist App](https://medium.com/@siuoly/part-3-practice-with-react-ascey-todolist-step-by-step-9ca5dd068328)
 
 <br />
 
@@ -87,7 +87,7 @@ Here are 3 step-by-step tutorials in order of difficulty, allowing you to unders
 
 ## 1. Model
 
-#### prototype: `class Model`
+#### prototype: `class Model` 🌱
 
 #### A Model is a class built with an object of data. 
 
@@ -136,7 +136,7 @@ export default TodoModel
 
 ## 2. Collection
 
-#### prototype: `class Collection extends Model`
+#### prototype: `class Collection extends Model` 🌿
 
 #### A Collection is a Model that has for state an array of Models. (Example: a Todolist is a Collection of Todo Models.)
 
@@ -207,7 +207,7 @@ There is room for other methods; please feel free to open a pull request if you 
 
 ## 3. State
 
-#### prototype: `class State extends Model`
+#### prototype: `class State extends Model` 🌳
 
 #### A State is comparable with a Reducer.
 This class is a child of the Model class, and is 98% similar.
@@ -264,7 +264,7 @@ export default TodoState
 
 ## 4. Controller
 
-#### prototype: `class Controller`
+#### prototype: `class Controller` 🌎
 
 #### A Controller is comparable with a grouping of Actions.
 You build this class from:
