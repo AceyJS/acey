@@ -497,7 +497,7 @@ Yes, it does! The library is written in Typescript, but you can use react-ascey 
 
 #### I come from Redux, I'm interested in the lib but don't want to give up the Redux ecosystem, and Redux related libraries how I should do?
 First of all, react-ascey uses the Redux API to work; that is to say that theoretically, you could use any Redux tool library on Ascey. 
-You might need to adapt some parts; for example, a logger doesn't exist on Ascey, but you could create one inspired on redux-logger (I personally never used one) and release it on Github for the community. 
+You might need to adapt some parts; for example, a logger doesn't exist on Ascey, but you could create one inspired on redux-logger and release it on Github for the community. 
 Another example, if you used redux-saga or redux-thunk until there, you can get rid of them. You can do everything you used to do without them on Ascey.
 
 If you have any question or you would like to see a feature, feel free to create an issue or email me: siuol@gmx.com
