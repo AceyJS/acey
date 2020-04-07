@@ -14,9 +14,9 @@ _____
 
 # Ascey - An MVC oriented state manager.
 
-#### Ascey is a-based-MVC state manager for React {Native} apps.
+Ascey is a-based-MVC state manager for React {Native} apps.
 
-It makes accessible the maintenance of an organized and scalable architecture on medium and large apps thanks to the centralization of data and their utilities (getter, setter, formatter) inside Models (objects) and Collections (array of Models).
+It makes accessible the maintenance of an organized and scalable architecture on medium and large apps thanks to the centralization of data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (array of Models).
 
 <br />
 
@@ -42,6 +42,9 @@ ___
 
 <br />
 
+<br />
+
+# Ascey - Core.
 
 <p align="center" font-style="italic" >
   <a>
@@ -49,7 +52,7 @@ ___
   </a>
 </p>
 
-### How works Ascey in 5 steps.
+### How works Ascey in 5 steps. 
 
 1. Ascey **centralizes** your data inside **Models** (object) and **Collections** (array of Models), you are then free to create the **methods** you need to interact with these data. **One time**, and in **One place**.  🏴‍☠️
 
