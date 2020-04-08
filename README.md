@@ -45,21 +45,17 @@ ___
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/q7DtM51H/schema.png" width="100%">
+    <img alt="react-ascey" src="https://i.postimg.cc/6phvTVrv/map.png" width="100%">
   </a>
 </p>
 
-### How works Ascey in 5 steps. 
+### How works Ascey in 3 steps. 
 
-1. Ascey **centralizes** your data inside **Models** (object) and **Collections** (array of Models), you are then free to create the **methods** you need to interact with these data. **One time**, and in **One place**.  🏴‍☠️
+1. Ascey **centralizes** your data inside **Models** (object) and **Collections** (array of Models), you are then free to create the **methods** you need to interact with these data (getters, setters, formatters). At **One time**, and in **One place**.  🏴‍☠️
 
-2. You need then to add these Models and Collections inside **States**, that are **big Models** (objects), **connected** with the Ascey **Store**.  ⛓️
+2. Then you need to link your Model/Collection with a dedicated **Controller**, that is the **link** between them and your **Components**. ⛓️
 
-3. **States** **groups** different data around something **specific** (like a **reducer**). Example: a User State gathering Models and Collections about your current user's data: personal information, device information, statistics, etc..  📦
-
-4. Then, in your **components**, you use a Controller **linking** with the **State** to **interact** with the data.  📽️
-
-5. The **Controller** welcomes the **methods** to **update** data in its bound **State** (like redux **actions**). At the same time, you can access your **State** to read the (updated continuously) data you want to display in your component.  🎛️
+3. A **Controller** is a **mediator** between your storage of data (**Collection/Model**) and your **Components**. It dispatches the updates to the Store and gives access to the current state of your data. 🎛️
 
 <br />
 
@@ -73,12 +69,11 @@ Ascey's MVC architecture makes your code **organized**, **scalable** and easy to
 ### Table of contents
 * [Model](#1-model)
 * [Collection](#2-collection)
-* [State](#3-state)
-* [Controller](#4-controller)
-* [Connect with component](#5-connect-with-component)
-* [Store](#6-store)
-* [Wrap with Ascey](#7-wrap-with-ascey)
-* [Other](#8-other)
+* [Controller](#3-controller)
+* [Connect with component](#4-connect-with-component)
+* [Store](#5-store)
+* [Wrap with Ascey](#6-wrap-with-ascey)
+* [Other](#7-other)
 
 
 <br />
@@ -94,9 +89,8 @@ Ascey's MVC architecture makes your code **organized**, **scalable** and easy to
 
 #### prototype: `class Model` 🌱
 
-#### A Model is a class built with an object of data. 
-
-It allows you to create all the methods you need related to a specific type of data (utils, getters (selectors), setters) 
+A Model is a class built with an **object of data**. 
+It allows you to **create** all the **methods** you need related to a specific type of data like **util**, **getter** (selector), and **setter** functions
 
 You build a Model from a data object.
 
@@ -104,6 +98,7 @@ You build a Model from a data object.
 `./src/ascey/models/todo.ts`
 ```
 import { Model } from 'react-ascey'
+import moment from 'moment'
 
 /*
     1. Create a default data object for our Model
@@ -122,6 +117,8 @@ class TodoModel extends Model {
 
     getContent = () => this.get().content
     getCreatedAt = () => this.get().created_at
+    
+    getCreatedAtLTS = () => moment(this.getCreatedAt()).format('LTS')
 }
 
 export default TodoModel
@@ -136,6 +133,7 @@ export default TodoModel
 - `copyDeep = (src: Model)` : copy the src into the current state without changing the references of the values nested inside the current model.
 - `toPlain = (): Object` : return the state of model as a plain javascript object
 - `isCollection = (): boolean` : return true if the Model is a Collection.
+- `defaultState = (): any` : return the state of data of the instanciation.
 
 <br />
 
@@ -214,72 +212,10 @@ There is room for other methods; please feel free to open a pull request if you 
 - `run = (action: (newState: any) => void): Object` : Execute the function passed in parameter and then set the new state  with the state from the action function parameter. 
 - `copyDeep = (src: Model)` : copy the src into the current state without changing the references of the values nested inside the current model.
 - `toPlain = (): Object` : return the state of model as a plain javascript object
+- `defaultState = (): any` : return the state of data of the instanciation.
 
 
-## 3. State
-
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/FK75H2Jv/state.png" width="100%">
-  </a>
-</p>
-
-#### prototype: `class State extends Model` 🌳
-
-#### A State is comparable with a Reducer.
-This class is a child of the Model class, and is 98% similar.
-The difference with a Model is that a State is going to bound with a Controller that will connect the State's data with the Ascey Store.
-
-As its parent, you build this class with a data object.
-
-This class can contain methods interacting with State's data like utils, getters and, setters.
-
-
-#### Exemple of a State:
-`./src/ascey/states/todo.ts`
-```
-import { State } from 'react-ascey'
-import TodoCollection from '../collections/todo'
-
-/*
-    1. Create a default data object for our State
-   /!\ Must always be an object. /!\
-*/
-const DEFAULT_DATA = {
-    todolist: []
-}
-
-class TodoState extends State {
-
-    constructor(data = DEFAULT_DATA){
-        super({
-          /* transform data into Models/Collections */
-          todolist: new TodoCollection(data.todolist)
-        })
-    }
-
-    getTodolist = (): TodoCollection => this.get().todolist
-}
-
-export default TodoState
-```
-
-#### Methods :
-- `defaultState = (): any` : return the default state
-
-#### + the ones from Model :
-- `get = (): Object` : return the state of the model.
-- `set = (state: Object)` : set the new state of the model.
-- `setState = (obj: Object)` : update the state by assigning the current state with the obj parameter. (like React)
-- `run = (action: (newState: any) => void): Object` : Execute the function passed in parameter and then set the new state  with the state from the action function parameter. 
-- `deleteKey = (key: string)` : delete the value linked with a key in your state object.
-- `copyDeep = (src: Model)` : copy the src into the current state without changing the references of the values nested inside the current model.
-- `toPlain = (): Object` : return the state of model as a plain javascript object
-
-
-<br />
-
-## 4. Controller
+## 3. Controller
 
 <p align="center" font-style="italic" >
   <a>
@@ -289,40 +225,40 @@ export default TodoState
 
 #### prototype: `class Controller` 🌎
 
-#### A Controller is comparable with a grouping of Actions.
+#### A Controller is a grouping of Actions.
 You build this class from:
-1. the State class you want to bind it with
-2. A unique key (that serves to identify the controller in the Ascey Store.)
+1. a **Model or a Collection** bound with.
+2. A unique key (that serves to identify the Controller in the Ascey Store).
 
-A Controller is made to update your data in the Store through the State it is bound with.
+A Controller is made to update your data in the Store through the Model/Collection it is bound with.
 
 #### Exemple of a Controller:
 `./src/ascey/controllers/todo.ts`
 
 ```
 import { Controller } from 'react-ascey'
-import TodoState from '../states/todo'
+import TodoCollection from '../collections/todo'
 import TodoModel from '../models/todo'
 
 class TodoController extends Controller {
 
-    constructor(todoState: any){
+    constructor(todoCollection: any){
        /* 
          The Controller class requires 2 parameters:
-         1. The state class bound with the controller
+         1. The Model/Collection class bound with the controller
          2. A unique key to identify the controller. 
        */ 
-       super(todoState, 'todo')
+       super(todoCollection, 'todo')
     }
 
    /*
        Dispatching to store:
        
        1. The dispatch method takes a callback parameter
-          sending the instanced State bound with the 
+          sending the instanced Model/Collection bound with the 
           Controller
        2. Then you are free to execute the method you want 
-          from the State that is going to update the data.
+          from the Model/Collection that is going to update the data.
        3. At the end of the callback execution, the change 
           is saved, transformed into a plain javascript 
           object, and sent to the Store.
@@ -334,32 +270,32 @@ class TodoController extends Controller {
             created_at: new Date()
         })
         
-        this.dispatch((state: TodoState) => {
-            state.getTodolist().push(todo)
+        this.dispatch((collection: TodoCollection) => {
+            collection.push(todo)
         })
         return todo
     }
 
     deleteTodo = (todo: TodoModel): TodoModel => {
         let v: any;
-        this.dispatch((state: TodoState) => {
-            v = state.getTodolist().delete(todo)
+        this.dispatch((collection: TodoCollection) => {
+            v = collection.delete(todo)
         })
         return v
     }
 
 }
 
-/* We export the instanced Controller initialized with TodoState */
-export default new TodoController(TodoState)
+/* We export the instanced Controller initialized with TodoCollection */
+export default new TodoController(TodoCollection)
 ```
 
 #### Methods: 
 - `getIDKey = (): string` : return the controller's uniq key.
-- `getStateClass = (): Type<State>` : return the State class the controller is bound with.
+- `getStateClass = (): Type<Model>` : return the Model/Collection the controller is bound with.
 - `getStore = (): Object` : return the Ascey Store into a plain object
-- `getState = (): State`: return the current instanced State of the Controller.
-- `dispatch = (action: (state: State) => any)` : Execute the function passed in parameter, then dispatch the State from the action function parameter and update the Ascey Store.
+- `getState = (): Model | Controller`: return the current instanced Model/Collection of the Controller.
+- `dispatch = (action: (model: Model | Collection) => any)` : Execute the function passed in parameter, then dispatch the state from the action function parameter and update the Ascey Store.
 <br />
 
 ## 5. Connect with component
@@ -401,7 +337,7 @@ function App(props: any) {
        <div key={idx} style={{margin: 10}}>
           <span>{todo.getContent()}</span>
           <span> - </span>
-          <span>{todo.getCreatedAt().getMinutes() + ':' + todo.getCreatedAt().getSeconds() }</span>
+          <span>{todo.getCreatedAtLTS()}</span>
        </div>
     )
    
@@ -415,7 +351,7 @@ function App(props: any) {
 
 const mapStateToProps = () => {
    return {
-      todolist: TodoController.getState().getTodolist()
+      todolist: TodoController.getState()
    }
 }
 
