@@ -11,9 +11,9 @@
 
 # Ascey - An MVC oriented state manager.
 
-Ascey is a-based-MVC state manager for React {Native} apps.
+#### Ascey is a-based-MVC state manager for React {Native} apps.
 
-It makes accessible the maintenance of an organized and scalable architecture on medium and large apps thanks to the centralization of data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (array of Models).
+It enables an organized and scalable architecture on medium and large apps thanks to the centralization of data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (array of Models).
 
 <br />
 
@@ -49,18 +49,20 @@ ___
   </a>
 </p>
 
-### How works Ascey in 3 steps. 
+### How works Ascey in 2 steps. 
 
-1. Ascey **centralizes** your data inside **Models** (object) and **Collections** (array of Models), you are then free to create the **methods** you need to interact with these data (getters, setters, formatters). **One time**, **One place**.  🏴‍☠️
+1. Ascey **centralizes** your data inside **Models** (object) and **Collections** (array of Models). They are classes that can contain the **methods** you need to interact with their data (getters, setters, formatters). **One time**, **One place**.  🏴‍☠️
 
-2. Then you need to link your Model/Collection with a dedicated **Controller**, that is the **link** between them and your **Components**. ⛓️
+2. To **connect** your **data's state** with a **global store**, you will **link** your **Model/Collection** with a dedicated **Controller**. 
+It is a **mediator** between your **Models** and your **Components** by giving **access** to your components the constantly **updated data**, while **triggering** the **changes** in your state when an **event** in your components occurs. ⛓️
 
-3. A **Controller** is a **mediator** between your storage of data (**Collection/Model**) and your **Components**. It dispatches the updates to the Store and gives access to the current state of your data. 🎛️
+
+Controllers, Models, and Collections are all classes implementing different kinds of methods according to their job on your app. 🎛️
+
+They help your code to stay **organized**, **scalable**, and easy to keep **clean**. 🌱
+
 
 <br />
-
-Ascey's MVC architecture makes your code **organized**, **scalable** and easy to **keep tidy up**.
-
 <br />
 
 
@@ -70,7 +72,7 @@ Ascey's MVC architecture makes your code **organized**, **scalable** and easy to
 * [Model](#model)
 * [Collection](#collection)
 * [Controller](#controller)
-* [Connect with component](#connect-with-component)
+* [connect with Component](#connect-with-component)
 * [Store](#store)
 * [Wrap with Ascey](#wrap-with-ascey)
 * [Other](#other)
@@ -82,12 +84,12 @@ Ascey's MVC architecture makes your code **organized**, **scalable** and easy to
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/B6gLpLM4/model.png" width="100%">
+    <img alt="react-ascey" src="https://i.postimg.cc/ZnmTKcNB/model.png" width="100%">
   </a>
 </p>
 
 
-#### prototype: `class Model` 🌱
+#### prototype: `class Model` 🌿
 
 A Model is a class built with an **object of data**. 
 It allows you to **create** all the **methods** you need related to a specific type of data like **util**, **getter** (selector), and **setter** functions
@@ -124,7 +126,7 @@ class TodoModel extends Model {
 export default TodoModel
 ```
 
-#### Methods: 
+#### Model native methods: 
 - `get = (): Object` : return the state of the model.
 - `set = (state: Object)` : set the new state of the model.
 - `setState = (obj: Object)` : update the state by assigning the current state with the obj parameter. (like React)
@@ -141,11 +143,11 @@ export default TodoModel
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/V6Z8RzQd/collection.png" width="100%">
+    <img alt="react-ascey" src="https://i.postimg.cc/hvYp1C0h/collection.png" width="100%">
   </a>
 </p>
 
-#### prototype: `class Collection extends Model` 🌿
+#### prototype: `class Collection extends Model` 🌳
 
 #### A Collection is a Model that has for state an array of Models. (Example: a Todolist is a Collection of Todo Models.)
 
@@ -189,7 +191,7 @@ export default TodoCollection
 
 There is room for other methods; please feel free to open a pull request if you want to add other useful methods.
 
-#### Methods :
+#### Collection native methods :
 - `count = (): number` - Return the length of the array
 - `toListClass = (elem: any[]): Model[]` - Transform an object array into an instanced Model array.
 - `push = (v: Model)` - Add an element in the array
@@ -219,7 +221,7 @@ There is room for other methods; please feel free to open a pull request if you 
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/ZKKfm6Nt/controller.png" width="100%">
+    <img alt="react-ascey" src="https://i.postimg.cc/GhkXyjy3/controller.png" width="100%">
   </a>
 </p>
 
@@ -290,7 +292,7 @@ class TodoController extends Controller {
 export default new TodoController(TodoCollection)
 ```
 
-#### Methods: 
+#### Controller native methods: 
 - `getIDKey = (): string` : return the controller's uniq key.
 - `getStateClass = (): Type<Model>` : return the Model/Collection the controller is bound with.
 - `getStore = (): Object` : return the Ascey Store into a plain object
@@ -298,11 +300,11 @@ export default new TodoController(TodoCollection)
 - `dispatch = (action: (model: Model | Collection) => any)` : Execute the function passed in parameter, then dispatch the state from the action function parameter and update the Ascey Store.
 <br />
 
-## Connect with component
+## connect with Component
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/fT8049cP/connect.png" width="100%">
+    <img alt="react-ascey" src="https://i.postimg.cc/GhcyXPfm/component.png" width="100%">
   </a>
 </p>
 
