@@ -30,7 +30,7 @@ function App(props: any) {
 
 const mapStateToProps = () => {
   return {
-    /* get the instanced state bound with the controller. */
+    /* Get the instanced Model/Collection bound with the controller. */
     counter: CounterController.getState()
   }
 }
