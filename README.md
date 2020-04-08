@@ -51,7 +51,7 @@ ___
 
 ### How works Ascey in 3 steps. 
 
-1. Ascey **centralizes** your data inside **Models** (object) and **Collections** (array of Models), you are then free to create the **methods** you need to interact with these data (getters, setters, formatters). At **One time**, and in **One place**.  🏴‍☠️
+1. Ascey **centralizes** your data inside **Models** (object) and **Collections** (array of Models), you are then free to create the **methods** you need to interact with these data (getters, setters, formatters). **One time**, **One place**.  🏴‍☠️
 
 2. Then you need to link your Model/Collection with a dedicated **Controller**, that is the **link** between them and your **Components**. ⛓️
 
@@ -67,18 +67,18 @@ Ascey's MVC architecture makes your code **organized**, **scalable** and easy to
 ## Documentation
 
 ### Table of contents
-* [Model](#1-model)
-* [Collection](#2-collection)
-* [Controller](#3-controller)
-* [Connect with component](#4-connect-with-component)
-* [Store](#5-store)
-* [Wrap with Ascey](#6-wrap-with-ascey)
-* [Other](#7-other)
+* [Model](#model)
+* [Collection](#collection)
+* [Controller](#controller)
+* [Connect with component](#connect-with-component)
+* [Store](#store)
+* [Wrap with Ascey](#wrap-with-ascey)
+* [Other](#other)
 
 
 <br />
 
-## 1. Model
+## Model
 
 <p align="center" font-style="italic" >
   <a>
@@ -137,7 +137,7 @@ export default TodoModel
 
 <br />
 
-## 2. Collection
+## Collection
 
 <p align="center" font-style="italic" >
   <a>
@@ -215,7 +215,7 @@ There is room for other methods; please feel free to open a pull request if you 
 - `defaultState = (): any` : return the state of data of the instanciation.
 
 
-## 3. Controller
+## Controller
 
 <p align="center" font-style="italic" >
   <a>
@@ -298,7 +298,7 @@ export default new TodoController(TodoCollection)
 - `dispatch = (action: (model: Model | Collection) => any)` : Execute the function passed in parameter, then dispatch the state from the action function parameter and update the Ascey Store.
 <br />
 
-## 5. Connect with component
+## Connect with component
 
 <p align="center" font-style="italic" >
   <a>
@@ -361,7 +361,7 @@ export default connect(mapStateToProps)(App)
 <br />
 
 
-## 6. Store
+## Store
 
 <p align="center" font-style="italic" >
   <a>
@@ -388,7 +388,7 @@ export default store
 
 <br />
 
-## 7. Wrap with Ascey
+## Wrap with Ascey
 `./src/index.js`
 ```
 import store from './ascey/store';
@@ -408,7 +408,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 <br />
 
-## 8. Other
+## Other
 
 - [applyMiddleware](https://redux.js.org/api/applymiddleware) - Same than redux
 - [createStore](https://redux.js.org/api/createstore) - Same than redux
