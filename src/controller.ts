@@ -1,4 +1,4 @@
-import State from './state'
+import Model from './model'
 import { STORE } from './store'
 import _ from 'lodash'
 
@@ -7,13 +7,13 @@ interface Type<T> extends Function { new (...args: any[]): T; }
 export default class Controller {
 
     private _IDKey : string
-    private _state: State
-    private _stateClass: Type<State>
+    private _model: Model
+    private _modelClass: Type<Model>
 
-    constructor(stateClass: Type<State>, IDKey: string){
+    constructor(modelClass: Type<Model>, IDKey: string){
         this._IDKey = IDKey
-        this._state = new stateClass(undefined)
-        this._stateClass = stateClass
+        this._model = new modelClass(undefined)
+        this._modelClass = modelClass
     }
 
     private _store = () => STORE.get()
@@ -29,8 +29,8 @@ export default class Controller {
     protected getStore = (): any => this._store().getState()
     public getIDKey = () => this._IDKey
 
-    public getStateClass = (): Type<State> => this._stateClass
-    public getState = (): any => this._state
+    public getStateClass = (): Type<Model> => this._modelClass
+    public getState = (): any => this._model
 
     /*
         function to call to dispatch a new state

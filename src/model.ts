@@ -4,8 +4,11 @@ import _ from 'lodash'
 export default class Model {
 
     private state: any
+    private _defaultState: any 
+
     constructor(state: any){
         this.set(state)
+        this._defaultState = this.toPlain()
     }
 
     public get = (): any => this.state
@@ -14,7 +17,11 @@ export default class Model {
         if (this._isObject(state) || this._isArray(state)){
             this.state = state
         } else {
-            throw new Error(`The state of Model and State, can only be instanced and replaced with an array or object type.`)
+            if (!this.isCollection()){
+                throw new Error(`The state of a Model, can only be instanced and replaced with an object type.`)
+            } else {
+                throw new Error(`The state of a Collection, can only be instanced and replaced with an array type.`)
+            }
         }
         return this.state
     }
@@ -165,12 +172,16 @@ export default class Model {
         recur(this.get(), '')
 
         if (this.isCollection()){
+            if (!ret['']){
+                return []
+            }
             return ret['']
         }
 
         return ret
     }
-
+    
+    public defaultState = (): any => this._defaultState
     public isCollection = (): boolean => this._isArray(this.get())
 
     private _isArray = (value: any): boolean => Array.isArray(value)
