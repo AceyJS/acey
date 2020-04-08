@@ -6,19 +6,19 @@ import CounterController from './ascey/controllers/counter'
 import { connect } from 'react-ascey'
 
 function App(props: any) {
+  const {
+    counter
+  } = props
 
   /* 
     You can call your Controller's methods everywhere in your app; 
     contrary to Redux, you don't have to bind your actions.
   */
-  const onClickDecrement = () => CounterController.updateCounter(false)
-  const onClickIncrement = () => CounterController.updateCounter(true)
-
   return (
     <div className="App">
-      <button onClick={onClickDecrement}>decrement</button>
-      {props.counter.getCounter()}
-      <button onClick={onClickIncrement}>increment</button>
+      <button onClick={CounterController.decrement}>decrement</button>
+      {counter.getCounter()}
+      <button onClick={CounterController.increment}>increment</button>
     </div>
   );
 }
