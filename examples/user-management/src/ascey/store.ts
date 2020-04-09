@@ -1,8 +1,8 @@
-import { bindControllers, createStore } from 'react-ascey'
-import UserController from './controllers/user'
+import { createStore, bindControllers } from 'react-ascey'
+import UserController from '../ascey/controllers/user'
 
-export default createStore(
-    bindControllers([
+export default createStore(bindControllers(
+    [
         UserController
-    ])
-)
+    ]
+))

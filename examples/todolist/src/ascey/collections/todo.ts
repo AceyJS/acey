@@ -1,28 +1,26 @@
-import _ from 'lodash'
 import { Collection } from 'react-ascey'
 import TodoModel from '../models/todo'
 
+const DEFAULT_DATA = [
+    {
+        content: 'Hello', 
+        created_at: new Date()
+    },
+    {
+        content: 'World', 
+        created_at: new Date()
+    }
+]
+
+
 class TodoCollection extends Collection {
 
-    constructor(list: any = []){
+    constructor(list = DEFAULT_DATA){
         super(list, TodoModel)
     }
 
-    // sortByContent = (sortType: string = 'asc' || 'desc') => {
-    //     return new TodoCollection(
-    //         this.orderBy(['content'], [sortType])
-    //     )
-    // }
-    sortByCreateDate = (sortType: any = 'asc' || 'desc') => {
-        /*
-            - orderBy sort the list by data and return an array
-            of model.
-            - We return a fresh instance of a collection with the array
-            returned by orderBy
-        */
-        return new TodoCollection(
-            this.orderBy(['created_at'], [sortType])
-        )
+    public sortByCreateDate = (sortType = 'asc') => {
+        return new TodoCollection(this.orderBy(['created_at'], [sortType]))
     }
 }
 

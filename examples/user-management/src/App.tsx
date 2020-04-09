@@ -1,44 +1,43 @@
 import React, { useState } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import { connect } from 'react-ascey'
 import UserController from './ascey/controllers/user'
-import { connect} from 'react-ascey'
 
 function App(props: any) {
-  const [isLoading, setLoading] = useState(false)
-
-  const {
-    device,
+  const { 
     user
   } = props
 
-  const onClickFetch = async () => {
+  const [loading, setLoading] = useState(false)
+
+  const onClick = async() => {
     setLoading(true)
-    await UserController.fetchUser()
+    const result = await UserController.fetchUserData()
+    console.log(result)
+    alert(result)
     setLoading(false)
   }
 
   return (
-    <div>
-      <button onClick={onClickFetch}>Fetch user</button>
+    <div className="App">
+      {loading && <p>Loading...</p>}
 
-      {isLoading && <span>loading...</span>}
-      {!isLoading && 
+      <span>name: {user.getName()} - </span>
+      <span>age: {user.getAge()} - </span>
+      <span>date: {user.getCreatedAt().toString()} - </span>
+      <span>phone name: {user.getDevice().getPhoneName()}</span>
       <div>
-        <p>name: {user.getName()}</p>  
-        <p>gender: {user.getGender()}</p>  
-        <p>age: {user.getAge()}</p> 
-        <p>___________</p>
-        <p>device: {device}</p> 
+        <button onClick={onClick}>Fetch !</button>
       </div>
-      }
     </div>
   );
 }
 
 const mapStateToProps = () => {
   return {
-    user: UserController.getState().getUser(),
-    device: UserController.getState().getDevice()
+    user: UserController.getState()
   }
 }
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps)(App);

@@ -1,33 +1,33 @@
 import { Controller } from 'react-ascey'
-import TodoState from '../states/todo'
+import TodoCollection from '../collections/todo'
 import TodoModel from '../models/todo'
+
 
 class TodoController extends Controller {
 
-    constructor(todoState: any){
-        super(todoState, 'todo')
+    constructor(){
+        super(TodoCollection, 'todolist')
     }
 
-    createTodo = (content: string): TodoModel => {        
-        const todo = new TodoModel({
+    addTodo = (content: string) => {
+        const t = new TodoModel({
             content,
             created_at: new Date()
         })
-        
-        this.dispatch((state: TodoState) => {
-            state.getTodolist().push(todo)
+        this.dispatch((collection: TodoCollection) => {
+            collection.push(t)
         })
-        return todo
+        return t
     }
 
-    deleteTodo = (index: number): TodoModel => {
-        let v: any;
-        this.dispatch((state: TodoState) => {
-            v = state.getTodolist().deleteIndex(index)
+    removeTodo = (todo: TodoModel) => {
+        this.dispatch((collection: TodoCollection) => {
+            collection.delete(todo)
         })
-        return v
     }
+
+
 
 }
 
-export default new TodoController(TodoState)
+export default new TodoController()

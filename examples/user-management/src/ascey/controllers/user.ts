@@ -1,26 +1,21 @@
 import { Controller } from 'react-ascey'
-import UserState from '../states/user'
+import UserModel from '../models/user'
 
-class UserController extends Controller {
+class User extends Controller {
 
-    constructor(userState: any){
-        super(userState, 'user')
+    constructor(){
+        super(UserModel, 'user')
     }
 
-    fetchUser = async () => {
-        //timeout 1000ms
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-
-        this.dispatch((state: UserState) => {
-            state.getUser().setState({
-                name: 'Mike',
-                age: 28,
-                gender: 'male'
-            })
-            state.setDevice('iPhone X')
+    fetchUserData = async () => {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        this.dispatch((user: UserModel) => {
+            user.setState({first_name: 'Mike', age: 20, created_at: new Date('01/01/2020')})
         })
+        return 200
     }
+
+
 }
 
-
-export default new UserController(UserState)
+export default new User()

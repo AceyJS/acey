@@ -5,6 +5,7 @@ const DEFAULT_DATA = {
     created_at: new Date()
 }
 
+
 class TodoModel extends Model {
 
     constructor(todo = DEFAULT_DATA){
