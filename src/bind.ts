@@ -10,8 +10,6 @@ const bind = (controllers: Controller[] = [], extraReducers: any = {}) => {
 		//of the state linked with the current controller.
 		const DEFAULT_STATE = new (controllers[i].getStateClass())(undefined).defaultState()
 		
-		console.log(DEFAULT_STATE)
-
 		reducer[STORE_KEY] = (state: any = DEFAULT_STATE, action: any) => {
 			const { payload, type } = action			
 			let s = state
