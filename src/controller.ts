@@ -16,17 +16,18 @@ export default class Controller {
         this._modelClass = modelClass
     }
 
+    private _getStore = (): any => this._store().getState()
+
     private _store = () => STORE.get()
 
     private _updateState = () => {
-        const store = this.getStore()
+        const store = this._getStore()
         const key = this.getIDKey()
 
-        const newState = new (this.getStateClass())(store[key])
-        this.getState().copyDeep(newState)
+        const newModel = new (this.getStateClass())(store[key])
+        this.getState().copyDeep(newModel)
     }
 
-    protected getStore = (): any => this._store().getState()
     public getIDKey = () => this._IDKey
 
     public getStateClass = (): Type<Model> => this._modelClass
