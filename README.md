@@ -379,7 +379,7 @@ import TodoController from '../controllers/todo'
    bindControllers is binding the controllers with the store, 
    it takes two parameters: 
      - 1. An array of instanced Controllers 
-     - 2. Object of reducers. (if you still want to work in a redux way on some parts. 
+     - 2. (OPTION) - Object of reducers. (if you still want to work in a redux way on some parts. 
          E.g if you want to connect your router with the store)
 */
 const store = bindControllers([ TodoController ] /*, { router: connectRouter(history) } */  ),
