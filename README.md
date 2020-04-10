@@ -311,7 +311,7 @@ export default new TodoController(TodoCollection)
 `./src/home.js`
 ```js
 import React, { useState } from 'react';
-import TodoModel from './ascey/models/todo
+import TodoModel from './ascey/models/todo';
 import TodoController from './ascey/controllers/todo'
 import { connect } from 'react-ascey'
 
@@ -376,15 +376,10 @@ import { createStore, bindControllers } from 'react-ascey'
 import TodoController from '../controllers/todo'
 
 /* 
-   bindControllers is binding the controllers with the store, 
-   it takes two parameters: 
-     - 1. An array of instanced Controllers 
-     - 2. (OPTION) - Object of reducers. (if you still want to work in a redux way on some parts. 
-         E.g if you want to connect your router with the store)
+   The bindControllers helper function turns an array of Controller into a reducing function you can pass to createStore.
 */
-const store = bindControllers([ TodoController ] /*, { router: connectRouter(history) } */  ),
 
-export default store
+export default createStore( bindControllers([ TodoController ] /*, { router: connectRouter(history) } */  ))
 ```
 
 <br />
@@ -411,9 +406,14 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 ## Other
 
-- [applyMiddleware](https://redux.js.org/api/applymiddleware) - Same than redux
-- [createStore](https://redux.js.org/api/createstore) - Same than redux
-- bindControllers - `bindControllers(states: []Controller, extraReducer = {}) `
+`bindControllers(controllers: []Controller, [reduxReducers])`
+The bindControllers helper function turns an array of Controller into a reducing function you can pass to createStore.
+
+Arguments:
+1. An array of instanced Controllers.
+2. *(Option)* A Redux reducer.
+
+
 - [connect](https://react-redux.js.org/7.1/api/connect#connect) - Same than react-redux
 
 <br />
