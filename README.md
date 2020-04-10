@@ -391,7 +391,7 @@ export default store
 
 ## Wrap with Ascey
 `./src/index.js`
-```
+```js
 import store from './ascey/store';
 import { Provider } from 'react-ascey';
 import Home from './home.js'
