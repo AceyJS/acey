@@ -406,15 +406,34 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 ## Other
 
-`bindControllers(controllers: []Controller, [reduxReducers])`
+`function bindControllers(controllers: []Controller, [reduxReducers])`
 The bindControllers helper function turns an array of Controller into a reducing function you can pass to createStore.
 
 Arguments:
-1. An array of instanced Controllers.
-2. *(Option)* A Redux reducer.
+1. listControllers: []Controllers.
+2. *(Option)* - reduxReducers: Object A Redux reducer.
 
+listControllers - An array of all the Controllers you want to connect with the Store.
 
-- [connect](https://react-redux.js.org/7.1/api/connect#connect) - Same than react-redux
+<br />
+
+`function connect(mapStateToProps, options?)`
+The connect() function connects a React component to the Ascey store.
+
+Arguments:
+1. mapStateToProps: Function
+2. *(Option)* - options: Object.
+
+mapStateToProps - Any time the store is updated, mapStateToProps will be called.
+The results of mapStateToProps must be an object, which will be merged into the wrapped component’s props.
+If the data object returned didn't change since the last mapStateToProps call, the component won't re-render.
+
+options - 
+```js
+{
+  forwardRef: boolean
+}
+```
 
 <br />
 <br />
