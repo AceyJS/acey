@@ -98,7 +98,7 @@ You build a Model from a data object.
 
 #### Example of a Model:
 `./src/ascey/models/todo.ts`
-```
+```ts
 import { Model } from 'react-ascey'
 import moment from 'moment'
 
@@ -157,7 +157,7 @@ You build a collection with :
 
 #### Example of a Collection:
 `./src/ascey/collections/todo.ts`
-```
+```ts
 import { Collection } from 'react-ascey'
 import TodoModel from '../models/todo'
 
@@ -237,7 +237,7 @@ A Controller is made to update your data in the Store through the Model/Collecti
 #### Exemple of a Controller:
 `./src/ascey/controllers/todo.ts`
 
-```
+```ts
 import { Controller } from 'react-ascey'
 import TodoCollection from '../collections/todo'
 import TodoModel from '../models/todo'
@@ -309,7 +309,7 @@ export default new TodoController(TodoCollection)
 
 #### Here is a simple React component (todolist) : 
 `./src/home.js`
-```
+```js
 import React, { useState } from 'react';
 import TodoModel from './ascey/models/todo
 import TodoController from './ascey/controllers/todo'
@@ -371,7 +371,7 @@ export default connect(mapStateToProps)(App)
 </p>
 
 `./src/ascey/store.ts`
-```
+```ts
 import { createStore, bindControllers } from 'react-ascey'
 import TodoController from '../controllers/todo'
 
