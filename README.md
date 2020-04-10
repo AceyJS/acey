@@ -34,8 +34,8 @@ ___
 #### Here are 3 step-by-step tutorials in order of difficulty, allowing you to understand the logic and the possibilities of Ascey.
 
 ### 1. [Counter App - Medium](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9) 📝
-### 2. [User Management App - Youtube](https://medium.com/@siuoly/part-2-practice-with-react-ascey-user-management-in-10-steps-6717fbbd8a2e) 🎥
-### 3. [Todolist App - Youtube](https://medium.com/@siuoly/part-3-practice-with-react-ascey-todolist-step-by-step-9ca5dd068328) 🎥
+### 2. [User Management App - Youtube](https://www.youtube.com/watch?v=W3KArRl9InM) 🎥
+### 3. [Todolist App - Youtube](https://www.youtube.com/watch?v=lJwySFW8Eyc) 🎥
 
 <br />
 
