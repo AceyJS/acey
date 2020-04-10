@@ -33,9 +33,9 @@ yarn add react-ascey
 ___
 #### Here are 3 step-by-step tutorials in order of difficulty, allowing you to understand the logic and the possibilities of Ascey.
 
-### 1. [Counter App](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9)
-### 2. [User Management App](https://medium.com/@siuoly/part-2-practice-with-react-ascey-user-management-in-10-steps-6717fbbd8a2e)
-### 3. [Todolist App](https://medium.com/@siuoly/part-3-practice-with-react-ascey-todolist-step-by-step-9ca5dd068328)
+### 1. [Counter App - Medium](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9) 📝
+### 2. [User Management App - Youtube](https://medium.com/@siuoly/part-2-practice-with-react-ascey-user-management-in-10-steps-6717fbbd8a2e) 🎥
+### 3. [Todolist App - Youtube](https://medium.com/@siuoly/part-3-practice-with-react-ascey-todolist-step-by-step-9ca5dd068328) 🎥
 
 <br />
 
@@ -295,7 +295,6 @@ export default new TodoController(TodoCollection)
 #### Controller native methods: 
 - `getIDKey = (): string` : return the controller's uniq key.
 - `getStateClass = (): Type<Model>` : return the Model/Collection the controller is bound with.
-- `getStore = (): Object` : return the Ascey Store into a plain object
 - `getState = (): Model | Controller`: return the current instanced Model/Collection of the Controller.
 - `dispatch = (action: (model: Model | Collection) => any)` : Execute the function passed in parameter, then dispatch the state from the action function parameter and update the Ascey Store.
 <br />
