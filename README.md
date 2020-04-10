@@ -407,6 +407,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 ## Other
 
 `function bindControllers(controllers: []Controller, [reduxReducers])`
+
 The bindControllers helper function turns an array of Controller into a reducing function you can pass to createStore.
 
 Arguments:
@@ -418,6 +419,7 @@ listControllers - An array of all the Controllers you want to connect with the S
 <br />
 
 `function connect(mapStateToProps, options?)`
+
 The connect() function connects a React component to the Ascey store.
 
 Arguments:
