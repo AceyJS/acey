@@ -1,0 +1,58 @@
+import Model from './model'
+import { TConnected } from './connect'
+
+export const checkIfContainArrayOfModel = (v: Model) => {
+
+    let doesContain = false
+    const recur = (v: any) => {
+
+        if (!v || v instanceof Date)
+            return
+
+        if (v instanceof Model){
+            if (v.isCollection()){
+                for (let e of v.state)
+                    recur(e)
+            } else {
+                for (let key in v.state)
+                    recur(v.state[key])
+            }
+            return
+        }
+
+        if (Array.isArray(v)){
+            for (let e of v){
+                if (e instanceof Model){
+                    doesContain = true
+                    return
+                }
+                recur(e)
+            }
+            return
+        }
+
+        if (typeof v === 'object'){
+            for (let key in v)
+                recur(v[key])
+        }
+    }
+
+    recur(v)
+    return doesContain
+}
+export const checkIfOnlyModelsAndFunction = (v: TConnected[], origin: string) => {
+    const defaultError = `${origin}'s first parameter must be an Array of Model, Collection, or unexecuted getters.`
+
+    if (!Array.isArray(v)){
+        throw new Error(defaultError)
+    }
+
+    for (let i = 0; i < v.length; i++){
+        const e = v[i]
+        if (!(e instanceof Model) && !(typeof e === 'function'))
+            throw new Error(`
+                ${defaultError}
+                Please check the ${i+1}${i == 0 ? 'st' : (i == 1) ? 'nd' : 'st'} element of the Array. Currently typed as a : ${typeof e}.
+            `)
+    }
+}

@@ -1,25 +1,22 @@
-import { combineReducers } from 'redux'
-import Controller from './controller'
+import Model from './model'
+import { STORE } from './store'
 
-const bind = (controllers: Controller[] = [], extraReducers: any = {}) => {
+export const bindToReducer = (m: Model) => {
+	const reducer: any = {}
+	if (!m.isConnected())
+		return
+	const STORE_KEY = m.options.key
 	
-	let reducer: any = {}
-	for (let i = 0; i < controllers.length; i++) {
-		const STORE_KEY = controllers[i].getIDKey()
-		//initialization of the default state with the default state 
-		//of the state linked with the current controller.
-		const DEFAULT_STATE = new (controllers[i].getStateClass())(undefined).defaultState()
-		
-		reducer[STORE_KEY] = (state: any = DEFAULT_STATE, action: any) => {
-			const { payload, type } = action			
-			let s = state
-			if (type == STORE_KEY)
-				s = payload || state
-			return s
-		}
+	//initialization of the default state with the default state 
+	//of the state linked with the current controller.
+	const DEFAULT_STATE = m.defaultState
+	reducer[STORE_KEY] = (state: any = DEFAULT_STATE, action: any) => {
+		const { payload, type } = action			
+		let s = state
+		if (type == STORE_KEY)
+			s = payload || state
+		return s
 	}
-
-	return combineReducers(Object.assign(reducer, extraReducers))
+	STORE.addReducers(Object.assign({}, STORE.getReducers(), reducer))
+	STORE.refreshReducer()
 }
-
-export default bind

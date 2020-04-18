@@ -1,7 +1,12 @@
 import _ from 'lodash'
-import Model from './model'
+import Model, { IAction, IOptions, DEFAULT_OPTIONS} from './model'
 
 type Constructor<T> = new(...args: any[]) => T;
+
+interface IBounce {
+    value: any
+    save(): any
+}
 
 //  i) this class can be improved by adding more than you can usually find in lists.
 //It aims to be the parent of any model class representing a list of object/classes
@@ -11,14 +16,21 @@ type Constructor<T> = new(...args: any[]) => T;
 export default class Collection extends Model  {
     private nodeClass: Constructor<any>
 
-    constructor(list: any[] = [], nodeClass: Constructor<Model>){
-        super([])
+    constructor(list: any[] = [], nodeClass: Constructor<Model>, ...props: any){
+        super([], ...props)
         this.nodeClass = nodeClass
-        this.set(this.toListClass(list))
+        this.setState(this.toListClass(list))
+    }
+    private _getBounce = (value: any): IBounce => {
+        const { save } = this.options
+        return {
+            value,
+            save: this.isConnected() ? this.setState(undefined).save : () => save ? save() : null
+        }
     }
 
     //Return the number of element in the array
-    public count = (): number => this.get().length
+    public count = (): number => this.state.length
 
     /*
         Transform an array of object into an array of instancied Model
@@ -31,25 +43,27 @@ export default class Collection extends Model  {
     */
     public toListClass = (elem: any[] = []): Model[] => {
         let ret: Model[] = []
-        for (let i = 0; i < elem.length; i++)
-            if (!this._isNodeModel(elem[i])) {
+        for (let i = 0; i < elem.length; i++){
+            if (!this._isNodeModel(elem[i]))
                 ret.push(new (this._getNodeModel())(elem[i]))
-            } else {
+            else 
                 ret.push(elem[i])
-            }
+            
+        }
         return ret
     }
 
     //add an element to the list
-    public push = (v: Model) => this.get().push(v)
+    public push = (v: Model): IBounce => this._getBounce(this.state.push(v))
 
     // Update the element at index or post it.
-    public update = (v: Model, index: number) => {
-       if (this.get()[index]){
-           this.get()[index] = v
-       } else {
+    public update = (v: Model, index: number): IBounce => {
+       if (this.state[index])
+           this.state[index] = v
+       else 
            this.push(v)
-       }
+       
+       return this._getBounce(v)
     }
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
@@ -59,7 +73,7 @@ export default class Collection extends Model  {
     }
 
     public map = (callback: (v: Model, index: number) => any) => { 
-        const array = this.get()
+        const array = this.state
         let ret = []
         for (let i = 0; i < array.length; i++){
             const v = callback(array[i], i)
@@ -68,8 +82,14 @@ export default class Collection extends Model  {
         return ret
     }
 
-    public pop = () => this.get().pop()
-    public shift = () => this.get().shift()
+    public concat = (list: any[] = []): IBounce => {
+        this.setState(this.state.concat(this.toListClass(list)))
+        return this._getBounce(null)
+    }
+
+    public reverse = (): IBounce => this._getBounce(this.state.reverse())
+    public pop = (): IBounce => this._getBounce(this.state.pop())
+    public shift = (): IBounce => this._getBounce(this.state.shift())
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
     public filter = (predicate: any) => this.toListClass(_.filter(this.toPlain(), predicate))
@@ -77,41 +97,35 @@ export default class Collection extends Model  {
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
     public find = (predicate: any) => {
         const o = _.find(this.toPlain(), predicate)
-        if (o){
-            return new (this._getNodeModel())(o)
-        }
-        let p = []
-        return o
+        return o ? new (this._getNodeModel())(o) : o
     }
 
     //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
     public findIndex = (predicate: any): number => _.findIndex(this.toPlain(), predicate)
 
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
-    public deleteAll = (predicate: any) => _.remove(this.toPlain(), predicate)
-
-    //delete a node if it exists in the list.
-    public delete = (v: Model) => {
-        const index = this.getIndex(v)
-        if (index > -1){
-            const v = this.get().splice(index, 1)
-            if (v){
-                return v[0]
-            }
-        }
-        return null
+    public deleteAll = (predicate: any): IBounce => {
+        return this._getBounce(this.toListClass(_.remove(this.toPlain(), predicate)))
     }
 
-    public deleteIndex = (index: number) => {
-        const v = this.get().splice(index, 1)
-        if (v){
-            return v[0]
+    //delete a node if it exists in the list.
+    public delete = (v: Model): IBounce => {
+        const index = this.indexOf(v)
+        if (index > -1){
+            const v = this.state.splice(index, 1)
+            if (v)
+                return this._getBounce(v[0])
         }
-        return null
+        return this._getBounce(null)
+    }
+
+    public deleteIndex = (index: number): IBounce => {
+        const v = this.state.splice(index, 1)
+        return this._getBounce(v ? v[0] : null)
     }
 
     //return the index of the element passed in parameters if it exists in the list.
-    public getIndex = (v: Model): number => _.findIndex(this.toPlain(), v.get())
+    public indexOf = (v: Model): number => _.findIndex(this.toPlain(), v.state)
 
     private _isNodeModel = (value: any) => value instanceof this._getNodeModel()
     private _getNodeModel = () => this.nodeClass

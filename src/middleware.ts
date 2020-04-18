@@ -7,21 +7,6 @@ const ASCEY_ID = '__asceyID'
 let COUNT = 2000
 let arrayStateToProps: any = [];
 
-const toPlainFull = (v: any) => {
-    const ret: any = {}
-    for (let key in v){
-        if (isModelInstance(v[key]))
-            ret[key] = convertDeepModel(v[key])
-        else
-            ret[key] = _.cloneDeepWith(v[key])
-    }
-    return ret
-}
-
-const areSameNKeys = (o1: Object, o2: Object) => Object.keys(o1).length == Object.keys(o2).length
-const isModelInstance = (v: any) => v instanceof Model
-const convertDeepModel = (v: Model) => _.cloneDeep(v.toPlain())
-
 const dupObject = (o: any) => {
     const ret: any = {}
     for (let key in o){
@@ -33,49 +18,51 @@ const dupObject = (o: any) => {
 const getCounter = () => COUNT
 const incrementCounter = () => COUNT++
 
-export const mapStateToPropsMiddleware = (state: any, connexionKey: number) => {
+export const listToJSON = (list: any[]) => {
+    const ret = []
+    for (let e of list){
+        if (e instanceof Model)
+            ret.push(e.toPlain())
+        else {
+            const res = e()
+            if (res instanceof Model)
+                ret.push(res.toPlain())
+            else 
+                ret.push(res)
+        } 
+    }
+    return JSON.stringify(ret)
+}
 
-    //if the state has never been recorded
+export const mapStateToPropsMiddleware = (list: any[], connexionKey: number) => {
+
+    const currentState = {data: listToJSON(list), id: getCounter()}
+    const newState: any = {}
+    newState[CONNEXION_KEY] = connexionKey
+
     if (!arrayStateToProps[connexionKey]){
         //add to the state a new ID
-        state[CONNEXION_KEY] = connexionKey
-        state[ASCEY_ID] = getCounter()
+        newState[ASCEY_ID] = currentState.id
         incrementCounter()
-        //assign it in the array
-        arrayStateToProps[connexionKey] = toPlainFull(state)
-        return dupObject(state)
+        arrayStateToProps[connexionKey] = currentState
+        return dupObject(newState)
     }
 
     let hasChanged = false
-
     //last state JS object typed
     const lastState = arrayStateToProps[connexionKey]
-    //merging the ascey elements not present in the new state
-    state = Object.assign({}, lastState, state)
-    //current state JS object typed
-    const plainedState = toPlainFull(state)
-
-    //if the number of keys are different
-    if (!areSameNKeys(lastState, plainedState))
+    if (lastState.data !== currentState.data)
         hasChanged = true
-    else {
-        for (let key in plainedState){
-            //if the current value is not equal with the previous one
-            if (!_.isEqual(lastState[key], plainedState[key]))
-                hasChanged = true
-        }
-    }
 
-    //if something has changed with the previous recorded state
     if (hasChanged){
         //we change the counter ID
-        state[ASCEY_ID] = getCounter()
+        newState[ASCEY_ID] = currentState.id
         //we set the prev state with the current one
-        arrayStateToProps[connexionKey] = toPlainFull(state)
+        arrayStateToProps[connexionKey] = currentState
         incrementCounter()
+    } else {
+        newState[ASCEY_ID] = lastState.id
     }
 
-
-    //we return the state duplicated
-    return dupObject(state)
+    return dupObject(newState)
 }
