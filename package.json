@@ -1,12 +1,13 @@
 {
   "name": "react-ascey",
-  "version": "1.2.33",
+  "version": "1.2.34",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepare": "install-peers"
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@types/jest": "^24.9.0",
+    "install-peers-cli": "^2.2.0",
     "jest": "^24.9.0",
     "ts-jest": "^24.3.0",
     "typescript": "^3.7.5",
