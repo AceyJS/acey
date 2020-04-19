@@ -30,9 +30,11 @@ export const useAscey = (list: TConnected[] = []) => {
     const [listJSON, setListJSON] = useState(listToJSON(list))
 
     useEffect(() => {
+        let prev = listJSON
         STORE.getReduxStore().subscribe(() => {
             const current = listToJSON(list)
-            if (listJSON != current){
+            if (prev != current){
+                prev = current
                 setListJSON(current)
             }
         })
