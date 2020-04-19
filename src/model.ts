@@ -22,7 +22,6 @@ export interface IAction {
     save(): any
 }
 
-
 export default class Model {
 
     private _state: any = null
@@ -60,12 +59,17 @@ export default class Model {
 
         this._options = Object.assign({}, DEFAULT_OPTIONS, opt)
         const { key } = this.options
-        
-        if (this.isConnected() && ((key && this._isKeyTaken(key)) || !key))
+
+        if (this.isConnected() && key && this._isKeyTaken(key))
+            throw new Error(`key ${key} is already taken by another connected Model or Collection.`)
+
+        if (this.isConnected() && !key)
             this._setOption({key: this._generateKey()})
-        
-        if (this.isConnected())
-            bindToReducer(this)
+
+        if (this.isConnected()){
+            STORE.addModels(this)
+            !STORE.isReducerExist(this.options.key) && bindToReducer(this)
+        }
     }
 
     private _getConnectedActions = (): IAction => {
@@ -315,7 +319,7 @@ export default class Model {
     private _isObject = (value: any): boolean => value !== null && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Model) && !this._isDateClass(value)
     private _isDateClass = (value: any): boolean => value instanceof Date
     private _isCollection = (value: any): boolean => value instanceof Model && value.isCollection()
-    private _isKeyTaken = (value: string): boolean => STORE.isReducerExist(value)
+    private _isKeyTaken = (value: string): boolean => STORE.isModelExist(value)
 
     private _checkArrayModel = () => {
         if (checkIfContainArrayOfModel(this))
