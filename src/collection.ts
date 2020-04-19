@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Model, { IAction, IOptions, DEFAULT_OPTIONS} from './model'
+import Model  from './model'
 
 type Constructor<T> = new(...args: any[]) => T;
 

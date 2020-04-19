@@ -128,6 +128,6 @@ class Store {
     }
 }
 
-export const STORE = new Store({})
+const STORE = new Store({})
 STORE.addStore(createStoreNative(STORE.createReducer()))
-export default STORE.getReduxStore()
+export default STORE

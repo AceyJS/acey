@@ -1,5 +1,5 @@
 import Model from './model'
-import { STORE } from './store'
+import STORE from './store'
 
 export const bindToReducer = (m: Model) => {
 	const reducer: any = {}

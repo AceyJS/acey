@@ -1,6 +1,6 @@
 import objectPath from "object-path"
 import _ from 'lodash'
-import { STORE } from './store'
+import STORE from './store'
 import { bindToReducer } from './bind'
 import { checkIfContainArrayOfModel } from './debug'
 

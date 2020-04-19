@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import _ from 'lodash'
 import { connect as nativeConnect } from 'react-redux'
 import { mapStateToPropsMiddleware, listToJSON } from './middleware'
-import { STORE } from './store'
+import STORE from './store'
 import { checkIfOnlyModelsAndFunction } from './debug'
 import Model from './model'
 
