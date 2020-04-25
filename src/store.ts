@@ -7,10 +7,11 @@ interface IAction {
 }
 
 class Store {
-    private _models: any = {}
-    private _transitions: any = {}
+    private _models: Map<string, Model> = new Map()
+    private _transitions: Map<string, Function> = new Map()
     private _store: any = {}
     private _subscribers: Function[] = []
+    private _pendingHydrationStore: any = {}
 
     constructor(){}
 
@@ -37,37 +38,64 @@ class Store {
     }
 
     private _updateStore = (action: IAction) => {
-        for (let key in this._transitions){
-            const { payload, type } = action
-            this._store[key] = this._transitions[key](this._store[key], {payload, type})
-        }
+        this.transitions().forEach((transition, key) => {
+            this._store[key] = transition(this._store[key], action)
+        })
     }
 
     public connectModel = (m: Model) => {
         const { key } = m.options
         const { defaultState } = m
 
-        this._transitions[key] = this._newTransition(defaultState, key)
-        this._models[key] = m
+        this.transitions().set(key, this._newTransition(defaultState, key))
+        this._models.set(key, m)
         this._store[key] = defaultState
+
+        this._privateExecPendingHydration()
     }
 
     public reset = () => {
-        this._models = []
-        this._transitions = {}
+        this._models = new Map()
+        this._transitions = new Map()
         this._store = {}
-        this.notifySubscribers()
+        this._pendingHydrationStore = {}
+        this._subscribers = []
     }
 
-    public exist = (key: string): boolean => key in this._models
+    public exist = (key: string): boolean => this.models().get(key) !== undefined
 
-    public models = () => this._models
-    public transitions = () => this._transitions
+    public models = (): Map<string, Model> => this._models
+    public transitions = (): Map<string, Function> => this._transitions
     public store = (): Object => this._store
 
-    hydrate = (store: any) => {
-        for (let key in this.models())
-            this.models()[key].hydrate(store[key])
+    public addPendingHydration = (store: any) => {
+        this._pendingHydrationStore = Object.assign({}, this._pendingHydrationStore, store)
+        this._privateExecPendingHydration()
+    }
+
+    public hydrateCookies = (cookies: any) => {
+        for (let key in cookies){
+            const m = this.models().get(key)
+            if (m && m.isCookiesEnabled()){
+                m.hydrate(JSON.parse(cookies[key])).save()
+            }
+        }
+    }
+
+    public hydrate = (store: any) => {
+        this.models().forEach((m, key) => {
+            m.hydrate(store[key]).save()
+        })
+    }
+
+    _privateExecPendingHydration = () => {
+        for (let key in this._pendingHydrationStore) {
+            const m = this.models().get(key)
+            if (m){
+                m.hydrate(this._pendingHydrationStore[key]).save()
+                delete this._pendingHydrationStore[key]
+            }            
+        }
     }
 }
 

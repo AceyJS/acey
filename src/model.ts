@@ -1,6 +1,6 @@
 import objectPath from "object-path"
 import _ from 'lodash'
-import Cookies from 'js-cookie'
+import * as Cookies from 'es-cookie';
 import STORE from './store'
 
 import { 
@@ -103,10 +103,10 @@ export default class Model {
             throw new Error("To enable cookie storage with your Model you need to manually set an unique key to it.")
 
         if (this.isConnected() && !key){
-            if (typeof window !== 'undefined') 
+            if (!this.isNextServer())
                 this._setOption({key: this._generateKey()})
             else 
-                throw new Error("On NextJS and React Native environment, you need to manually set an unique key to your connected Models")
+                throw new Error("In a NextJS or React Native environment, you need to manually set an unique key to your connected Models")
         }
         if (this.isConnected())
             STORE.connectModel(this)
@@ -145,12 +145,12 @@ export default class Model {
     }
 
     private _cookies = (expires = 365) => {
-        Cookies.set(this.options.key, JSON.stringify(this.toPlain()), {expires})
+        !this.isNextServer() && Cookies.set(this.options.key, JSON.stringify(this.toPlain()), {expires})
         return this._getConnectedActions()
     }
 
     private _fetchCookies = () => {
-        if (!this.isCookiesEnabled())
+        if (!this.isCookiesEnabled() || this.isNextServer())
             return
         const data = Cookies.get(this.options.key)
         if (!data)
@@ -159,12 +159,11 @@ export default class Model {
         try {
             this.hydrate(JSON.parse(data))
         } catch (e){
-            console.log(e)
             this.clearCookies()
         }
     }
     
-    public clearCookies = () => Cookies.remove(this.options.key)
+    public clearCookies = () => !this.isNextServer() && Cookies.remove(this.options.key)
     
     public hydrate = (state: any) => {
         if (!this.isEmpty())
@@ -290,6 +289,7 @@ export default class Model {
         return ret
     }
 
+    public isNextServer = (): boolean => typeof window === 'undefined'
     public toString = (): string => JSON.stringify(this.toPlain())
     public isCookiesEnabled = (): boolean => this.options.enableCookies
     public isConnected = (): boolean => this.options.connected 
