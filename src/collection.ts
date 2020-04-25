@@ -1,12 +1,7 @@
 import _ from 'lodash'
-import Model  from './model'
+import Model, {IAction}  from './model'
 
 type Constructor<T> = new(...args: any[]) => T;
-
-interface IBounce {
-    value: any
-    save(): any
-}
 
 //  i) this class can be improved by adding more than you can usually find in lists.
 //It aims to be the parent of any model class representing a list of object/classes
@@ -20,13 +15,6 @@ export default class Collection extends Model  {
         super([], ...props)
         this.nodeClass = nodeClass
         this.setState(this.toListClass(list))
-    }
-    private _getBounce = (value: any): IBounce => {
-        const { save } = this.options
-        return {
-            value,
-            save: this.isConnected() ? this.setState(undefined).save : () => save ? save() : null
-        }
     }
 
     //Return the number of element in the array
@@ -54,16 +42,16 @@ export default class Collection extends Model  {
     }
 
     //add an element to the list
-    public push = (v: Model): IBounce => this._getBounce(this.state.push(v))
+    public push = (v: Model): IAction => this._getConnectedActions(this.state.push(v))
 
     // Update the element at index or post it.
-    public update = (v: Model, index: number): IBounce => {
+    public update = (v: Model, index: number): IAction => {
        if (this.state[index])
            this.state[index] = v
        else 
            this.push(v)
        
-       return this._getBounce(v)
+       return this._getConnectedActions(v)
     }
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
@@ -82,14 +70,14 @@ export default class Collection extends Model  {
         return ret
     }
 
-    public concat = (list: any[] = []): IBounce => {
+    public concat = (list: any[] = []): IAction => {
         this.setState(this.state.concat(this.toListClass(list)))
-        return this._getBounce(null)
+        return this._getConnectedActions(null)
     }
 
-    public reverse = (): IBounce => this._getBounce(this.state.reverse())
-    public pop = (): IBounce => this._getBounce(this.state.pop())
-    public shift = (): IBounce => this._getBounce(this.state.shift())
+    public reverse = (): IAction => this._getConnectedActions(this.state.reverse())
+    public pop = (): IAction => this._getConnectedActions(this.state.pop())
+    public shift = (): IAction => this._getConnectedActions(this.state.shift())
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
     public filter = (predicate: any) => this.toListClass(_.filter(this.toPlain(), predicate))
@@ -104,24 +92,24 @@ export default class Collection extends Model  {
     public findIndex = (predicate: any): number => _.findIndex(this.toPlain(), predicate)
 
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
-    public deleteAll = (predicate: any): IBounce => {
-        return this._getBounce(this.toListClass(_.remove(this.toPlain(), predicate)))
+    public deleteAll = (predicate: any): IAction => {
+        return this._getConnectedActions(this.toListClass(_.remove(this.toPlain(), predicate)))
     }
 
     //delete a node if it exists in the list.
-    public delete = (v: Model): IBounce => {
+    public delete = (v: Model): IAction => {
         const index = this.indexOf(v)
         if (index > -1){
             const v = this.state.splice(index, 1)
             if (v)
-                return this._getBounce(v[0])
+                return this._getConnectedActions(v[0])
         }
-        return this._getBounce(null)
+        return this._getConnectedActions()
     }
 
-    public deleteIndex = (index: number): IBounce => {
+    public deleteIndex = (index: number): IAction => {
         const v = this.state.splice(index, 1)
-        return this._getBounce(v ? v[0] : null)
+        return this._getConnectedActions(v ? v[0] : null)
     }
 
     //return the index of the element passed in parameters if it exists in the list.

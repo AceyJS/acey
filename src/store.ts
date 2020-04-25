@@ -1,133 +1,74 @@
-import { createStore as createStoreNative, combineReducers } from 'redux'
 import Model from './model'
 import _ from 'lodash'
 
+interface IAction {
+    payload: any
+    type: string
+}
+
 class Store {
-
+    private _models: any = {}
+    private _transitions: any = {}
     private _store: any = {}
-    private _pendingHydration: any = {}
-    private _reduxStore: any
-    private _shouldRemoveDefault: boolean = false
-    private _models: any = []
+    private _subscribers: Function[] = []
 
-    constructor(data: any){
-        this._store = data
-        this.addReducers({
-            _default: (state: any = {}, action: any = {}): any => {
-                return state
-            }
-        })
-        this._shouldRemoveDefault = true
+    constructor(){}
+
+    public dispatch = (action: IAction) => {
+        this._updateStore(action)
+        this.notifySubscribers()
     }
 
-    private _removeDefaultReducer = () => {
-        const reducers = this.getReducers()
-        delete reducers['_default']
-        this.addReducers(reducers)
+    public notifySubscribers = () => {
+        for (let elem of this._subscribers)
+            elem()
     }
 
+    public subscribe = (callback: Function) => this._subscribers.push(callback)
 
-    addPendingHydration = (storeData: any) => {
-        this._pendingHydration = Object.assign({}, this._pendingHydration, storeData)
-        if (this.getModels().length > 0){
-            for (let m of this.getModels()){
-                m.isConnected() && 
-                m.options.key in this._pendingHydration && 
-                m.hydrate(this._pendingHydration) &&
-                delete this._pendingHydration[m.options.key]
-            }
+    private _newTransition = (DEFAULT_DATA: any = {}, STORE_KEY: string = '') => {
+        return (state = DEFAULT_DATA, action: IAction) => {
+            const { payload, type } = action			
+            let s = state
+            if (type == STORE_KEY)
+                s = payload || state
+            return s
         }
     }
 
-    clearModels = () => {
+    private _updateStore = (action: IAction) => {
+        for (let key in this._transitions){
+            const { payload, type } = action
+            this._store[key] = this._transitions[key](this._store[key], {payload, type})
+        }
+    }
+
+    public connectModel = (m: Model) => {
+        const { key } = m.options
+        const { defaultState } = m
+
+        this._transitions[key] = this._newTransition(defaultState, key)
+        this._models[key] = m
+        this._store[key] = defaultState
+    }
+
+    public reset = () => {
         this._models = []
+        this._transitions = {}
+        this._store = {}
+        this.notifySubscribers()
     }
 
-    addModels = (m: Model) => {
-        this._models.push(m)
-    }
+    public exist = (key: string): boolean => key in this._models
 
-    addStore = (store: any) => {
-        this._reduxStore = store
-        this._assign({
-            ...store
-        })
-    }
+    public models = () => this._models
+    public transitions = () => this._transitions
+    public store = (): Object => this._store
 
-    isModelExist = (key: any) => {
-        const models = this.getModels()
-        if (!models)
-            return false
-        
-        for (let m of models){
-            if (m.options.key === key)
-                return true
-        }
-        return false
-    }
-
-    isReducerExist = (key: any) => {
-        for (let k in this.getReducers()){
-            if (k === key)
-                return true
-        }
-        return false
-    }
-
-    addReducers = (reducers: any) => {
-        if (this._shouldRemoveDefault == true){
-            this._shouldRemoveDefault = false
-            this._removeDefaultReducer()
-        }
-
-        const pendingHydratingData = this.getPendingHydration()
-        if (!_.isEmpty(pendingHydratingData)){
-            const currentReducers = this.getReducers()
-            const toHydrate: any = {}
-
-            for (let key in reducers){
-                if (!currentReducers.hasOwnProperty(key) && 
-                    pendingHydratingData.hasOwnProperty(key)
-                )
-                toHydrate[key] = pendingHydratingData[key]
-            }
-            if (!_.isEmpty(toHydrate))
-                this._pendingHydration = Object.assign({}, this._pendingHydration, toHydrate)
-        }
-        this._assign({ reducers })
-    }
-
-
-
-    getModels = () => this._models
-    dispatch = (...props: any) => this._store.dispatch(...props)
-    getState = () => this._store.getState()
-    getReducers = () => this._store.reducers
-    getReduxStore = () => this._reduxStore
-    getPendingHydration = () => this._pendingHydration
-    refreshReducer = () => {
-        this.getReduxStore().replaceReducer(this.createReducer())
-        if (!_.isEmpty(this._pendingHydration)){
-            for (let m of this.getModels()){
-                console.log('key', m.options.key)
-                m.isConnected() && 
-                m.options.key in this._pendingHydration && 
-                m.hydrate(this._pendingHydration) &&
-                delete this._pendingHydration[m.options.key]
-
-            }
-        }
-    }
-
-    createReducer = () => combineReducers(this.getReducers())
-
-    hydrate = (store: any) => this.getModels().map((m: Model) => m.isConnected() && m.hydrate(store))
-
-    private _assign = (d: any) => {
-        this._store = Object.assign({}, this._store, d)
+    hydrate = (store: any) => {
+        for (let key in this.models())
+            this.models()[key].hydrate(store[key])
     }
 }
 
-const STORE = new Store({})
-STORE.addStore(createStoreNative(STORE.createReducer()))
-export default STORE
+export default new Store()
