@@ -34,13 +34,6 @@ yarn add acey
 
 # Ascey - Core.
 
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/6phvTVrv/map.png" width="100%">
-  </a>
-</p>
-
-
 ## Documentation
 
 ### Table of contents
@@ -68,43 +61,50 @@ You build a Model from a data object.
 #### Example of a Model:
 `./src/ascey/models/todo.ts`
 ```ts
-import { Model } from 'react-ascey'
-import moment from 'moment'
+import { Model, IOptions } from 'acey'
 
-/*
-    1. Create a default data object for our Model
-   /!\ Must always be an object. /!\
-*/
+// We create an initial data for our Model
 const DEFAULT_DATA = {
-    content: '',
-    created_at: new Date()
+    id: 0,
+    content: ''
 }
 
-class TodoModel extends Model {
+class Todo extends Model {
 
-    constructor(todo = DEFAULT_DATA){
-        super(todo)
+    constructor(todo = DEFAULT_DATA, options: IOptions){
+        super(todo, options)
     }
-
-    getContent = () => this.get().content
-    getCreatedAt = () => this.get().created_at
     
-    getCreatedAtLTS = () => moment(this.getCreatedAt()).format('LTS')
+    content = () => this.state.content
+    ID = () => this.state.id
 }
 
-export default TodoModel
+export default Todo
 ```
 
 #### Model native methods: 
-- `get = (): Object` : return the state of the model.
-- `set = (state: Object)` : set the new state of the model.
-- `setState = (obj: Object)` : update the state by assigning the current state with the obj parameter. (like React)
-- `run = (action: (newState: any) => void): Object` : Execute the function passed in parameter and then set the new state  with the state from the action function parameter. 
-- `deleteKey = (key: string)` : delete the value linked with a key in your state object.
-- `copyDeep = (src: Model)` : copy the src into the current state without changing the references of the values nested inside the current model.
+- `setState = (obj: Object): IAction` : update the state by assigning the current state with the obj parameter. (like React)
+- `hydrate = (state: any): IAction` : fill a the model with the JS object `state` passed in parameter.
+- `deleteKey = (key: string): IAction` : delete the value linked with a key in your state object.
 - `toPlain = (): Object` : return the state of model as a plain javascript object
 - `isCollection = (): boolean` : return true if the Model is a Collection.
 - `defaultState = (): any` : return the state of data of the instanciation.
+- `fetchCookies = (): any` : return the cookies stored by the Model, if this is a connected one.
+- `clearCookies = (): any` : remove the cookies stored by the Model, if this is a connected one.
+
+<br />
+
+- **Model's options**: 
+    | Name | Type | Default | Description |
+    | -- | -- | -- | -- |
+    | key | `string` | '' | Model's unique key, if `not set` Acey will set it automatically for you. |
+    | connected | `bool` | false | If set to `true` the Model is connected to the Acey store that re-render your Components on change. |
+    
+- **IActions (or Model's actions)**:
+    | Name | Prototype | Description |
+    | -- | -- | -- |
+    | save | `save = (): IAction` | **(Only if `connected` option is set to `true`)**. Give the order to refresh the store with the new data when the function is called. It will then re-render all the components connected with the Model. |
+    | cookie | `cookie = (): IAction` | **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to JSON and store it in the cookies. |
 
 <br />
 
