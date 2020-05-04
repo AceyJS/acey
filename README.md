@@ -1,7 +1,7 @@
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/wvCsGXdM/ascey.png" width="100%">
+    <img alt="react-ascey" src="https://siasky.net/BAA8tXYO7Ec4f7wEvKPYwM-L-paOU3ZZlcDnucQA2yh4Vg" width="100%">
   </a>
 + Control. | - Code. | + Scalability. | - Debugging. | + Productivity.
 </p>
@@ -9,11 +9,13 @@
 <br />
 
 
-# Ascey - An MVC oriented state manager.
+# Ascey - A React State Manager.
 
-#### Ascey is a-based-MVC state manager for React {Native} apps.
+#### Ascey is Model oriented state manager for React apps.
 
-It enables an organized and scalable architecture on medium and large apps thanks to the centralization of data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (array of Models).
+It enables an organized and scalable architecture thanks to the centralization of data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (list of Models). **One time**, **One place**. 🏴‍☠️
+
+Acey helps your code to stay **organized**, **scalable**, and easy to keep **clean**. 🌱
 
 <br />
 
@@ -22,23 +24,12 @@ It enables an organized and scalable architecture on medium and large apps thank
 ### Installation
 
 ```
-npm i react-ascey
+npm i acey
 ```
 or
 ```
-yarn add react-ascey
+yarn add acey
 ```
-<br />
-
-___
-#### Here are 3 step-by-step tutorials in order of difficulty, allowing you to understand the logic and the possibilities of Ascey.
-
-### 1. [Counter App - Medium](https://medium.com/@siuoly/part-1-practice-with-react-ascey-a-counter-in-9-steps-55e34f3d46b9) 📝
-### 2. [User Management App - Youtube](https://www.youtube.com/watch?v=W3KArRl9InM) 🎥
-### 3. [Todolist App - Youtube](https://www.youtube.com/watch?v=lJwySFW8Eyc) 🎥
-
-<br />
-
 <br />
 
 # Ascey - Core.
@@ -49,34 +40,12 @@ ___
   </a>
 </p>
 
-### How works Ascey in 2 steps. 
-
-1. Ascey **centralizes** your data inside **Models** (object) and **Collections** (array of Models). They are classes that can contain the **methods** you need to interact with their data (getters, setters, formatters). **One time**, **One place**.  🏴‍☠️
-
-2. To **connect** your **data's state** with a **global store**, you will **link** your **Model/Collection** with a dedicated **Controller**. 
-It is a **mediator** between your **Models** and your **Components** by giving **access** to your components the constantly **updated data**, while **triggering** the **changes** in your state when an **event** in your components occurs. ⛓️
-
-
-Controllers, Models, and Collections are all classes implementing different kinds of methods according to their job on your app. 🎛️
-
-They help your code to stay **organized**, **scalable**, and easy to keep **clean**. 🌱
-
-
-<br />
-<br />
-
 
 ## Documentation
 
 ### Table of contents
 * [Model](#model)
 * [Collection](#collection)
-* [Controller](#controller)
-* [connect with Component](#connect-with-component)
-* [Store](#store)
-* [Wrap with Ascey](#wrap-with-ascey)
-* [Other](#other)
-
 
 <br />
 
@@ -216,87 +185,6 @@ There is room for other methods; please feel free to open a pull request if you 
 - `toPlain = (): Object` : return the state of model as a plain javascript object
 - `defaultState = (): any` : return the state of data of the instanciation.
 
-
-## Controller
-
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/GhkXyjy3/controller.png" width="100%">
-  </a>
-</p>
-
-#### prototype: `class Controller` 🌎
-
-#### A Controller is a grouping of Actions.
-You build this class from:
-1. a **Model or a Collection** bound with.
-2. A unique key (that serves to identify the Controller in the Ascey Store).
-
-A Controller is made to update your data in the Store through the Model/Collection it is bound with.
-
-#### Exemple of a Controller:
-`./src/ascey/controllers/todo.ts`
-
-```ts
-import { Controller } from 'react-ascey'
-import TodoCollection from '../collections/todo'
-import TodoModel from '../models/todo'
-
-class TodoController extends Controller {
-
-    constructor(todoCollection: any){
-       /* 
-         The Controller class requires 2 parameters:
-         1. The Model/Collection class bound with the controller
-         2. A unique key to identify the controller. 
-       */ 
-       super(todoCollection, 'todo')
-    }
-
-   /*
-       Dispatching to store:
-       
-       1. The dispatch method takes a callback parameter
-          sending the instanced Model/Collection bound with the 
-          Controller
-       2. Then you are free to execute the method you want 
-          from the Model/Collection that is going to update the data.
-       3. At the end of the callback execution, the change 
-          is saved, transformed into a plain javascript 
-          object, and sent to the Store.
-   */
-   
-    createTodo = (content: string): TodoModel => {        
-        const todo = new TodoModel({
-            content,
-            created_at: new Date()
-        })
-        
-        this.dispatch((collection: TodoCollection) => {
-            collection.push(todo)
-        })
-        return todo
-    }
-
-    deleteTodo = (todo: TodoModel): TodoModel => {
-        let v: any;
-        this.dispatch((collection: TodoCollection) => {
-            v = collection.delete(todo)
-        })
-        return v
-    }
-
-}
-
-/* We export the instanced Controller initialized with TodoCollection */
-export default new TodoController(TodoCollection)
-```
-
-#### Controller native methods: 
-- `getIDKey = (): string` : return the controller's uniq key.
-- `getStateClass = (): Type<Model>` : return the Model/Collection the controller is bound with.
-- `getState = (): Model | Controller`: return the current instanced Model/Collection of the Controller.
-- `dispatch = (action: (model: Model | Collection) => any)` : Execute the function passed in parameter, then dispatch the state from the action function parameter and update the Ascey Store.
 <br />
 
 ## connect with Component
@@ -307,137 +195,7 @@ export default new TodoController(TodoCollection)
   </a>
 </p>
 
-#### Here is a simple React component (todolist) : 
-`./src/home.js`
-```js
-import React, { useState } from 'react';
-import TodoModel from './ascey/models/todo';
-import TodoController from './ascey/controllers/todo'
-import { connect } from 'react-ascey'
 
-
-function App(props: any) {
-   const { todolist } = props
-   const [text, setText] = useState('')
-   
-   const onChangeInput = (e: any) => setText(e.target.value)
-   const addTodo = () => TodoController.createTodo(text) && setText('')
-   
-   const renderInput = () => (
-      <div style={{margin: 20}}>
-          <input 
-             onChange={onChangeInput} 
-             style={{width: 300, height: 20}} 
-             value={text}
-          />
-          <button onClick={addTodo}>Add</button>
-      </div>
-   )
-   
-   const renderTodo = (todo: TodoModel, idx: number) => (
-       <div key={idx} style={{margin: 10}}>
-          <span>{todo.getContent()}</span>
-          <span> - </span>
-          <span>{todo.getCreatedAtLTS()}</span>
-       </div>
-    )
-   
-   return (
-      <div style={{flexDirection: 'column', display: 'flex', alignItems: 'center'}}>
-         {renderInput()}
-         {todolist.map(renderTodo)}
-      </div>
-   )
-}
-
-const mapStateToProps = () => {
-   return {
-      todolist: TodoController.getState()
-   }
-}
-
-export default connect(mapStateToProps)(App)
-```
-
-<br />
-
-
-## Store
-
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/02j7ynyv/store.png" width="100%">
-  </a>
-</p>
-
-`./src/ascey/store.ts`
-```ts
-import { createStore, bindControllers } from 'react-ascey'
-import TodoController from '../controllers/todo'
-
-/* 
-   The bindControllers helper function turns an array of Controller into a reducing function you can pass to createStore.
-*/
-
-export default createStore( bindControllers([ TodoController ] /*, { router: connectRouter(history) } */  ))
-```
-
-<br />
-
-## Wrap with Ascey
-`./src/index.js`
-```js
-import store from './ascey/store';
-import { Provider } from 'react-ascey';
-import Home from './home.js'
-
-const App = () => {
-    return (
-        <Provider store={store}>
-          <Home />
-        </Provider>
-    )
-}
-
-ReactDOM.render(<App />, document.getElementById('root'));
-```
-
-<br />
-
-## Other
-
-`function bindControllers(controllers: []Controller, [reduxReducers])`
-
-The bindControllers helper function turns an array of Controller into a reducing function you can pass to createStore.
-
-Arguments:
-1. listControllers: []Controllers.
-2. *(Option)* - reduxReducers: Object A Redux reducer.
-
-listControllers - An array of all the Controllers you want to connect with the Store.
-
-<br />
-
-`function connect(mapStateToProps, options?)`
-
-The connect() function connects a React component to the Ascey store.
-
-Arguments:
-1. mapStateToProps: Function
-2. *(Option)* - options: Object.
-
-mapStateToProps - Any time the store is updated, mapStateToProps will be called.
-The results of mapStateToProps must be an object, which will be merged into the wrapped component’s props.
-If the data object returned didn't change since the last mapStateToProps call, the component won't re-render.
-
-options - 
-```js
-{
-  forwardRef: boolean
-}
-```
-
-<br />
 <br />
 
 # Questions / Answers
@@ -449,13 +207,4 @@ options -
 </p>
 
 #### All the example are in Typescript, does the library works with Javascript?
-Yes, it does! The library is written in Typescript, but you can use react-ascey if you are writing a react app in javascript.
-
-<br />
-
-#### I come from Redux, I'm interested in the lib but don't want to give up the Redux ecosystem, and Redux related libraries how I should do?
-First of all, react-ascey uses the Redux API to work; that is to say that theoretically, you could use any Redux tool library on Ascey. 
-You might need to adapt some parts; for example, a logger doesn't exist on Ascey, but you could create one inspired on redux-logger and release it on Github for the community. 
-Another example, if you used redux-saga or redux-thunk until there, you can get rid of them. You can do everything you used to do without them on Ascey.
-
-If you have any question or you would like to see a feature, feel free to create an issue or email me: siuol@gmx.com
+Yes, it does! The library is written in Typescript, but you can use Acey if you are writing a React app in JS.
