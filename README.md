@@ -82,29 +82,34 @@ class Todo extends Model {
 export default Todo
 ```
 
-#### Model native methods: 
-- `setState = (obj: Object): IAction` : update the state by assigning the current state with the obj parameter. (like React)
-- `hydrate = (state: any): IAction` : fill a the model with the JS object `state` passed in parameter.
-- `deleteKey = (key: string): IAction` : delete the value linked with a key in your state object.
-- `toPlain = (): Object` : return the state of model as a plain javascript object
-- `isCollection = (): boolean` : return true if the Model is a Collection.
-- `defaultState = (): any` : return the state of data of the instanciation.
-- `fetchCookies = (): any` : return the cookies stored by the Model, if this is a connected one.
-- `clearCookies = (): any` : remove the cookies stored by the Model, if this is a connected one.
+- **Model's methods**: 
 
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | setState(obj: Object) |`IAction` | update the state by assigning the current state with the obj parameter. (like React |
+    | hydrate(state: Object) | `IAction` | fill a the model with the JS object `state` passed in parameter. |
+    | deleteKey(key: string) | `IAction` | delete the value linked with a key in your state object. |
+    | toPlain() | `Object` | return the state of model as a plain javascript object. |
+    | isCollection() | boolean | return true if the Model is a Collection. |
+    | defaultState() | Object | return the state of data of the instanciation. |
+    | fetchCookies() | Object |  **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the cookies stored by the Model. |
+    | clearCookies() | any |  **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** remove the cookies stored by the Model. |
+    
 <br />
 
 - **Model's options**: 
     | Name | Type | Default | Description |
     | -- | -- | -- | -- |
-    | key | `string` | '' | Model's unique key, if `not set` Acey will set it automatically for you. |
-    | connected | `bool` | false | If set to `true` the Model is connected to the Acey store that re-render your Components on change. |
+    | key | `string` | "" | Model's unique key, if `not set` Acey will set it automatically for you. |
+    | connected | `bool` | false | If set to `true` the Model is connected to the Acey Store, it will also re-render your component connected with it on changes. |
     
+<br />
+
 - **IActions (or Model's actions)**:
-    | Name | Prototype | Description |
+    | Prototype | Return value | Description |
     | -- | -- | -- |
-    | save | `save = (): IAction` | **(Only if `connected` option is set to `true`)**. Give the order to refresh the store with the new data when the function is called. It will then re-render all the components connected with the Model. |
-    | cookie | `cookie = (): IAction` | **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to JSON and store it in the cookies. |
+    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Give the order to refresh the store with the new data when the function is called. It will then re-render all the components connected with the Model. |
+    | cookie() | `IAction` | **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to JSON and store it in the cookies. |
 
 <br />
 
