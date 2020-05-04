@@ -1,5 +1,7 @@
 import Model from './model'
 import _ from 'lodash'
+import Config from './config'
+import config from './config'
 
 interface IAction {
     payload: any
@@ -25,7 +27,10 @@ class Store {
             elem()
     }
 
-    public subscribe = (callback: Function) => this._subscribers.push(callback)
+    public subscribe = (callback: Function) => {
+        this._subscribers.push(callback)
+        this._privateExecPendingHydration()
+    }
 
     private _newTransition = (DEFAULT_DATA: any = {}, STORE_KEY: string = '') => {
         return (state = DEFAULT_DATA, action: IAction) => {
@@ -50,8 +55,11 @@ class Store {
         this.transitions().set(key, this._newTransition(defaultState, key))
         this._models.set(key, m)
         this._store[key] = defaultState
-
-        this._privateExecPendingHydration()
+        
+        if (!config.isNextJS()){
+            const cookies = m.fetchCookies()
+            cookies && this.addPendingHydrationNoExec({[key]: cookies})
+        }
     }
 
     public reset = () => {
@@ -62,6 +70,7 @@ class Store {
         this._subscribers = []
     }
 
+
     public exist = (key: string): boolean => this.models().get(key) !== undefined
 
     public models = (): Map<string, Model> => this._models
@@ -69,24 +78,23 @@ class Store {
     public store = (): Object => this._store
 
     public addPendingHydration = (store: any) => {
-        this._pendingHydrationStore = Object.assign({}, this._pendingHydrationStore, store)
+        this.addPendingHydrationNoExec(store)
         this._privateExecPendingHydration()
     }
 
-    public hydrateCookies = (cookies: any) => {
-        for (let key in cookies){
-            const m = this.models().get(key)
-            if (m && m.isCookiesEnabled()){
-                m.hydrate(JSON.parse(cookies[key])).save()
-            }
-        }
+    public addPendingHydrationNoExec = (store: any) => {
+        this._pendingHydrationStore = Object.assign({}, this._pendingHydrationStore, store)
     }
 
-    public hydrate = (store: any) => {
+    public hydrateCookies = (cookies: any) => {
+        if (Config.isReactNative())
+            throw new Error("cookie management are not available yet on React-Native");
         this.models().forEach((m, key) => {
-            m.hydrate(store[key]).save()
+            key in cookies && m.areCookiesEnabled() && m.hydrate(cookies[key]).save()
         })
     }
+
+    public hydrate = (store: any) => this.models().forEach((m, key) => m.hydrate(store[key]).save())
 
     _privateExecPendingHydration = () => {
         for (let key in this._pendingHydrationStore) {
@@ -94,7 +102,7 @@ class Store {
             if (m){
                 m.hydrate(this._pendingHydrationStore[key]).save()
                 delete this._pendingHydrationStore[key]
-            }            
+            }
         }
     }
 }

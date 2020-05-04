@@ -9,12 +9,21 @@ type Constructor<T> = new(...args: any[]) => T;
 //This can be useful to avoid redundant functions like sorting, filtering, pushing, deleting, updating etc...
 
 export default class Collection extends Model  {
-    private nodeClass: Constructor<any>
+    private nodeModel: Constructor<any>
 
-    constructor(list: any[] = [], nodeClass: Constructor<Model>, ...props: any){
-        super([], ...props)
-        this.nodeClass = nodeClass
-        this.setState(this.toListClass(list))
+    constructor(list: any[] = [], nodeModel: Constructor<Model>, ...props: any){
+        super([], ...Collection.assignInternalOptions(props, nodeModel))
+        this.nodeModel = nodeModel
+        !this.fetchCookies() && this.setState(this.toListClass(list))
+    }
+
+    static assignInternalOptions = (options: any[], nodeModel: Constructor<Model>) => {
+        if (options[1]){
+            options[1] = { nodeModel: nodeModel}
+        } else {
+            options.push({nodeModel: nodeModel})
+        }
+        return options
     }
 
     //Return the number of element in the array
@@ -26,7 +35,7 @@ export default class Collection extends Model  {
         [{content: '123', id: 'abc'}, {content: '456', id: 'def'}]
         to
         [new Model(content: '123', id: 'abc'}), new Model({content: '456', id: 'def'})]
-        the class used to instance the objects is the one passed in parameters as nodeClass in the constructor.
+        the class used to instance the objects is the one passed in parameters as nodeModel in the constructor.
 
     */
     public toListClass = (elem: any[] = []): Model[] => {
@@ -115,6 +124,6 @@ export default class Collection extends Model  {
     //return the index of the element passed in parameters if it exists in the list.
     public indexOf = (v: Model): number => _.findIndex(this.toPlain(), v.state)
 
-    private _isNodeModel = (value: any) => value instanceof this._getNodeModel()
-    private _getNodeModel = () => this.nodeClass
+    private _isNodeModel = (value: any): boolean => value instanceof this._getNodeModel()
+    private _getNodeModel = () => this.nodeModel
 }

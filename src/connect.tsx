@@ -29,7 +29,7 @@ export const connect = (list: TConnected[] = []): Function => {
     }
 }
 
-export const useAscey = (list: TConnected[] = []) => {
+export const useAcey = (list: TConnected[] = []) => {
     const [listJSON, setListJSON] = useState(listModelAndGetterToJSON(list))
 
     useEffect(() => {
