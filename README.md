@@ -1,7 +1,7 @@
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="react-ascey" src="https://siasky.net/BAA8tXYO7Ec4f7wEvKPYwM-L-paOU3ZZlcDnucQA2yh4Vg" width="100%">
+    <img alt="acey" src="https://siasky.net/BAA8tXYO7Ec4f7wEvKPYwM-L-paOU3ZZlcDnucQA2yh4Vg" width="100%">
   </a>
 + Control. | - Code. | + Scalability. | - Debugging. | + Productivity.
 </p>
@@ -31,6 +31,55 @@ or
 yarn add acey
 ```
 <br />
+
+## One file example - Counter
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="counter" src="https://siasky.net/VAAnjUpfk-zSCFwtU1x09oLxhcE6JHIaxwZmHyVgkYIDtA">
+  </a>
+</p>
+
+```ts
+import React from 'react';
+import { Model, useAcey } from 'acey'
+
+//The component
+const App = () => {
+
+  //Re-render the component when the listed Models state changes.
+  useAcey([ Counter ])
+
+  return (
+    <>
+      <button onClick={Counter.decrement}>decrement</button>
+        <span>{Counter.get()}</span>
+      <button onClick={Counter.increment}>increment</button>    
+    </>
+  )
+}
+
+//Create a Model for our counter
+class CounterModel extends Model {
+
+  constructor(data = { counter: 0 }, options: any){
+    super(data, options)
+  }
+
+  get = () => this.state.counter
+  increment = () => this.setState({counter: this.get() + 1}).save()
+  decrement = () => this.setState({counter: this.get() - 1}).save()
+}
+
+//Instance the Counter Model
+const Counter = new CounterModel(undefined, {connected: true})
+
+
+export default App;
+```
+
+<br />
+<br />
+
 
 # Ascey - Core.
 
@@ -231,17 +280,6 @@ export default Todolist
     | -- | -- | -- |
     | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Give the order to refresh the store with the new data when the function is called. It will then re-render all the components connected with the Collection. |
     | cookie() | `IAction` | **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to JSON and store it in the cookies. |
-
-
-<br />
-
-## connect with Component
-
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/GhcyXPfm/component.png" width="100%">
-  </a>
-</p>
 
 
 <br />
