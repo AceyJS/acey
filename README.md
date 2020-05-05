@@ -54,16 +54,16 @@ yarn add acey
 #### prototype: `class Model` 🌿
 
 A Model is a class built with an **object of data**. 
-It allows you to **create** all the **methods** you need related to a specific type of data like **util**, **getter** (selector), and **setter** functions
+It allows you to create all the methods you need related to a specific type of data like **utils**, **getters**, and **setters**.
 
-You build a Model from a data object.
+You build a Model from an Object.
 
 #### Example of a Model:
 `./src/ascey/models/todo.ts`
 ```ts
 import { Model, IOptions } from 'acey'
 
-// We create an initial data for our Model
+// A Model must always have an initial object data.
 const DEFAULT_DATA = {
     id: 0,
     content: ''
@@ -81,6 +81,21 @@ class Todo extends Model {
 
 export default Todo
 ```
+<br />
+
+You build it this way in your class constructor:
+`super(data: Object, options: IOptions)`
+
+<br />
+
+- **Model's values**:
+
+    | Name | Type | Description |
+    | -- | -- | -- |
+    | state |`Object` | return the current Model's data state |
+    | options | `Object` | return the options of the Model's |
+
+<br />
 
 - **Model's methods**: 
 
@@ -97,7 +112,8 @@ export default Todo
     
 <br />
 
-- **Model's options**: 
+- **IOption (or Model's options)**: 
+
     | Name | Type | Default | Description |
     | -- | -- | -- | -- |
     | key | `string` | "" | Model's unique key, if `not set` Acey will set it automatically for you. |
@@ -105,11 +121,14 @@ export default Todo
     
 <br />
 
-- **IActions (or Model's actions)**:
+- **IAction (or Model's actions)**:
+
     | Prototype | Return value | Description |
     | -- | -- | -- |
     | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Give the order to refresh the store with the new data when the function is called. It will then re-render all the components connected with the Model. |
     | cookie() | `IAction` | **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to JSON and store it in the cookies. |
+
+<br />
 
 <br />
 
