@@ -9,9 +9,9 @@
 <br />
 
 
-# Ascey - A React State Manager.
+# Acey - A React State Manager.
 
-#### Ascey is Model oriented state manager for React apps.
+#### Acey is Model oriented state manager for React apps.
 
 It enables an organized and scalable architecture thanks to the centralization of data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (list of Models). **One time**, **One place**. 🏴‍☠️
 
@@ -81,7 +81,7 @@ export default App;
 <br />
 
 
-# Ascey - Core.
+# Acey - Core.
 
 ## Documentation
 
