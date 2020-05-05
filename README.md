@@ -150,17 +150,17 @@ You build a Collection with :
 `./src/ascey/collections/todo.ts`
 ```ts
 import { Collection, IOptions } from 'react-ascey'
-import TodoModel from './todo'
+import Todo from './todo'
 
 // A Collection must always have an initial array.
 const DEFAULT_DATA = []
 
-class TodoCollection extends Collection {
+class Todolist extends Collection {
 
     constructor(list = DEFAULT_DATA, options: IOptions){
-        super(list, TodoModel, options)
+        super(list, Todo, options)
     }
-
+    
     sortByID = () => {
         /*
             - orderBy sort the list by data and return an array
@@ -174,7 +174,7 @@ class TodoCollection extends Collection {
     }
 }
 
-export default TodoCollection
+export default Todolist
 ```
 
 <br />
@@ -225,7 +225,7 @@ export default TodoCollection
     
 <br />
 
-- **IAction (or Model's actions)**:
+- **IAction (or Collection's actions)**:
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
