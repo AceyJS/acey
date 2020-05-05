@@ -56,7 +56,9 @@ yarn add acey
 A Model is a class built with an **object of data**. 
 It allows you to create all the methods you need related to a specific type of data like **utils**, **getters**, and **setters**.
 
-You build a Model from an Object.
+You build a Model from an Object and options.
+
+`super(data: Object, options: IOptions)`
 
 #### Example of a Model:
 `./src/ascey/models/todo.ts`
@@ -81,30 +83,25 @@ class Todo extends Model {
 
 export default Todo
 ```
-<br />
-
-You build it this way in your class constructor:
-`super(data: Object, options: IOptions)`
 
 <br />
 
-- **Model's values**:
+- **Collection's values**:
 
     | Name | Type | Description |
     | -- | -- | -- |
     | state |`Object` | return the current Model's data state |
-    | options | `Object` | return the options of the Model's |
+    | options | `Object` | return the Model's options |
 
 <br />
 
-- **Model's methods**: 
+- **Collection's methods**: 
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | setState(obj: Object) |`IAction` | update the state by assigning the current state with the obj parameter. (like React |
-    | hydrate(state: Object) | `IAction` | fill a the model with the JS object `state` passed in parameter. |
-    | deleteKey(key: string) | `IAction` | delete the value linked with a key in your state object. |
-    | toPlain() | `Object` | return the state of model as a plain javascript object. |
+    | setState(array: Array) |`IAction` | update the state by assigning the current state with the array parameter. |
+    | hydrate(state: Array) | `IAction` | fill the Model's state with the JS array `state` passed in parameter. |
+    | toPlain() | `Object` | return the state to a plain javascript object. |
     | isCollection() | boolean | return true if the Model is a Collection. |
     | defaultState() | Object | return the state of data of the instanciation. |
     | fetchCookies() | Object |  **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the cookies stored by the Model. |
@@ -144,29 +141,27 @@ You build it this way in your class constructor:
 
 #### A Collection is a Model that has for state an array of Models. (Example: a Todolist is a Collection of Todo Models.)
 
-You build a collection with :
+You build a Collection with :
 1. An array of Models or Objects.
 2. A non-instanced Model class that represents the Model of the elements in the array.
+3. Options
 
 #### Example of a Collection:
 `./src/ascey/collections/todo.ts`
 ```ts
-import { Collection } from 'react-ascey'
-import TodoModel from '../models/todo'
+import { Collection, IOptions } from 'react-ascey'
+import TodoModel from './todo'
 
-/*
-    1. Create a default data object for our Collectiono
-   /!\ Must always be an array. /!\
-*/
+// A Collection must always have an initial array.
 const DEFAULT_DATA = []
 
 class TodoCollection extends Collection {
 
-    constructor(list: any = DEFAULT_DATA){
-        super(list, TodoModel)
+    constructor(list = DEFAULT_DATA, options: IOptions){
+        super(list, TodoModel, options)
     }
 
-    sortByCreateDate = (sortType: any = 'asc' || 'desc') => {
+    sortByID = () => {
         /*
             - orderBy sort the list by data and return an array
             of model.
@@ -174,7 +169,7 @@ class TodoCollection extends Collection {
             returned by orderBy
         */
         return new TodoCollection(
-            this.orderBy(['created_at'], [sortType])
+            this.orderBy(['id'], ['desc])
         )
     }
 }
@@ -182,32 +177,61 @@ class TodoCollection extends Collection {
 export default TodoCollection
 ```
 
-There is room for other methods; please feel free to open a pull request if you want to add other useful methods.
+<br />
 
-#### Collection native methods :
-- `count = (): number` - Return the length of the array
-- `toListClass = (elem: any[]): Model[]` - Transform an object array into an instanced Model array.
-- `push = (v: Model)` - Add an element in the array
-- `update = (v: Model, index: number)` - Update the model at index with the one passed in parameter
-- `pop = ()` - Remove the last element
-- `shif = ()` - Remove the first item
-- `map = (callback: (v: Model, index: number) => any)` - creates a new array with the results of calling a function for every array element (same than javascript map on arrays)
-- `orderBy = (iteratees: any[], orders: any[]): Model[]` - Return a sorted array of instanced Model upon the parameters passed
-- `filter = (predicate: any): Model[]` - Pick up a list of node matching the predicate
-- `find = (predicate: any): Model | undefined` - Find the first node matching the predicate
-- `findIndex = (predicate: any): number` - Return the index of the first node matching the predicate
-- `deleteAll = (predicate: any)` - Delete all the nodes matching the predicate
-- `delete = (v: Model)` - Delete the model passed in parameter in the list.
-- `deleteIndex = (index: number)` - Remove an element at index.
-- `getIndex = (v: Model): number` - Get the index of a node in the list.
+- **Collection's values**:
 
-#### + the ones from Model :
-- `get = (): Object` : return the state of the model.
-- `set = (state: Object)` : set the new state of the model.
-- `run = (action: (newState: any) => void): Object` : Execute the function passed in parameter and then set the new state  with the state from the action function parameter. 
-- `copyDeep = (src: Model)` : copy the src into the current state without changing the references of the values nested inside the current model.
-- `toPlain = (): Object` : return the state of model as a plain javascript object
-- `defaultState = (): any` : return the state of data of the instanciation.
+    | Name | Type | Description |
+    | -- | -- | -- |
+    | state |`Object` | return the current Collection's data state |
+    | options | `Object` | return the Collection's options |
+
+<br />
+
+- **Collection's methods**: 
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | count() |`number` | Return the length of the Collection |
+    | toListClass(elem: any[]) |`Model[]` | Transform an object array into an instanced Model array |
+    | push(v: Model) | `IAction` | Add an element in the array |
+    | update(v: Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
+    | pop() | `IAction` | Remove the last element |
+    | shift() | `IAction` | Remove the first element |
+    | map(callback: (v: Model, index: number) => any) | `any` | creates a new array with the results of calling a function for every array element (same than javascript map on arrays) |
+    | orderBy(iteratees: any[], orders: any[]) | `Model[]` | Return a sorted array of instanced Model upon the parameters passed |
+    | filter(predicate: any) | `Model[]` | Pick up a list of node matching the predicate |
+    | find(predicate: any) | `Model | undefined` | Find the first node matching the predicate |
+    | findIndex(predicate: any) | `number` | Return the index of the first node matching the predicate |
+    | deleteAll(predicate: any) | `IAction` | Delete all the nodes matching the predicate |
+    | delete(v: Model) | `IAction` | Delete the model passed in parameter if in the list. |
+    | deleteIndex(index: number) | `IAction` | Remove an element at index.
+    | indexOf(v: Model) | `number` | Get the index of a node in the list.
+    | hydrate(state: Object) | `IAction` | fill the Model's state with the JS object `state` passed in parameter. |
+    | toPlain() | `Object` | return the state of model as a plain javascript array. |
+    | isCollection() | boolean | return true if the Model is a Collection. |
+    | defaultState() | Object | return the state of data of the instanciation. |
+    | fetchCookies() | Object |  **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the cookies stored by the Collection. |
+    | clearCookies() | any |  **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** remove the cookies stored by the Collection. |
+    
+<br />
+
+- **IOption (or Collection's options)**: 
+
+    | Name | Type | Default | Description |
+    | -- | -- | -- | -- |
+    | key | `string` | "" | Model's unique key, if `not set` Acey will set it automatically for you. |
+    | connected | `bool` | false | If set to `true` the Collection is connected to the Acey Store, it will also re-render your component connected with it on changes. |
+    
+<br />
+
+- **IAction (or Model's actions)**:
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Give the order to refresh the store with the new data when the function is called. It will then re-render all the components connected with the Collection. |
+    | cookie() | `IAction` | **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to JSON and store it in the cookies. |
+
 
 <br />
 
