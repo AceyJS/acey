@@ -11,6 +11,8 @@ import {
     verifyIfContainAConnectedModel
 } from './verify'
 
+const COOKIE_SIZE_MAX = 4000
+
 type TOptionFunc = (() => IAction) | null
 
 export interface IOptions {
@@ -143,7 +145,7 @@ export default class Model {
 
     private _set = (state: any = this.state): IAction => {
         if (Model._isObject(state) || Model._isArray(state)){
-            this._state = state
+            this._state = this.isCollection() ? this.toListClass(state) : state
         } else {
             if (!this.isCollection())
                 throw new Error(`The state of a Model, can only be instanced and replaced with an object type.`)
@@ -170,7 +172,12 @@ export default class Model {
             throw new Error("cookie management are not available yet on React-Native");
 
         if (this.areCookiesEnabled()){
-            !Config.isNextJSServer() && Cookies.set(this.options.key, this.toString(), {expires})
+            const data = this.toString()
+            const dLength = data.length
+            if (dLength <= COOKIE_SIZE_MAX)
+                !Config.isNextJSServer() && Cookies.set(this.options.key, data, {expires})
+            else
+                console.warn(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this action can't be executed because the max length of a cookie is ${COOKIE_SIZE_MAX} for most browsers, the one you set was ${dLength}.`)
         } else 
             console.warn(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.`)
         return this._getConnectedActions()
@@ -264,6 +271,15 @@ export default class Model {
         return this._set()
     }
 
+    /*
+        Transform an array of object into an array of instancied Model
+        Exemple => 
+        [{content: '123', id: 'abc'}, {content: '456', id: 'def'}]
+        to
+        [new Model(content: '123', id: 'abc'}), new Model({content: '456', id: 'def'})]
+        the class used to instance the objects is the one passed in parameters as nodeModel in the constructor.
+
+    */
     public toListClass = (elem: any[] = []): Model[] => {
         const { nodeModel } = this.internalOptions
         if (!this.isCollection() || nodeModel == null)
@@ -272,7 +288,7 @@ export default class Model {
         let ret: Model[] = []
         for (let i = 0; i < elem.length; i++){
             if (!(elem[i] instanceof Model))
-                ret.push(new (<any>nodeModel)(elem[i]))
+                ret.push(new (<any>nodeModel)(elem[i], this.__childOptions))
             else 
                 ret.push(elem[i])
         }

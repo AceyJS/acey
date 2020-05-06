@@ -29,27 +29,6 @@ export default class Collection extends Model  {
     //Return the number of element in the array
     public count = (): number => this.state.length
 
-    /*
-        Transform an array of object into an array of instancied Model
-        Exemple => 
-        [{content: '123', id: 'abc'}, {content: '456', id: 'def'}]
-        to
-        [new Model(content: '123', id: 'abc'}), new Model({content: '456', id: 'def'})]
-        the class used to instance the objects is the one passed in parameters as nodeModel in the constructor.
-
-    */
-    public toListClass = (elem: any[] = []): Model[] => {
-        let ret: Model[] = []
-        for (let i = 0; i < elem.length; i++){
-            if (!this._isNodeModel(elem[i]))
-                ret.push(new (this._getNodeModel())(elem[i]))
-            else 
-                ret.push(elem[i])
-            
-        }
-        return ret
-    }
-
     //add an element to the list
     public push = (v: Model): IAction => this._getConnectedActions(this.state.push(v))
 
@@ -65,8 +44,13 @@ export default class Collection extends Model  {
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
     public orderBy = (iteratees: any[] = [], orders: any[] = []): any[] => {
-        const ret = _.orderBy(this.toPlain(), iteratees, orders)
-        return this.toListClass(ret)
+        const list = _.orderBy(this.toPlain(), iteratees, orders)
+        const ret = []
+        for (let elem of list){
+            const m = this.find(elem)
+            m && ret.push(m)
+        }
+        return ret
     }
 
     public map = (callback: (v: Model, index: number) => any) => { 
@@ -89,12 +73,24 @@ export default class Collection extends Model  {
     public shift = (): IAction => this._getConnectedActions(this.state.shift())
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
-    public filter = (predicate: any) => this.toListClass(_.filter(this.toPlain(), predicate))
+    public filter = (predicate: any) => {
+        const list = _.filter(this.toPlain(), predicate)
+        const ret = []
+        for (let elem of list){
+            const m = this.find(elem)
+            m && ret.push(m)
+        }
+        return ret
+    }
     
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
     public find = (predicate: any) => {
         const o = _.find(this.toPlain(), predicate)
-        return o ? new (this._getNodeModel())(o) : o
+        if (o){
+            const index = this.findIndex(o)
+            return index < 0 ? undefined : this.state[index]
+        }
+        return undefined
     }
 
     //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
