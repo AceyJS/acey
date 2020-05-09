@@ -140,16 +140,17 @@ export default Todo
 
 <br />
 
-- **Collection's values**:
+- **Model's values**:
 
     | Name | Type | Description |
     | -- | -- | -- |
     | state |`Object` | return the current Model's data state |
     | options | `Object` | return the Model's options |
+    | __childOptions | `Object` | return the connected methods of the current Model (as options). You can then pass this object as options for any instanced Model/Collection inside a connected Model, to make them connected as well without separating each other. |
 
 <br />
 
-- **Collection's methods**: 
+- **Model's methods**: 
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
@@ -221,10 +222,11 @@ class Todolist extends Collection {
             of model.
             - We return a fresh instance of a collection with the array
             returned by orderBy
+            - __childOptions passes the connected method of the current Collection to the
+            the new instanced one. This way if any data is updated in the fresh instance,
+            it will be in the state of the current Collection.
         */
-        return new TodoCollection(
-            this.orderBy(['id'], ['desc])
-        )
+        return new TodoCollection( this.orderBy(['id'], ['desc]), this.__childOptions)
     }
 }
 
@@ -239,6 +241,7 @@ export default Todolist
     | -- | -- | -- |
     | state |`Object` | return the current Collection's data state |
     | options | `Object` | return the Collection's options |
+    | __childOptions | `Object` | return the connected methods of the current Collection (as options). You can then pass this object as options for any instanced Model inside a connected Collection, to make them connected as well without separating each other. |
 
 <br />
 
@@ -248,19 +251,22 @@ export default Todolist
     | -- | -- | -- |
     | count() |`number` | Return the length of the Collection |
     | toListClass(elem: any[]) |`Model[]` | Transform an object array into an instanced Model array |
-    | push(v: Model) | `IAction` | Add an element in the array |
-    | update(v: Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
+    | push(v: Object | Model) | `IAction` | Add an element in the array |
+    | update(v: Object | Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
     | pop() | `IAction` | Remove the last element |
     | shift() | `IAction` | Remove the first element |
     | map(callback: (v: Model, index: number) => any) | `any` | creates a new array with the results of calling a function for every array element (same than javascript map on arrays) |
+    | reduce(callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any) | `any` | Reduces Collection to a value which is the accumulated result of running each element in collection, where each successive invocation is supplied the return value of the previous. If initialAccumulator is not given, the first Model of Collection is used as the initial value. |
     | orderBy(iteratees: any[], orders: any[]) | `Model[]` | Return a sorted array of instanced Model upon the parameters passed |
     | filter(predicate: any) | `Model[]` | Pick up a list of node matching the predicate |
     | find(predicate: any) | `Model | undefined` | Find the first node matching the predicate |
     | findIndex(predicate: any) | `number` | Return the index of the first node matching the predicate |
     | deleteAll(predicate: any) | `IAction` | Delete all the nodes matching the predicate |
-    | delete(v: Model) | `IAction` | Delete the model passed in parameter if in the list. |
+    | delete(v: Object | Model) | `IAction` | Delete the model passed in parameter if in the list. |
     | deleteIndex(index: number) | `IAction` | Remove an element at index.
-    | indexOf(v: Model) | `number` | Get the index of a node in the list.
+    | indexOf(v: Object | Model) | `number` | Get the index of a node in the list.
+    | nodeAt(index: number) | `Model` | Get the node at index in the list, undefined it not found. |
+    | newNode(v: Object) | `Model` | Return fresh instanced Model with the value sent in parameter | 
     | hydrate(state: Object) | `IAction` | fill the Model's state with the JS object `state` passed in parameter. |
     | toPlain() | `Object` | return the state of model as a plain javascript array. |
     | isCollection() | boolean | return true if the Model is a Collection. |
