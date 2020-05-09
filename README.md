@@ -32,7 +32,9 @@ yarn add acey
 ```
 <br />
 
-## One file example - Counter
+<p>
+<details><summary>Example #1 - A Counter</summary><br>
+
 <p align="center" font-style="italic" >
   <a>
     <img alt="counter" src="https://siasky.net/VAAnjUpfk-zSCFwtU1x09oLxhcE6JHIaxwZmHyVgkYIDtA">
@@ -61,7 +63,7 @@ const App = () => {
 //Create a Model for our counter
 class CounterModel extends Model {
 
-  constructor(data = { counter: 0 }, options: any){
+  constructor(data: any, options: any){
     super(data, options)
   }
 
@@ -71,11 +73,14 @@ class CounterModel extends Model {
 }
 
 //Instance the Counter Model
-const Counter = new CounterModel(undefined, {connected: true})
+const Counter = new CounterModel( {counter: 0} , {connected: true})
 
 
 export default App;
 ```
+
+</details>
+
 
 <br />
 <br />
