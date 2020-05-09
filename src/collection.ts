@@ -30,16 +30,18 @@ export default class Collection extends Model  {
     public count = (): number => this.state.length
 
     //add an element to the list
-    public push = (v: Model): IAction => this._getConnectedActions(this.state.push(v))
+    public push = (v: any): IAction => this._getConnectedActions(this.state.push(this.newNode(v)))
 
     // Update the element at index or post it.
-    public update = (v: Model, index: number): IAction => {
-       if (this.state[index])
-           this.state[index] = v
+    public update = (v: any, index: number): IAction => {
+        const vCopy = this.newNode(v)
+        
+        if (this.state[index])
+           this.state[index] = vCopy
        else 
-           this.push(v)
+           this.push(vCopy)
        
-       return this._getConnectedActions(v)
+       return this._getConnectedActions(vCopy)
     }
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
@@ -53,7 +55,7 @@ export default class Collection extends Model  {
         return ret
     }
 
-    public map = (callback: (v: Model, index: number) => any) => { 
+    public map = (callback: (v: any, index: number) => any) => { 
         const array = this.state
         let ret = []
         for (let i = 0; i < array.length; i++){
@@ -61,6 +63,13 @@ export default class Collection extends Model  {
             v && ret.push(v)
         }
         return ret
+    }
+
+    public reduce = (callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any = this.newNode(undefined)) => {
+        const array = this.state
+        for (let i = 0; i < array.length; i++)
+            initialAccumulator = callback(initialAccumulator, array[i])
+        return initialAccumulator
     }
 
     public concat = (list: any[] = []): IAction => {
@@ -102,8 +111,8 @@ export default class Collection extends Model  {
     }
 
     //delete a node if it exists in the list.
-    public delete = (v: Model): IAction => {
-        const index = this.indexOf(v)
+    public delete = (v: any): IAction => {
+        const index = this.indexOf(this.newNode(v))
         if (index > -1){
             const v = this.state.splice(index, 1)
             if (v)
@@ -117,8 +126,12 @@ export default class Collection extends Model  {
         return this._getConnectedActions(v ? v[0] : null)
     }
 
+    public nodeAt = (index: number) => this.state[index] && this._isNodeModel(this.state[index]) ? this.state[index] : undefined
+
     //return the index of the element passed in parameters if it exists in the list.
-    public indexOf = (v: Model): number => _.findIndex(this.toPlain(), v.state)
+    public indexOf = (v: any): number => _.findIndex(this.toPlain(), this.newNode(v).toPlain())
+
+    public newNode = (v: any): Model => this._isNodeModel(v) ? v : new (this._getNodeModel())(v)
 
     private _isNodeModel = (value: any): boolean => value instanceof this._getNodeModel()
     private _getNodeModel = () => this.nodeModel
