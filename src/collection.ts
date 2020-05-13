@@ -14,7 +14,9 @@ export default class Collection extends Model  {
     constructor(list: any[] = [], nodeModel: Constructor<Model>, ...props: any){
         super([], ...Collection.assignInternalOptions(props, nodeModel))
         this.nodeModel = nodeModel
-        !this.fetchCookies() && this.setState(this.toListClass(list))
+        if (!this.options.connected || (!this.fetchCookies() && !this.fetchLocalStore())){
+            this.setState(this.toListClass(list))
+        }
     }
 
     static assignInternalOptions = (options: any[], nodeModel: Constructor<Model>) => {
@@ -65,7 +67,7 @@ export default class Collection extends Model  {
         return ret
     }
 
-    public reduce = (callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any = this.newNode(undefined)) => {
+    public reduce = (callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any = this.count() ? this.nodeAt(0) : null) => {
         const array = this.state
         for (let i = 0; i < array.length; i++)
             initialAccumulator = callback(initialAccumulator, array[i])

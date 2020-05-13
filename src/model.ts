@@ -1,7 +1,6 @@
 import objectPath from "object-path"
 import _ from 'lodash'
-import * as Cookies from 'es-cookie';
-import STORE from './store'
+import Manager from './manager'
 import Config from './config'
 
 import { hydrate } from './hydrate'
@@ -11,14 +10,13 @@ import {
     verifyIfContainAConnectedModel
 } from './verify'
 
-const COOKIE_SIZE_MAX = 4000
-
 type TOptionFunc = (() => IAction) | null
 
 export interface IOptions {
     key: string
     connected: boolean
     save: TOptionFunc
+    localStore: TOptionFunc
     cookie: TOptionFunc
 }
 
@@ -31,6 +29,7 @@ const DEFAULT_OPTIONS: IOptions = {
     connected: false,
     save: null,
     cookie: null,
+    localStore: null
 }
 
 const DEFAULT_INTERNAL_OPTIONS: IInternalOptions = {
@@ -39,7 +38,8 @@ const DEFAULT_INTERNAL_OPTIONS: IInternalOptions = {
 
 export interface IAction {
     save(): IAction
-    cookie(): IAction
+    cookie(): IAction,
+    localStore(): IAction,
     value: any
 }
 
@@ -69,13 +69,13 @@ export default class Model {
         if (this.isConnected()){
             if (Config.isNextJS() && !key)
                 throw new Error("In a NextJS environment you need to manually setup a unique key for every connected Model and Collection you instance.")
-            if (key && STORE.exist(key) && !Config.isNextJSServer())
-                throw new Error(`You have 2 Models/Collections or more using the same key: ${key}.`)
+            if (key && Manager.exist(key) && !Config.isNextJSServer())
+                throw new Error(`You have 2 connected Models/Collections using the same key: ${key}.`)
             if (!key){
                 this._setOptions({key: this._generateKey()})
                 this._isKeyGenerated = true
             }
-            STORE.connectModel(this)
+            Manager.connectModel(this)
         }
     }
 
@@ -96,11 +96,12 @@ export default class Model {
     }
 
     protected _getConnectedActions = (value: any = undefined): IAction => {
-        const { save, cookie } = this.options
+        const { save, cookie, localStore } = this.options
 
         return { 
             cookie: !cookie ? this._cookie : cookie,
             save: !save ? this._save : save,
+            localStore: !localStore ? this._localStore : localStore,
             value
         }
     }
@@ -139,7 +140,8 @@ export default class Model {
     private _setChildOptions = () => {
         this.__childOptions = Object.assign({}, this.__childOptions, {
             save: this._getConnectedActions().save,
-            cookie: this._getConnectedActions().cookie
+            cookie: this._getConnectedActions().cookie,
+            localStore: this._getConnectedActions().localStore,
         })
     }
 
@@ -157,47 +159,49 @@ export default class Model {
 
     private _save = () => {
         if (this.isConnected()){
-            STORE.dispatch({
+            Manager.dispatch({
                 payload: this.toPlain(),
                 type: this.options.key,
             })
         }
         else 
-            console.warn(`You've attempted to call save in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} but didn't specify it as a connected ${this.isCollection() ? 'Collection' : 'Model'}.`)
+            throw new Error(`You've attempted to call save in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} but didn't specify it as a connected ${this.isCollection() ? 'Collection' : 'Model'}.`)
         return this._getConnectedActions()
     }
 
     private _cookie = (expires = 365) => {
-        if (Config.isReactNative())
-            throw new Error("cookie management are not available yet on React-Native");
-
+        const { key } = this.options
         if (this.areCookiesEnabled()){
-            const data = this.toString()
-            const dLength = data.length
-            if (dLength <= COOKIE_SIZE_MAX)
-                !Config.isNextJSServer() && Cookies.set(this.options.key, data, {expires})
-            else
-                console.warn(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this action can't be executed because the max length of a cookie is ${COOKIE_SIZE_MAX} for most browsers, the one you set was ${dLength}.`)
-        } else 
-            console.warn(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.`)
+            try {
+                Manager.cookieManager().addElement(key, this.toString(), expires)
+            } catch (e) {
+                throw new Error(`error from coookie with Model/Collection: ${key}, ${e}`)
+            }
+        }
+        else 
+            throw new Error(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.\n 3. You are using React Native`)
+        
         return this._getConnectedActions()
     }
 
-    public fetchCookies = () => {
-        if (Config.isReactNative())
-            throw new Error("cookie management are not available yet on React-Native");
-        if (!this.areCookiesEnabled() || Config.isNextJSServer())
-            return undefined
-        const data = Cookies.get(this.options.key)
-        return data ? JSON.parse(data) : undefined
+    public fetchCookies = () => this.areCookiesEnabled() ? Manager.cookieManager().getElement(this.options.key) : undefined
+    public removeCookies = () => this.areCookiesEnabled() ? Manager.cookieManager().removeElement(this.options.key) : undefined
+
+    private _localStore = (expires = 365) => {
+        const { key } = this.options
+        if (this.isStorageEnabled()){
+            try {
+                Manager.localStoreManager().addElement(key, this.toString(), expires)
+            } catch (e) {
+                throw new Error(`error from localStore with ${this.isCollection() ? 'Collection' : 'Model'}: ${key}, ${e}`)
+            }
+        } else 
+            throw new Error(`You've attempted to call localStore in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store\n3. You are using NextJS.`)
+        return this._getConnectedActions()
     }
 
-    public clearCookies = () => {
-        if (Config.isReactNative())
-            throw new Error("cookie management are not available yet on React-Native");
-
-        !Config.isNextJSServer() && Cookies.remove(this.options.key)
-    }
+    public fetchLocalStore = () => this.isStorageEnabled() ? Manager.localStoreManager().getElement(this.options.key) : undefined
+    public removeLocalStore = () => this.isStorageEnabled() ? Manager.localStoreManager().removeElement(this.options.key) : undefined
     
     //Only usable in a Model/State
     public setState = (o = this.state) => {
@@ -296,7 +300,8 @@ export default class Model {
     }
 
     public toString = (): string => JSON.stringify(this.toPlain())
-    public areCookiesEnabled = (): boolean => !this.hasKeyBeenGenerated() && this.isConnected()
+    public areCookiesEnabled = (): boolean => !Config.isReactNative() && !this.hasKeyBeenGenerated() && this.isConnected()
+    public isStorageEnabled = (): boolean => !Config.isReactNative() && !Config.isNextJS() && !this.hasKeyBeenGenerated() && this.isConnected()
     public hasKeyBeenGenerated = (): boolean => this._isKeyGenerated
     public isConnected = (): boolean => this.options.connected 
     public isEqual = (m: Model): boolean => this.toString() === m.toString()
@@ -309,7 +314,7 @@ export default class Model {
         let suffix;
         while (true){
             suffix = '_' + i.toString()
-            if (!STORE.exist(key + suffix))
+            if (!Manager.exist(key + suffix))
                 break;
             i++
         }

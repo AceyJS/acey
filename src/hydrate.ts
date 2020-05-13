@@ -30,8 +30,10 @@ const updateInState = (value: any, path: string, to: Model ) => {
     } else if (Model._isCollection(v.state[lastKey])){
         const collec = v.state[lastKey]
         collec.setState(collec.toListClass(value))
-    } else 
-        v[lastKey] = value
+    } else {
+        if (lastKey)
+            v[lastKey] = value
+    }
 }
 
 

@@ -10,5 +10,5 @@ export {
 export { default as Model } from './src/model'
 export { connect, useAcey } from './src/connect'
 export { default as Collection } from './src/collection'
-export { default as store } from './src/store'
+export { default as manager } from './src/manager'
 export { default as config } from './src/config'

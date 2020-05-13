@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef } from 'react'
 import _ from 'lodash'
-import STORE from './store'
+import Manager from './manager'
 import { verifyIfOnlyModelsAndFunction } from './verify'
 import Model from './model'
 import { listModelAndGetterToJSON, hash } from './lib'
@@ -15,7 +15,7 @@ export const connect = (list: TConnected[] = []): Function => {
 
             useEffect(() => {
                 let prev = listJSON
-                STORE.subscribe(() => {
+                Manager.subscribe(() => {
                     const current = listModelAndGetterToJSON(list)
                     if (prev != current){
                         prev = current
@@ -34,7 +34,7 @@ export const useAcey = (list: TConnected[] = []) => {
 
     useEffect(() => {
         let prev = listJSON
-        STORE.subscribe(() => {
+        Manager.subscribe(() => {
             const current = listModelAndGetterToJSON(list)
             if (prev != current){
                 prev = current
