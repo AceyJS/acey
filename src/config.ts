@@ -7,19 +7,25 @@ class Config {
     private _env = REACT
     private _isDev = true
     private _logger = false
-    private _storeEngine: any = typeof window === 'undefined' ? null : localStorage
+    private _storeEngine: any = typeof document === 'undefined' ? null : localStorage
 
-    constructor(){}
+    constructor(){
+        if (navigator && navigator.product == "ReactNative"){
+            this._env = REACT_NATIVE
+            try {
+                this._storeEngine = require('@react-native-community/async-storage').default
+            } catch {
+                throw new Error("Install and link @react-native-community/async-storage to benefits the storage feature of Acey.")
+            }
+        }
+    }
 
-    isNextJSServer = () => this.isNextJS() && typeof window === 'undefined'
-    isNextJS = () => this._env == NEXT_JS
-    isReactNative = () => this._env == REACT_NATIVE
-    isReact = () => this._env == REACT
+    isNextJSServer = () => this.isNextJS() && typeof document === 'undefined'
+    isNextJS = () => this._env === NEXT_JS
+    isReactNative = () => this._env === REACT_NATIVE
+    isReact = () => this._env === REACT
 
     setEnvAsNextJS = () => this._env = NEXT_JS
-
-    setEnvAsReactNative = () => this._env = REACT_NATIVE
-    setEnvAsReact = () => this._env = REACT
 
     isDevMode = () => this._isDev
     setAsProduction = () => this._isDev = false
@@ -28,9 +34,7 @@ class Config {
     isLoggerEnabled = () => this._logger
     enableLogger = () => this._logger = true
 
-    //Todo: implemenent react-native store engine
     getStoreEngine = () => this._storeEngine
-    setStoreEngine = (engine: any) => this._storeEngine = engine
 
 }
 

@@ -14,9 +14,13 @@ export default class Collection extends Model  {
     constructor(list: any[] = [], nodeModel: Constructor<Model>, ...props: any){
         super([], ...Collection.assignInternalOptions(props, nodeModel))
         this.nodeModel = nodeModel
-        if (!this.options.connected || (!this.fetchCookies() && !this.fetchLocalStore())){
-            this.setState(this.toListClass(list))
+        
+        const assignWithStorage = async () => {
+            if (!this.options.connected || (!this.fetchCookies() && !this.fetchLocalStore())){
+                this.setState(this.toListClass(list))
+            }
         }
+        assignWithStorage()
     }
 
     static assignInternalOptions = (options: any[], nodeModel: Constructor<Model>) => {

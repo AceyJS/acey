@@ -106,7 +106,7 @@ export default class Model {
         }
     }
     
-   private _setOptions = (o: any) => this._options = Object.assign({}, this.options, o)
+    private _setOptions = (o: any) => this._options = Object.assign({}, this.options, o)
 
     private _setInternalOptions = (options = DEFAULT_INTERNAL_OPTIONS) => {
         this._internalOptions = Object.assign(this._internalOptions, options)
@@ -179,7 +179,7 @@ export default class Model {
             }
         }
         else 
-            throw new Error(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.\n 3. You are using React Native`)
+            throw new Error(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.\n3. You are using React Native`)
         
         return this._getConnectedActions()
     }
@@ -200,7 +200,7 @@ export default class Model {
         return this._getConnectedActions()
     }
 
-    public fetchLocalStore = () => this.isStorageEnabled() ? Manager.localStoreManager().getElement(this.options.key) : undefined
+    public fetchLocalStore = async () => this.isStorageEnabled() ? (await Manager.localStoreManager().getElement(this.options.key)) : undefined
     public removeLocalStore = () => this.isStorageEnabled() ? Manager.localStoreManager().removeElement(this.options.key) : undefined
     
     //Only usable in a Model/State
@@ -301,7 +301,7 @@ export default class Model {
 
     public toString = (): string => JSON.stringify(this.toPlain())
     public areCookiesEnabled = (): boolean => !Config.isReactNative() && !this.hasKeyBeenGenerated() && this.isConnected()
-    public isStorageEnabled = (): boolean => !Config.isReactNative() && !Config.isNextJS() && !this.hasKeyBeenGenerated() && this.isConnected()
+    public isStorageEnabled = (): boolean => !Config.isNextJS() && !this.hasKeyBeenGenerated() && this.isConnected()
     public hasKeyBeenGenerated = (): boolean => this._isKeyGenerated
     public isConnected = (): boolean => this.options.connected 
     public isEqual = (m: Model): boolean => this.toString() === m.toString()

@@ -70,7 +70,7 @@ class Manager {
         this._privateExecPendingHydration()
     }
 
-    public connectModel = (m: Model) => {
+    public connectModel = async (m: Model) => {
         const { key } = m.options
         const { defaultState } = m
 
@@ -82,7 +82,7 @@ class Manager {
         if (m.areCookiesEnabled())
             storedData = m.fetchCookies()
         if (!storedData && m.isStorageEnabled())
-            storedData = m.fetchLocalStore()
+            storedData = await m.fetchLocalStore()
         storedData && this._setPendingHydrationStore({[key]: storedData}) 
     }
 

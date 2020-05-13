@@ -11,7 +11,6 @@ export class LocalStoreManager {
         if (!this.isEnabled())
             return
         this._fetchKeys()
-        this._analyzeExpired()
     }
 
     disabledError = () => {
@@ -24,9 +23,13 @@ export class LocalStoreManager {
     public toString = () => JSON.stringify(this._keys)
     public toJSON = (keys: string) => this._keys = JSON.parse(keys)
 
-    public isEnabled = (): boolean => !(config.isReactNative() || config.isNextJS()) && this.engine()
+    public isEnabled = (): boolean => !(config.isNextJS())
 
     public addElement = (key: string, data: string, expires: number = 7) => {
+        if (!this.engine()){
+            return
+        }
+
         if (!this.isEnabled())
             return this.disabledError()
         if (!config.isReactNative() && Cookies.get(key)){
@@ -37,11 +40,11 @@ export class LocalStoreManager {
         this.addKey(key, expires)
     }
 
-    public getElement = (key: string): any => {
+    public getElement = async (key: string) => {
         if (!this.isEnabled())
             return this.disabledError()
 
-        const data = this.engine().getItem(key)
+        const data = await this.engine().getItem(key)
         return data ? JSON.parse(data) : undefined
     }
 
@@ -89,11 +92,12 @@ export class LocalStoreManager {
         }
     }
 
-    private _fetchKeys = () => {
+    private _fetchKeys = async () => {
         if (!this.isEnabled())
             return this.disabledError()
-        const keys = this.engine().getItem(this.LOCAL_STORAGE_KEYS_ID)
+        const keys = await this.engine().getItem(this.LOCAL_STORAGE_KEYS_ID)
         !_.isEmpty(keys) && this.toJSON(keys)
+        this._analyzeExpired()
     }
 
     private _analyzeExpired = () => {
