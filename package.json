@@ -1,6 +1,6 @@
 {
   "name": "acey",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,8 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/js-cookie": "^2.2.6",
-    "@types/lodash": "^4.14.149",
+    "@types/lodash": "^4.14.150",
     "@types/node": "^13.13.0",
     "@types/object-path": "^0.11.0",
     "@types/react": "^16.9.34",
