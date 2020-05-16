@@ -1,0 +1,20 @@
+{
+  "name": "next-test",
+  "version": "0.1.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "acey": "^1.1.1",
+    "next": "9.3.6",
+    "next-acey-wrapper": "^1.1.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
+}
