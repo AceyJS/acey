@@ -24,13 +24,58 @@ Acey helps your code to stay **organized**, **scalable**, and easy to keep **cle
 ### Installation
 
 ```
-npm i acey
-```
-or
-```
 yarn add acey
 ```
+
 <br />
+
+<br />
+
+<br />
+
+To start the Acey engine **you need to declare the configuration as done** at the **root** of your application.
+Here's how according to your environment: 
+
+
+## On ReactJS
+```js
+import { config } from 'acey' //HERE
+config.done() //HERE
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
+
+<br />
+
+## On React-Native
+
+React-native is not using the same local store engine as web does, so you need to set it up manually at the root of your application:
+```js
+import AsyncStorage from '@react-native-community/async-storage'
+import { config } from 'acey'
+
+config.setStoreEngine(AsyncStorage)
+config.done()
+```
+*make sure you already installed and linked async-storage.*
+```
+yarn add @react-native-community/async-storage
+```
+
+<br />
+
+## On NextJS
+
+Refer to the documentation The NextJS Acey's wrapper.
+
+🌯 [Next wrapper documentation](https://github.com/Fantasim/next-acey-wrapper)
+
+
 
 <p>
 <details><summary>Example #1 - A Counter</summary><br>
