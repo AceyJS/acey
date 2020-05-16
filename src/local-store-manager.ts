@@ -2,19 +2,22 @@ import * as Cookies from 'es-cookie';
 import config from './config'
 import _ from 'lodash'
 
-export class LocalStoreManager {
+class LocalStoreManager {
 
     private LOCAL_STORAGE_KEYS_ID  = '_ascey_local_ids'
     private _keys: any = {};
 
     constructor(){
-        if (!this.isEnabled())
+        if (config.isNextJS())
             return
+        else if (config.isReactNative() && !this.engine())
+            throw new Error("The local store engine should be set manually at the root of your app when using React-Native -> config.setStoreEngine(AsyncStore)")
+        
         this._fetchKeys()
     }
 
     disabledError = () => {
-        throw new Error("local store is not accessible on NextJS and React Native Environment.")
+        throw new Error("Local store is not accessible for one of these reasons.\n1. Local store doesn't work with NextJS.\n2. The local store engine should be set manually at the root of your app if using React-Native -> config.setStoreEngine(AsyncStore)")
     }
 
     public engine = () => config.getStoreEngine()
@@ -23,7 +26,7 @@ export class LocalStoreManager {
     public toString = () => JSON.stringify(this._keys)
     public toJSON = (keys: string) => this._keys = JSON.parse(keys)
 
-    public isEnabled = (): boolean => !(config.isNextJS())
+    public isEnabled = (): boolean => !config.isNextJS() && !!this.engine()
 
     public addElement = (key: string, data: string, expires: number = 7) => {
         if (!this.engine()){
@@ -111,4 +114,4 @@ export class LocalStoreManager {
     }
 }
 
-export default new LocalStoreManager()
+export default LocalStoreManager

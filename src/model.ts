@@ -165,7 +165,7 @@ export default class Model {
             })
         }
         else 
-            throw new Error(`You've attempted to call save in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} but didn't specify it as a connected ${this.isCollection() ? 'Collection' : 'Model'}.`)
+            throw new Error(`You've attempted to call save in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} but you either didn't specify it as a connected ${this.isCollection() ? 'Collection' : 'Model'} or didn't specify the config has done at the root of your project: "config.done()"`)
         return this._getConnectedActions()
     }
 
@@ -179,7 +179,7 @@ export default class Model {
             }
         }
         else 
-            throw new Error(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.\n3. You are using React Native`)
+            throw new Error(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.\n3. You didn't specify the config has done at the root of your project: "config.done()"\n4. You are using React Native`)
         
         return this._getConnectedActions()
     }
@@ -196,7 +196,7 @@ export default class Model {
                 throw new Error(`error from localStore with ${this.isCollection() ? 'Collection' : 'Model'}: ${key}, ${e}`)
             }
         } else 
-            throw new Error(`You've attempted to call localStore in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store\n3. You are using NextJS.`)
+            throw new Error(`You've attempted to call localStore in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store\n3. You didn't specify the config has done at the root of your project: "config.done()"\n4. You are using NextJS.`)
         return this._getConnectedActions()
     }
 
@@ -300,8 +300,8 @@ export default class Model {
     }
 
     public toString = (): string => JSON.stringify(this.toPlain())
-    public areCookiesEnabled = (): boolean => !Config.isReactNative() && !this.hasKeyBeenGenerated() && this.isConnected()
-    public isStorageEnabled = (): boolean => !Config.isNextJS() && !this.hasKeyBeenGenerated() && this.isConnected()
+    public areCookiesEnabled = (): boolean => Manager.isInitialized() && !Config.isReactNative() && !this.hasKeyBeenGenerated() && this.isConnected()
+    public isStorageEnabled = (): boolean => Manager.isInitialized() && !Config.isNextJS() && !this.hasKeyBeenGenerated() && this.isConnected()
     public hasKeyBeenGenerated = (): boolean => this._isKeyGenerated
     public isConnected = (): boolean => this.options.connected 
     public isEqual = (m: Model): boolean => this.toString() === m.toString()

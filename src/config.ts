@@ -1,3 +1,5 @@
+import Manager from './manager'
+
 const REACT = 'react'
 const REACT_NATIVE = 'react-native'
 const NEXT_JS = 'next-js'
@@ -10,15 +12,14 @@ class Config {
     private _storeEngine: any = typeof document === 'undefined' ? null : localStorage
 
     constructor(){
-        if (navigator && navigator.product == "ReactNative"){
-            this._env = REACT_NATIVE
-            try {
-                this._storeEngine = require('@react-native-community/async-storage').default
-            } catch {
-                throw new Error("Install and link @react-native-community/async-storage to benefits the storage feature of Acey.")
+        if (typeof window !== 'undefined'){
+            if (navigator && navigator.product == "ReactNative"){
+                this._env = REACT_NATIVE
             }
         }
     }
+
+    done = () => Manager.init()
 
     isNextJSServer = () => this.isNextJS() && typeof document === 'undefined'
     isNextJS = () => this._env === NEXT_JS
@@ -35,7 +36,7 @@ class Config {
     enableLogger = () => this._logger = true
 
     getStoreEngine = () => this._storeEngine
-
+    setStoreEngine = (engine: any) => this._storeEngine = engine
 }
 
 export default new Config()

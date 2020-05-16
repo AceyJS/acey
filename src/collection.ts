@@ -16,7 +16,7 @@ export default class Collection extends Model  {
         this.nodeModel = nodeModel
         
         const assignWithStorage = async () => {
-            if (!this.options.connected || (!this.fetchCookies() && !this.fetchLocalStore())){
+            if (!this.options.connected || (!this.fetchCookies() && !(await this.fetchLocalStore()))){
                 this.setState(this.toListClass(list))
             }
         }
@@ -137,7 +137,7 @@ export default class Collection extends Model  {
     //return the index of the element passed in parameters if it exists in the list.
     public indexOf = (v: any): number => _.findIndex(this.toPlain(), this.newNode(v).toPlain())
 
-    public newNode = (v: any): Model => this._isNodeModel(v) ? v : new (this._getNodeModel())(v)
+    public newNode = (v: any): Model => this._isNodeModel(v) ? v : new (this._getNodeModel())(v, this.__childOptions)
 
     private _isNodeModel = (value: any): boolean => value instanceof this._getNodeModel()
     private _getNodeModel = () => this.nodeModel

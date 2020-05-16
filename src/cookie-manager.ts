@@ -1,8 +1,8 @@
 import * as Cookies from 'es-cookie';
 import config from './config'
-import storeManager, {LocalStoreManager} from './local-store-manager'
+import LocalStoreManager from './local-store-manager'
 
-export class CookieManager {
+class CookieManager {
 
     private COOKIE_SIZE_MAX = 4000;
     private _localStoreManagement: LocalStoreManager;
@@ -12,7 +12,7 @@ export class CookieManager {
     }
 
     disabledError = () => {
-        throw new Error("cookies management is not accessible on React Native, please use local store");
+        throw new Error("cookies management is not accessible on React Native, please use local store instead.");
     }
 
     public isEnabled = (): boolean => !config.isNextJSServer()
@@ -63,4 +63,4 @@ export class CookieManager {
 
 }
 
-export default new CookieManager(storeManager)
+export default CookieManager

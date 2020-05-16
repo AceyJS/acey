@@ -1,14 +1,30 @@
 import {IOptions, IAction } from './src/model'
 import { TConnected } from './src/connect'
+import Model from './src/model'
+import Collection from './src/collection'
+import manager from './src/manager'
+import config from './src/config'
+import {connect, useAcey } from './src/connect'
 
-export { 
+export {
     TConnected,
     IOptions, 
-    IAction
+    IAction,
+    Model,
+    Collection,
+    manager,
+    config,
+    connect,
+    useAcey
 }
 
-export { default as Model } from './src/model'
-export { connect, useAcey } from './src/connect'
-export { default as Collection } from './src/collection'
-export { default as manager } from './src/manager'
-export { default as config } from './src/config'
+const Ob: any = {
+    Model,
+    Collection,
+    manager,
+    config,
+    connect,
+    useAcey
+}
+
+export default Ob

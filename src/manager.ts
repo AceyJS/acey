@@ -2,8 +2,8 @@ import Model from './model'
 import _ from 'lodash'
 import config from './config'
 
-import storeManager, {LocalStoreManager } from './local-store-manager'
-import cookieManager, { CookieManager } from './cookie-manager'
+import LocalStoreManager from './local-store-manager'
+import CookieManager from './cookie-manager'
 
 interface IAction {
     payload: any
@@ -16,8 +16,10 @@ class Manager {
     private _store: any = {}
     private _subscribers: Function[] = []
     private _pendingHydrationStore: any = {}
-    private _localStoreManager: LocalStoreManager = storeManager
-    private _cookieManager: CookieManager = cookieManager
+    private _localStoreManager: any = null
+    private _cookieManager: any = null;
+    private _hasBeenInitialized: boolean = false
+    private _pendingModelConnexion: any[] = []
 
     constructor(){}
 
@@ -27,6 +29,21 @@ class Manager {
         this._store = {}
         this._pendingHydrationStore = {}
         this._subscribers = []
+        this._hasBeenInitialized = false
+        this._pendingModelConnexion = []
+    }
+
+    public init = async () => {
+        if (!this.isInitialized()){
+            this._hasBeenInitialized = true
+            this._localStoreManager = new LocalStoreManager()
+            this._cookieManager = new CookieManager(this._localStoreManager)
+            for (let o of this.pendingModelConnexion()){
+                await o.connect(o.model)
+            }
+            this._pendingModelConnexion = []
+            this._privateExecPendingHydration()
+        }
     }
 
     public localStoreManager = (): LocalStoreManager => this._localStoreManager
@@ -36,7 +53,9 @@ class Manager {
     public subscribers = (): Function[] => this._subscribers
     public pendingHydrationStore = (): any => this._pendingHydrationStore
     public store = (): Object => this._store
+    public pendingModelConnexion = (): any => this._pendingModelConnexion
 
+    public isInitialized = () => this._hasBeenInitialized
 
     private _setPendingHydrationStore = (store: any) => {
         this._pendingHydrationStore = Object.assign({}, this.pendingHydrationStore(), store)
@@ -63,31 +82,44 @@ class Manager {
         this.notifySubscribers()
     }
 
-    public notifySubscribers = () => this.subscribers().forEach((e) => e())
+    public notifySubscribers = () => {
+        if (this.isInitialized())
+            this.subscribers().forEach((e) => e())
+        else if (config.isReactNative())
+            throw new Error(`You need to specify the config has done at the root of your project: "config.done()" to run Acey.`)
+    }
 
     public subscribe = (callback: Function) => {
+        callback()
         this.subscribers().push(callback)
         this._privateExecPendingHydration()
     }
 
-    public connectModel = async (m: Model) => {
-        const { key } = m.options
-        const { defaultState } = m
+    public connectModel = (m: Model) => {
+        
+        const callback = async (m: Model) => {
+            const { key } = m.options
+            const { defaultState } = m
 
-        this.transitionManager().set(key, this._newTransition(defaultState, key))
-        this.modelsManager().set(key, m)
-        this._store[key] = defaultState
+            this.transitionManager().set(key, this._newTransition(defaultState, key))
+            this.modelsManager().set(key, m)
+            this._store[key] = defaultState
 
-        let storedData;
-        if (m.areCookiesEnabled())
-            storedData = m.fetchCookies()
-        if (!storedData && m.isStorageEnabled())
-            storedData = await m.fetchLocalStore()
-        storedData && this._setPendingHydrationStore({[key]: storedData}) 
+            let storedData;
+            if (m.areCookiesEnabled())
+                storedData = m.fetchCookies()
+            if (!storedData && m.isStorageEnabled())
+                storedData = await m.fetchLocalStore()
+            storedData && this._setPendingHydrationStore({[key]: storedData}) 
+        }
+
+        this.isInitialized() ? callback(m) : this.pendingModelConnexion().push({
+            model: m,
+            connect: callback
+        })
     }
 
     public exist = (key: string): boolean => this.modelsManager().get(key) !== undefined
-
 
     public addPendingHydration = (store: any) => {
         this._setPendingHydrationStore(store)
@@ -96,7 +128,7 @@ class Manager {
 
     public hydrateCookies = (cookies: any) => {
         if (config.isReactNative())
-            throw new Error("cookie management are not available yet on React-Native");
+            throw new Error("cookie management are not available on React-Native");
         this.modelsManager().forEach((m, key) => {
             key in cookies && m.areCookiesEnabled() && m.hydrate(cookies[key]).save()
         })
