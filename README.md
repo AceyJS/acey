@@ -27,11 +27,6 @@ Acey helps your code to stay **organized**, **scalable**, and easy to keep **cle
 yarn add acey
 ```
 
-<br />
-
-<br />
-
-<br />
 
 To start the Acey engine **you need to declare the configuration as done** at the **root** of your application.
 Here's how according to your environment: 
