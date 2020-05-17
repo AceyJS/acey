@@ -27,10 +27,11 @@ Acey helps you to keep your code **organized**, **maintainable**, and easy to **
 yarn add acey
 ```
 
+<br />
+
 
 To start the Acey engine **you need to declare the configuration as done** at the **root** of your application.
 Here's how according to your environment: 
-
 
 ## On ReactJS
 ```js
