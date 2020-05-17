@@ -71,41 +71,125 @@ Refer to the documentation The NextJS Acey's wrapper.
 
 🌯 [Next wrapper documentation](https://github.com/Fantasim/next-acey-wrapper)
 
+<br />
 
+<br />
 
-<p>
-<details><summary>Example #1 - A Counter</summary><br>
+# Tutorials
 
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="counter" src="https://siasky.net/VAAnjUpfk-zSCFwtU1x09oLxhcE6JHIaxwZmHyVgkYIDtA">
-  </a>
-</p>
+## ReactJS
 
+<details><summary>Counter App</summary>
+  
+### [Youtube 📺](https://www.youtube.com/watch?v=dFCCcDKUi80)
 ```ts
 import React from 'react';
-import { Model, useAcey } from 'acey'
+import { Model, config, useAcey } from 'acey'
+config.done() //Set the configuration as done at the entry point of the project.
 
-//The component
-const App = () => {
+class CounterModel extends Model {
 
-  //Re-render the component when the listed Models state changes.
-  useAcey([ Counter ])
+  constructor(initialState: any, options: any){
+    super(initialState, options)
+  }
+
+  get = () => this.state.counter
+  incremente = () => this.setState({counter: this.get() + 1}).save().localStore()
+  decremente = () => this.setState({counter: this.get() - 1}).save().localStore()
+}
+
+const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
+
+function App() {
+
+  useAcey([
+    Counter
+  ])
 
   return (
-    <>
+    <div>
+      <button onClick={Counter.decremente}>decrement</button>
+      {Counter.get()}
+      <button onClick={Counter.incremente}>increment</button>
+    </div>
+  );
+}
+
+export default App;
+```
+</details>
+
+<br />
+
+## NextJS 
+
+<details><summary>Counter App</summary>
+  
+### [Youtube 📺](https://www.youtube.com/watch?v=AvVnU7Cr1hg)
+```js
+import { Model, useAcey} from 'acey'
+
+class CounterModel extends Model {
+  constructor(initialState, options){
+    super(initialState, options)
+  }
+
+  get = () => this.state.counter
+  increment = () => this.setState({counter: this.get() + 1}).save().cookie()
+  decrement = () => this.setState({counter: this.get() - 1}).save().cookie()
+}
+
+const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
+
+export default function Home() {
+
+  useAcey([
+    Counter
+  ])
+
+  return (
+    <div>
       <button onClick={Counter.decrement}>decrement</button>
-        <span>{Counter.get()}</span>
-      <button onClick={Counter.increment}>increment</button>    
-    </>
+      {Counter.get()}
+      <button onClick={Counter.increment}>increment</button>
+    </div>
   )
 }
 
-//Create a Model for our counter
+Home.getInitialProps = ({ query }) => {
+  //Counter state updated on server side
+  //Counter.setState({counter: 10}).save()
+}
+```
+</details>
+
+<br />
+
+## React Native
+
+<details><summary>Counter App</summary>
+  
+### [Youtube 📺](https://www.youtube.com/watch?v=1Zp8ol_xtI8)
+```js
+import React from 'react';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  StatusBar,
+  TouchableOpacity
+} from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage'
+import { config, Model, useAcey } from 'acey'
+config.setStoreEngine(AsyncStorage)
+config.done()
+
 class CounterModel extends Model {
 
-  constructor(data: any, options: any){
-    super(data, options)
+  constructor(initialState, options){
+    super(initialState, options)
   }
 
   get = () => this.state.counter
@@ -113,15 +197,39 @@ class CounterModel extends Model {
   decrement = () => this.setState({counter: this.get() - 1}).save()
 }
 
-//Instance the Counter Model
-const Counter = new CounterModel( {counter: 0} , {connected: true})
+const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
+
+const App = () => {
+
+  useAcey([
+    Counter
+  ])
+
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView>
+        <View style={{flexDirection: 'row', margin: 50, alignItems: 'center', }}>     
+          <TouchableOpacity onPress={Counter.decrement} style={styles.touchable}><Text>decrement</Text></TouchableOpacity>    
+          <Text style={{margin: 10}}>{Counter.get()}</Text>
+          <TouchableOpacity onPress={Counter.increment} style={styles.touchable}><Text>increment</Text></TouchableOpacity>    
+        </View>
+      </SafeAreaView>
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  touchable: {
+    padding: 10,
+    borderWidth: 1
+  }
+});
 
 export default App;
 ```
-
 </details>
-
 
 <br />
 <br />
