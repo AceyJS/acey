@@ -81,9 +81,8 @@ Refer to the documentation The NextJS Acey's wrapper.
 
 <details><summary>Counter App</summary>
   
-### [Youtube 📺](https://www.youtube.com/watch?v=dFCCcDKUi80)
-### [Try the App](https://codesandbox.io/s/github/Fantasim/acey/tree/master/example/reactjs/counter)
-### [Full project](https://github.com/Fantasim/acey/tree/master/example/reactjs/counter)
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=dFCCcDKUi80) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/reactjs/counter) &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;🌎&nbsp;[Live demo](https://codesandbox.io/s/github/Fantasim/acey/tree/master/example/reactjs/counter)
+
 ```ts
 import React from 'react';
 import { Model, config, useAcey } from 'acey'
@@ -126,9 +125,9 @@ export default App;
 ## NextJS 
 
 <details><summary>Counter App</summary>
-  
-### [Youtube 📺](https://www.youtube.com/watch?v=AvVnU7Cr1hg)
-### [Full project](https://github.com/Fantasim/acey/tree/master/example/next/counter)
+
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=AvVnU7Cr1hg) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/next/counter)
+
 ```js
 import { Model, useAcey} from 'acey'
 
@@ -172,8 +171,7 @@ Home.getInitialProps = ({ query }) => {
 
 <details><summary>Counter App</summary>
   
-### [Youtube 📺](https://www.youtube.com/watch?v=1Zp8ol_xtI8)
-### [Full project](https://github.com/Fantasim/acey/tree/master/example/react-native/counter)
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=1Zp8ol_xtI8) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/react-native/counter)
 ```js
 import React from 'react';
 import {
