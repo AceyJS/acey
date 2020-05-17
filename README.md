@@ -82,6 +82,8 @@ Refer to the documentation The NextJS Acey's wrapper.
 <details><summary>Counter App</summary>
   
 ### [Youtube 📺](https://www.youtube.com/watch?v=dFCCcDKUi80)
+### [Try the App](https://codesandbox.io/s/github/Fantasim/acey/tree/master/example/reactjs/counter)
+### [Full project](https://github.com/Fantasim/acey/tree/master/example/reactjs/counter)
 ```ts
 import React from 'react';
 import { Model, config, useAcey } from 'acey'
@@ -126,6 +128,7 @@ export default App;
 <details><summary>Counter App</summary>
   
 ### [Youtube 📺](https://www.youtube.com/watch?v=AvVnU7Cr1hg)
+### [Full project](https://github.com/Fantasim/acey/tree/master/example/next/counter)
 ```js
 import { Model, useAcey} from 'acey'
 
@@ -170,6 +173,7 @@ Home.getInitialProps = ({ query }) => {
 <details><summary>Counter App</summary>
   
 ### [Youtube 📺](https://www.youtube.com/watch?v=1Zp8ol_xtI8)
+### [Full project](https://github.com/Fantasim/acey/tree/master/example/react-native/counter)
 ```js
 import React from 'react';
 import {
@@ -183,8 +187,8 @@ import {
 
 import AsyncStorage from '@react-native-community/async-storage'
 import { config, Model, useAcey } from 'acey'
-config.setStoreEngine(AsyncStorage)
-config.done()
+config.setStoreEngine(AsyncStorage) //Set the store enginne of Acey as AsyncStorage.
+config.done() //Set the configuration as done at the entry point of the project.
 
 class CounterModel extends Model {
 
@@ -193,8 +197,8 @@ class CounterModel extends Model {
   }
 
   get = () => this.state.counter
-  increment = () => this.setState({counter: this.get() + 1}).save()
-  decrement = () => this.setState({counter: this.get() - 1}).save()
+  increment = () => this.setState({counter: this.get() + 1}).save().localStore()
+  decrement = () => this.setState({counter: this.get() - 1}).save().localStore()
 }
 
 const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
