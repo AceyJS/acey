@@ -13,9 +13,9 @@
 
 #### Acey is Model oriented state manager for React apps.
 
-It enables an organized and scalable architecture thanks to the centralization of data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (list of Models). **One time**, **One place**. 🏴‍☠️
+It enables an organized and scalable architecture thanks to the centralization of the data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (list of Models). **One time**, **One place**. 🏴‍☠️
 
-Acey helps your code to stay **organized**, **scalable**, and easy to keep **clean**. 🌱
+Acey helps you to keep your code **organized**, **maintainable**, and easy to **scale**. 🌱
 
 <br />
 
@@ -155,20 +155,19 @@ You build a Model from an Object and options.
 `super(data: Object, options: IOptions)`
 
 #### Example of a Model:
-`./src/ascey/models/todo.ts`
-```ts
-import { Model, IOptions } from 'acey'
+```js
+import { Model } from 'acey'
 
-// A Model must always have an initial object data.
-const DEFAULT_DATA = {
+// A Model must always have a default state.
+const DEFAULT_STATE = {
     id: 0,
     content: ''
 }
 
 class Todo extends Model {
 
-    constructor(todo = DEFAULT_DATA, options: IOptions){
-        super(todo, options)
+    constructor(initialState = DEFAULT_STATE, options){
+        super(initialState, options)
     }
     
     content = () => this.state.content
@@ -242,20 +241,17 @@ You build a Collection with :
 3. Options
 
 #### Example of a Collection:
-`./src/ascey/collections/todo.ts`
-```ts
-import { Collection, IOptions } from 'react-ascey'
+```js
+import { Collection } from 'acey'
 import Todo from './todo'
-
-// A Collection must always have an initial array.
-const DEFAULT_DATA = []
 
 class Todolist extends Collection {
 
-    constructor(list = DEFAULT_DATA, options: IOptions){
-        super(list, Todo, options)
+    constructor(initialState = [], options){
+        super(initialState, Todo, options)
     }
     
+    //method example
     sortByID = () => {
         /*
             - orderBy sort the list by data and return an array
