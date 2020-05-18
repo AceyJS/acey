@@ -13,9 +13,9 @@
 
 #### Acey is Model oriented state manager for React apps.
 
-It enables an organized and scalable architecture thanks to the centralization of data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (list of Models). **One time**, **One place**. 🏴‍☠️
+It enables an organized and scalable architecture thanks to the centralization of the data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (list of Models). **One time**, **One place**. 🏴‍☠️
 
-Acey helps your code to stay **organized**, **scalable**, and easy to keep **clean**. 🌱
+Acey helps you to keep your code **organized**, **maintainable**, and easy to **scale**. 🌱
 
 <br />
 
@@ -27,10 +27,11 @@ Acey helps your code to stay **organized**, **scalable**, and easy to keep **cle
 yarn add acey
 ```
 
+<br />
+
 
 To start the Acey engine **you need to declare the configuration as done** at the **root** of your application.
 Here's how according to your environment: 
-
 
 ## On ReactJS
 ```js
@@ -70,57 +71,167 @@ Refer to the documentation The NextJS Acey's wrapper.
 
 🌯 [Next wrapper documentation](https://github.com/Fantasim/next-acey-wrapper)
 
+<br />
 
+<br />
 
-<p>
-<details><summary>Example #1 - A Counter</summary><br>
+# Tutorials
 
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="counter" src="https://siasky.net/VAAnjUpfk-zSCFwtU1x09oLxhcE6JHIaxwZmHyVgkYIDtA">
-  </a>
-</p>
+## ReactJS
+
+<details><summary>Counter App</summary>
+  
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=dFCCcDKUi80) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/reactjs/counter) &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;🌎&nbsp;[Live demo](https://codesandbox.io/s/github/Fantasim/acey/tree/master/example/reactjs/counter)
 
 ```ts
 import React from 'react';
-import { Model, useAcey } from 'acey'
+import { Model, config, useAcey } from 'acey'
+config.done() //Set the configuration as done at the entry point of the project.
 
-//The component
-const App = () => {
-
-  //Re-render the component when the listed Models state changes.
-  useAcey([ Counter ])
-
-  return (
-    <>
-      <button onClick={Counter.decrement}>decrement</button>
-        <span>{Counter.get()}</span>
-      <button onClick={Counter.increment}>increment</button>    
-    </>
-  )
-}
-
-//Create a Model for our counter
 class CounterModel extends Model {
 
-  constructor(data: any, options: any){
-    super(data, options)
+  constructor(initialState: any, options: any){
+    super(initialState, options)
   }
 
   get = () => this.state.counter
-  increment = () => this.setState({counter: this.get() + 1}).save()
-  decrement = () => this.setState({counter: this.get() - 1}).save()
+  incremente = () => this.setState({counter: this.get() + 1}).save().localStore()
+  decremente = () => this.setState({counter: this.get() - 1}).save().localStore()
 }
 
-//Instance the Counter Model
-const Counter = new CounterModel( {counter: 0} , {connected: true})
+const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
+function App() {
+
+  useAcey([
+    Counter
+  ])
+
+  return (
+    <div>
+      <button onClick={Counter.decremente}>decrement</button>
+      {Counter.get()}
+      <button onClick={Counter.incremente}>increment</button>
+    </div>
+  );
+}
 
 export default App;
 ```
-
 </details>
 
+<br />
+
+## NextJS 
+
+<details><summary>Counter App</summary>
+
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=AvVnU7Cr1hg) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/next/counter)
+
+```js
+import { Model, useAcey} from 'acey'
+
+class CounterModel extends Model {
+  constructor(initialState, options){
+    super(initialState, options)
+  }
+
+  get = () => this.state.counter
+  increment = () => this.setState({counter: this.get() + 1}).save().cookie()
+  decrement = () => this.setState({counter: this.get() - 1}).save().cookie()
+}
+
+const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
+
+export default function Home() {
+
+  useAcey([
+    Counter
+  ])
+
+  return (
+    <div>
+      <button onClick={Counter.decrement}>decrement</button>
+      {Counter.get()}
+      <button onClick={Counter.increment}>increment</button>
+    </div>
+  )
+}
+
+Home.getInitialProps = ({ query }) => {
+  //Counter state updated on server side
+  //Counter.setState({counter: 10}).save()
+}
+```
+</details>
+
+<br />
+
+## React Native
+
+<details><summary>Counter App</summary>
+  
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=1Zp8ol_xtI8) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/react-native/counter)
+```js
+import React from 'react';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  StatusBar,
+  TouchableOpacity
+} from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage'
+import { config, Model, useAcey } from 'acey'
+config.setStoreEngine(AsyncStorage) //Set the store enginne of Acey as AsyncStorage.
+config.done() //Set the configuration as done at the entry point of the project.
+
+class CounterModel extends Model {
+
+  constructor(initialState, options){
+    super(initialState, options)
+  }
+
+  get = () => this.state.counter
+  increment = () => this.setState({counter: this.get() + 1}).save().localStore()
+  decrement = () => this.setState({counter: this.get() - 1}).save().localStore()
+}
+
+const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
+
+
+const App = () => {
+
+  useAcey([
+    Counter
+  ])
+
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView>
+        <View style={{flexDirection: 'row', margin: 50, alignItems: 'center', }}>     
+          <TouchableOpacity onPress={Counter.decrement} style={styles.touchable}><Text>decrement</Text></TouchableOpacity>    
+          <Text style={{margin: 10}}>{Counter.get()}</Text>
+          <TouchableOpacity onPress={Counter.increment} style={styles.touchable}><Text>increment</Text></TouchableOpacity>    
+        </View>
+      </SafeAreaView>
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  touchable: {
+    padding: 10,
+    borderWidth: 1
+  }
+});
+
+export default App;
+```
+</details>
 
 <br />
 <br />
@@ -155,20 +266,19 @@ You build a Model from an Object and options.
 `super(data: Object, options: IOptions)`
 
 #### Example of a Model:
-`./src/ascey/models/todo.ts`
-```ts
-import { Model, IOptions } from 'acey'
+```js
+import { Model } from 'acey'
 
-// A Model must always have an initial object data.
-const DEFAULT_DATA = {
+// A Model must always have a default state.
+const DEFAULT_STATE = {
     id: 0,
     content: ''
 }
 
 class Todo extends Model {
 
-    constructor(todo = DEFAULT_DATA, options: IOptions){
-        super(todo, options)
+    constructor(initialState = DEFAULT_STATE, options){
+        super(initialState, options)
     }
     
     content = () => this.state.content
@@ -242,20 +352,17 @@ You build a Collection with :
 3. Options
 
 #### Example of a Collection:
-`./src/ascey/collections/todo.ts`
-```ts
-import { Collection, IOptions } from 'react-ascey'
+```js
+import { Collection } from 'acey'
 import Todo from './todo'
-
-// A Collection must always have an initial array.
-const DEFAULT_DATA = []
 
 class Todolist extends Collection {
 
-    constructor(list = DEFAULT_DATA, options: IOptions){
-        super(list, Todo, options)
+    constructor(initialState = [], options){
+        super(initialState, Todo, options)
     }
     
+    //method example
     sortByID = () => {
         /*
             - orderBy sort the list by data and return an array
