@@ -104,16 +104,18 @@ class CounterModel extends Model {
       STEP 3: Add incrementer/decrementer actions to update the counter's state
       _________________________________________________________________________
       
-        setState: works like setState in React Class Components, 
-                  it updates the current state of the Model
+        setState:     works like setState in React Class Components, 
+                      it updates the current state of the Model
                 
-        save:     dispatch the new state to the store and re-render 
-                  all the components bound with the Model
+        save:         dispatch the new state to the store and re-render 
+                      all the components bound with the Model
                 
-        cookie:   Store the Model's state in the cookies. (OPTION)
+        localStore:   Store the Model's state in the localStore. (OPTION)
+                      i) The default Model state at the next app load is going 
+                         to be the last state stored.
   */
-  increment = () => this.setState({counter: this.get() + 1}).save().cookie()
-  decrement = () => this.setState({counter: this.get() - 1}).save().cookie()
+  increment = () => this.setState({counter: this.get() + 1}).save().localStore()
+  decrement = () => this.setState({counter: this.get() - 1}).save().localStore()
 }
 
 /* 
