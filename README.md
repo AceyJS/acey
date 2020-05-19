@@ -185,7 +185,7 @@ import {
 
 import AsyncStorage from '@react-native-community/async-storage'
 import { config, Model, useAcey } from 'acey'
-config.setStoreEngine(AsyncStorage) //Set the store enginne of Acey as AsyncStorage.
+config.setStoreEngine(AsyncStorage) //Set the store engine of Acey
 config.done() //Set the configuration as done at the entry point of the project.
 
 class CounterModel extends Model {
@@ -201,33 +201,29 @@ class CounterModel extends Model {
 
 const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
-
 const App = () => {
 
   useAcey([
     Counter
   ])
-
+ 
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <View style={{flexDirection: 'row', margin: 50, alignItems: 'center', }}>     
-          <TouchableOpacity onPress={Counter.decrement} style={styles.touchable}><Text>decrement</Text></TouchableOpacity>    
-          <Text style={{margin: 10}}>{Counter.get()}</Text>
-          <TouchableOpacity onPress={Counter.increment} style={styles.touchable}><Text>increment</Text></TouchableOpacity>    
+        <View>     
+          <TouchableOpacity onPress={Counter.decrement}>
+             <Text>decrement</Text>
+          </TouchableOpacity>    
+          <Text>{Counter.get()}</Text>
+          <TouchableOpacity onPress={Counter.increment}>
+            <Text>increment</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  touchable: {
-    padding: 10,
-    borderWidth: 1
-  }
-});
 
 export default App;
 ```
