@@ -12,7 +12,7 @@
 # Acey - A React State Manager.
 
 #### Acey is Model oriented state manager for React apps.
-
+ 
 It enables an organized and scalable architecture thanks to the centralization of the data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (list of Models). **One time**, **One place**. 🏴‍☠️
 
 Acey helps you to keep your code **organized**, **maintainable**, and easy to **scale**. 🌱
@@ -144,6 +144,10 @@ const App = () => {
 export default App;
 ```
 </details>
+<details><summary>Todolist App</summary>
+  
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=qXR6bLp8iWE) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/reactjs/todolist) &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;🌎&nbsp;[Live demo](https://codesandbox.io/s/github/Fantasim/acey/tree/master/example/reactjs/todolist)
+</details>
 
 <br />
 
@@ -213,6 +217,10 @@ Home.getInitialProps = ({ query }) => {
   Counter.setState({counter: 10}).save()
 }
 ```
+</details>
+<details><summary>Search tech job App</summary>
+  
+### 🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/next/find-tech-job) &nbsp;&nbsp;&nbsp;
 </details>
 
 <br />
@@ -305,6 +313,10 @@ const App = () => {
 
 export default App;
 ```
+</details>
+<details><summary>Micro blogging app</summary>
+  
+### 🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/react-native/microBlogging) &nbsp;&nbsp;&nbsp;
 </details>
 
 <br />
