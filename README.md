@@ -77,9 +77,9 @@ yarn add @react-native-community/async-storage
 
 ## On NextJS
 
-Refer to the documentation The NextJS Acey's wrapper.
+Refer to the Wrapper doc ⬇️
 
-🌯 [Next wrapper documentation](https://github.com/Fantasim/next-acey-wrapper)
+🌯 [Next Acey wrapper documentation](https://github.com/Fantasim/next-acey-wrapper)
 
 <br />
 
