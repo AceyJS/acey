@@ -11,11 +11,21 @@
 
 # Acey - A React State Manager.
 
-#### Acey is Model oriented state manager for React apps.
+#### Acey is an innovative Global State Manager for React Apps. 💡
  
-It enables an organized and scalable architecture thanks to the centralization of the data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (list of Models). **One time**, **One place**. 🏴‍☠️
+It allows you to encapsulate your states inside Model class. Then you can gather the methods you need to treat, access, format, and organize their state. 🍱
+
+You can :
+
+- Update and access your Model’s state wherever you want in the App without any binding. 🔓
+- Connect conveniently any Model with any component, so they re-render when the Model’s state changes. 🔄
+
+<br />
+
+It implements many useful built-in features to make your life easier, building, and maintaining your app architecture. 🛠️
 
 Acey helps you to keep your code **organized**, **maintainable**, and easy to **scale**. 🌱
+
 
 <br />
 
