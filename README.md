@@ -17,7 +17,7 @@ It allows you to encapsulate your states inside Model class. Then you can gather
 
 You can :
 
-- Update and access your Model’s state wherever you want in the App without any binding. 🔓
+- Update and access your Model’s state wherever you want in your App without any binding. 🔓
 - Connect conveniently any Model with any component, so they re-render when the Model’s state changes. 🔄
 
 <br />
