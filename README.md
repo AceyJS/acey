@@ -332,6 +332,153 @@ export default App;
 <br />
 <br />
 
+# Examples
+
+<details><summary>Connect Model to Class Component</summary>
+  
+```js
+import React from 'react'
+import { connect } from 'acey'
+import { Counter } from '../acey/models'
+
+class CounterApp extends React.Component {
+  
+  render = () => {
+    return (
+      <>
+        <button onClick={Counter.decrement}>decrement</button>
+        <span>{Counter.get()}</span>
+        <button onClick={Counter.increment}>increment</button>
+      </>
+    )
+  }
+}
+
+export default connect([ Counter ])(CounterApp)
+```
+</details>
+
+<details><summary>Nesting Models in Model</summary>
+  
+```js
+import { Model } from 'acey'
+import TweetCollection from '../collections/tweetlist'
+
+const DEFAULT_STATE = {
+  id: '',
+  username: '',
+  device: {
+    brand: '',
+    model: '',
+    version: 0
+  },
+  tweet_list: []
+}
+
+class Device extends Model {
+
+  constructor(initialState, options){
+    super(initialState, options)
+  }
+  
+  //getters
+  brand = () => this.state.brand
+  model = () => this.state.model
+  version = () => this.state.version  
+}
+
+class User extends Model {
+
+  constructor(initialState = DEFAULT_STATE, options){
+    super(initialState, options)
+    const { device, tweet_list } = initialState
+    this.setState({
+      device: new Device(device, this.__childOptions),
+      tweet_list: new TweetCollection(tweet_list, this.__childOptions)    
+    })
+    /* 
+      __childOptions allow you to in some way connect Device and TweetCollection to the store, 
+      while binding them to User. 
+    */
+  }
+  
+  //getters
+  device = () => this.state.device //return the instanced Device Model
+  tweetList = () => this.state.tweet_list //return the instanced Tweet Collection
+  ID = () => this.state.id
+  username = () => this.state.username
+  
+  //actions
+  updateUsername = (username) => this.setState({ username }).save()
+}
+
+export default User
+```
+</details>
+
+<details><summary>Sort and Filter a TweetList</summary>
+  
+```js
+import React from 'react'
+import TweetCase from './components/tweet
+
+import { Model, Collection, useAcey } from 'acey'
+
+const Tweet extends Model {
+  
+  constructor(initialState = { content: '' , id: '' } , options){
+    super(initialState, options)
+  }
+  
+  //getters
+  content = () => this.state.content
+  ID = () => this.state.id
+}
+
+class TweetList extends Collection {
+  
+  constructor(initialState = [], options){
+    super(initialState, Tweet, options)
+  }
+  
+  filterByWorld = (word) => new TweetList(this.filter(o => o.content.indexOf(word) != -1), this.__childOptions)
+  sortByContentLength = () => new TodoCollection(this.orderBy([(o) => o.content.length], ['asc']), this.__childOptions)
+}
+
+const DEFAULT_TWEET_LIST = [
+  {
+    content: 'this is a casual tweet',
+    id: 'ID_1'
+  },
+  {
+    content: 'This is a frequent tweet,
+    id: 'ID_2'
+  }
+]
+
+const TweetList = new TodoCollection(DEFAULT_TWEET_LIST, {connected: true, key: 'todolist'})
+
+const Tweets = () => {
+
+  useAcey([ TweetList ])
+  
+  return (
+    <>
+      {Tweetlist.filterByWorld('casual').sortByContentLength().map((tweet, index) => {
+        return <TweetCase tweet={tweet} key={index} />
+      })}
+    </>
+  )
+}
+
+export default Tweets
+```
+</details>
+
+<br />
+<br />
+
+
 
 # Acey - Core.
 
