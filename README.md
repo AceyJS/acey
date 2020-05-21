@@ -230,7 +230,8 @@ Home.getInitialProps = ({ query }) => {
 </details>
 <details><summary>Search tech job App</summary>
   
-### 🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/next/find-tech-job) &nbsp;&nbsp;&nbsp;
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=tP0QZR-jUYQ) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/next/find-tech-job)
+
 </details>
 
 <br />
