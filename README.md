@@ -230,6 +230,8 @@ export default Tweets
 ```
 </details>
 
+<br />
+
 # Tutorials
 
 ## ReactJS
@@ -476,12 +478,8 @@ export default App;
 </details>
 
 <br />
-<br />
 
 <br />
-<br />
-
-
 
 # Acey - Core.
 
