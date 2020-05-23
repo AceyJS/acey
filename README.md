@@ -236,7 +236,7 @@ export default Tweets
 
 ## ReactJS
 
-<details><summary>Counter App</summary>
+<details><summary>Counter App (Single file)</summary>
   
 ### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=dFCCcDKUi80) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/reactjs/counter) &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;🌎&nbsp;[Live demo](https://codesandbox.io/s/github/Fantasim/acey/tree/master/example/reactjs/counter)
 
@@ -310,7 +310,7 @@ export default App;
 
 ## NextJS 
 
-<details><summary>Counter App</summary>
+<details><summary>Counter App (Single file)</summary>
 
 ### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=AvVnU7Cr1hg) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/next/counter)
 
@@ -385,7 +385,7 @@ Home.getInitialProps = ({ query }) => {
 
 ## React Native
 
-<details><summary>Counter App</summary>
+<details><summary>Counter App (Single file)</summary>
   
 ### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=1Zp8ol_xtI8) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/react-native/counter)
 ```js
