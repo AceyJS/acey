@@ -512,7 +512,8 @@ export default App;
 </details>
 <details><summary>Micro blogging app</summary>
   
-### 🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/react-native/microBlogging) &nbsp;&nbsp;&nbsp;
+ 
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=sW14y3DGLwc) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/react-native/microBlogging) &nbsp;&nbsp;&nbsp;
 </details>
 
 <br />
