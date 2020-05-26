@@ -29,6 +29,45 @@ Acey helps you to keep your code **organized**, **maintainable**, and easy to **
 
 <br />
 
+## Quick start
+
+```js
+import React from 'react';
+import { Model, useAcey } from 'acey'
+
+class CounterModel extends Model {
+  constructor(initialState: any, options: any){
+    super(initialState, options)
+  }
+  get = () => this.state.counter
+}
+
+/* A connected Model re-render the components they are bound with
+   when their state change. */
+const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
+
+const App = () => {
+
+  /* Bind the Counter Model with component. */
+  useAcey([ Counter ])
+
+  return (
+    <div>
+      <button onClick={ () => Counter.setState({counter: Counter.get() - 1}).save() }>decrement</button>
+      {Counter.get()}
+      <button onClick={ () => Counter.setState({counter: Counter.get() + 1}).save() }>increment</button>
+    </div>
+  );
+   /* i) `save()` re-render the components bound with the Model (if a change occured) */
+}
+
+export default App;
+```
+
+<br />
+
+<br />
+
 ## Get started
 
 ### Installation
@@ -84,7 +123,6 @@ Refer to the Wrapper doc ⬇️
 <br />
 
 <br />
-
 
 
 # Examples
