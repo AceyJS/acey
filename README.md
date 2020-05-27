@@ -11,11 +11,60 @@
 
 # Acey - A React State Manager.
 
-#### Acey is Model oriented state manager for React apps.
+#### Acey is an innovative Global State Manager for React Apps. 💡
+ 
+It allows you to encapsulate your states inside Model class. Then you can gather the methods you need to treat, access, format, and organize their state. 🍱
 
-It enables an organized and scalable architecture thanks to the centralization of the data and their utilities (getter, setter, formatter) inside **Models** (objects) and **Collections** (list of Models). **One time**, **One place**. 🏴‍☠️
+You can :
+
+- Update and access your Model’s state wherever you want in your App without any binding. 🔓
+- Connect conveniently any Model with any component, so they re-render when the Model’s state changes. 🔄
+
+<br />
+
+It implements many useful built-in features to make your life easier, building, and maintaining your app architecture. 🛠️
 
 Acey helps you to keep your code **organized**, **maintainable**, and easy to **scale**. 🌱
+
+
+<br />
+
+## Quick start
+
+```js
+import React from 'react';
+import { Model, useAcey } from 'acey'
+
+class CounterModel extends Model {
+  constructor(initialState: any, options: any){
+    super(initialState, options)
+  }
+  get = () => this.state.counter
+}
+
+/* A connected Model re-render the components they are bound with
+   when their state change. */
+const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
+
+const App = () => {
+
+  /* Bind the Counter Model with component. */
+  useAcey([ Counter ])
+
+  return (
+    <div>
+      <button onClick={ () => Counter.setState({counter: Counter.get() - 1}).save() }>decrement</button>
+      {Counter.get()}
+      <button onClick={ () => Counter.setState({counter: Counter.get() + 1}).save() }>increment</button>
+    </div>
+  );
+   /* i) `save()` re-render the components bound with the Model (if a change occured) */
+}
+
+export default App;
+```
+
+<br />
 
 <br />
 
@@ -67,11 +116,157 @@ yarn add @react-native-community/async-storage
 
 ## On NextJS
 
-Refer to the documentation The NextJS Acey's wrapper.
+Refer to the Wrapper doc ⬇️
 
-🌯 [Next wrapper documentation](https://github.com/Fantasim/next-acey-wrapper)
+🌯 [Next Acey wrapper documentation](https://github.com/Fantasim/next-acey-wrapper)
 
 <br />
+
+<br />
+
+
+# Examples
+
+<details><summary>Connect Model to Class Component</summary>
+  
+```js
+import React from 'react'
+import { connect } from 'acey'
+import { Counter } from '../acey/models'
+
+class CounterApp extends React.Component {
+  
+  render = () => {
+    return (
+      <>
+        <button onClick={Counter.decrement}>decrement</button>
+        <span>{Counter.get()}</span>
+        <button onClick={Counter.increment}>increment</button>
+      </>
+    )
+  }
+}
+
+export default connect([ Counter ])(CounterApp)
+```
+</details>
+
+<details><summary>Nesting Models in Model</summary>
+  
+```js
+import { Model } from 'acey'
+import TweetCollection from '../collections/tweetlist'
+
+const DEFAULT_STATE = {
+  id: '',
+  username: '',
+  device: {
+    brand: '',
+    model: '',
+    version: 0
+  },
+  tweet_list: []
+}
+
+class Device extends Model {
+
+  constructor(initialState, options){
+    super(initialState, options)
+  }
+  
+  //getters
+  brand = () => this.state.brand
+  model = () => this.state.model
+  version = () => this.state.version  
+}
+
+class User extends Model {
+
+  constructor(initialState = DEFAULT_STATE, options){
+    super(initialState, options)
+    const { device, tweet_list } = initialState
+    this.setState({
+      device: new Device(device, this.__childOptions),
+      tweet_list: new TweetCollection(tweet_list, this.__childOptions)    
+    })
+    /* 
+      __childOptions allow you to in some way connect Device and TweetCollection to the store, 
+      while binding them to User. 
+    */
+  }
+  
+  //getters
+  device = () => this.state.device //return the instanced Device Model
+  tweetList = () => this.state.tweet_list //return the instanced Tweet Collection
+  ID = () => this.state.id
+  username = () => this.state.username
+  
+  //actions
+  updateUsername = (username) => this.setState({ username }).save()
+}
+
+export default User
+```
+</details>
+
+<details><summary>Sort and Filter a TweetList</summary>
+  
+```js
+import React from 'react'
+import TweetCase from './components/tweet
+
+import { Model, Collection, useAcey } from 'acey'
+
+const Tweet extends Model {
+  
+  constructor(initialState = { content: '' , id: '' } , options){
+    super(initialState, options)
+  }
+  
+  //getters
+  content = () => this.state.content
+  ID = () => this.state.id
+}
+
+class TweetList extends Collection {
+  
+  constructor(initialState = [], options){
+    super(initialState, Tweet, options)
+  }
+  
+  filterByWorld = (word) => new TweetList(this.filter(o => o.content.indexOf(word) != -1), this.__childOptions)
+  sortByContentLength = () => new TodoCollection(this.orderBy([(o) => o.content.length], ['asc']), this.__childOptions)
+}
+
+const DEFAULT_TWEET_LIST = [
+  {
+    content: 'this is a casual tweet',
+    id: 'ID_1'
+  },
+  {
+    content: 'This is a frequent tweet,
+    id: 'ID_2'
+  }
+]
+
+const TweetList = new TodoCollection(DEFAULT_TWEET_LIST, {connected: true, key: 'todolist'})
+
+const Tweets = () => {
+
+  useAcey([ TweetList ])
+  
+  return (
+    <>
+      {Tweetlist.filterByWorld('casual').sortByContentLength().map((tweet, index) => {
+        return <TweetCase tweet={tweet} key={index} />
+      })}
+    </>
+  )
+}
+
+export default Tweets
+```
+</details>
 
 <br />
 
@@ -79,7 +274,7 @@ Refer to the documentation The NextJS Acey's wrapper.
 
 ## ReactJS
 
-<details><summary>Counter App</summary>
+<details><summary>Counter App (Single file)</summary>
   
 ### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=dFCCcDKUi80) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/reactjs/counter) &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;🌎&nbsp;[Live demo](https://codesandbox.io/s/github/Fantasim/acey/tree/master/example/reactjs/counter)
 
@@ -144,12 +339,16 @@ const App = () => {
 export default App;
 ```
 </details>
+<details><summary>Todolist App</summary>
+  
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=qXR6bLp8iWE) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/reactjs/todolist) &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;🌎&nbsp;[Live demo](https://codesandbox.io/s/github/Fantasim/acey/tree/master/example/reactjs/todolist)
+</details>
 
 <br />
 
 ## NextJS 
 
-<details><summary>Counter App</summary>
+<details><summary>Counter App (Single file)</summary>
 
 ### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=AvVnU7Cr1hg) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/next/counter)
 
@@ -214,12 +413,17 @@ Home.getInitialProps = ({ query }) => {
 }
 ```
 </details>
+<details><summary>Search tech job App</summary>
+  
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=tP0QZR-jUYQ) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/next/find-tech-job)
+
+</details>
 
 <br />
 
 ## React Native
 
-<details><summary>Counter App</summary>
+<details><summary>Counter App (Single file)</summary>
   
 ### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=1Zp8ol_xtI8) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/react-native/counter)
 ```js
@@ -306,10 +510,15 @@ const App = () => {
 export default App;
 ```
 </details>
+<details><summary>Micro blogging app</summary>
+  
+ 
+### 📺&nbsp;[Youtube](https://www.youtube.com/watch?v=sW14y3DGLwc) &nbsp;&nbsp;&nbsp;- &nbsp;&nbsp;&nbsp;🐱&nbsp;[Github project](https://github.com/Fantasim/acey/tree/master/example/react-native/microBlogging) &nbsp;&nbsp;&nbsp;
+</details>
 
 <br />
-<br />
 
+<br />
 
 # Acey - Core.
 
