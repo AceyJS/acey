@@ -207,15 +207,12 @@ export default class Model {
     public setState = (o = this.state) => {
         if (this.isCollection())
             return this._set(o)
-        
-        for (let k in o){
-            if (o[k] instanceof Model){
-                this._doVerifications()
-                break
-            }
-        }
+        else if (!Model._isObject(o))
+            throw new Error("You can only set an object to setState on a Model")
 
-        return this._set(Object.assign({}, this.state, o))
+        this._set(Object.assign({}, this.state, o))
+        this._doVerifications()
+        return this._getConnectedActions()
     }
 
     //Only usable in a Model/State
@@ -225,6 +222,12 @@ export default class Model {
 
         delete this.state[key]
         return this._set(this.state)
+    }
+
+    public deleteMultiKey = (keys: string[]) => {
+        for (let key of keys)
+            this.deleteKey(key)
+        return this._getConnectedActions()
     }
 
     //Return the state to JSONified object.
@@ -269,10 +272,11 @@ export default class Model {
     }
     
     hydrate = (state: any) => {
+        hydrate(state, this)
+        this._set()
         if (!this.isEmpty())
             this._doVerifications()
-        hydrate(state, this)
-        return this._set()
+        return this._getConnectedActions()
     }
 
     /*

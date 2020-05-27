@@ -14,7 +14,12 @@ export default class Collection extends Model  {
     constructor(list: any[] = [], nodeModel: Constructor<Model>, ...props: any){
         super([], ...Collection.assignInternalOptions(props, nodeModel))
         this.nodeModel = nodeModel
-        
+
+        if (new (this._getNodeModel())(undefined, this.__childOptions) instanceof Collection){
+            throw new Error("You can't build a Collection with a Collection as a node element");
+            
+        }
+
         const assignWithStorage = async () => {
             if (!this.options.connected || (!this.fetchCookies() && !(await this.fetchLocalStore()))){
                 this.setState(this.toListClass(list))
