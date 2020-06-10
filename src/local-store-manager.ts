@@ -1,6 +1,7 @@
 import * as Cookies from 'es-cookie';
 import config from './config'
 import _ from 'lodash'
+import Errors from './errors'
 
 class LocalStoreManager {
 
@@ -11,13 +12,9 @@ class LocalStoreManager {
         if (config.isNextJS())
             return
         else if (config.isReactNative() && !this.engine())
-            throw new Error("The local store engine should be set manually at the root of your app when using React-Native -> config.setStoreEngine(AsyncStore)")
+            throw Errors.unsetLocalStore()
         
         this._fetchKeys()
-    }
-
-    disabledError = () => {
-        throw new Error("Local store is not accessible for one of these reasons.\n1. Local store doesn't work with NextJS.\n2. The local store engine should be set manually at the root of your app if using React-Native -> config.setStoreEngine(AsyncStore)")
     }
 
     public engine = () => config.getStoreEngine()
@@ -34,9 +31,9 @@ class LocalStoreManager {
         }
 
         if (!this.isEnabled())
-            return this.disabledError()
+            throw Errors.localStoreDisabled()
         if (!config.isReactNative() && Cookies.get(key)){
-            throw new Error("You've attempted to add to the local store, a data already present in the cookies. Cookies have priority over local store, empty your cookes linked with the key before performing this action.")
+            throw Errors.cookiePriorityOverStore()
         }
 
         this.engine().setItem(key, data)
@@ -45,7 +42,7 @@ class LocalStoreManager {
 
     public getElement = async (key: string) => {
         if (!this.isEnabled())
-            return this.disabledError()
+            throw Errors.localStoreDisabled()
 
         const data = await this.engine().getItem(key)
         return data ? JSON.parse(data) : undefined
@@ -53,7 +50,7 @@ class LocalStoreManager {
 
     public removeElement = (key: string) => {
         if (!this.isEnabled())
-            return this.disabledError()
+            throw Errors.localStoreDisabled()
         this.engine().removeItem(key)
         this.removeKey(key)
     }
@@ -62,7 +59,7 @@ class LocalStoreManager {
         if (expires < 0) 
             throw new Error("expire value can't be negative.")
         if (!this.isEnabled())
-            return this.disabledError()
+            throw Errors.localStoreDisabled()
 
         const d = new Date()
         d.setSeconds(d.getSeconds() + (expires * 86400));
@@ -72,7 +69,7 @@ class LocalStoreManager {
 
     public removeKey = (key: string) => {
         if (!this.isEnabled())
-            return this.disabledError()
+            throw Errors.localStoreDisabled()
         if (this.getKeys()[key]){
             delete this.getKeys()[key]
             this.engine().setItem(this.LOCAL_STORAGE_KEYS_ID, this.toString())
@@ -81,14 +78,14 @@ class LocalStoreManager {
 
     public getKeyExpiration = (key: string) => {
         if (!this.isEnabled())
-            return this.disabledError()
+            throw Errors.localStoreDisabled()
         const dateString = this.getKeys()[key]
         return dateString ? new Date(dateString) : undefined
     }
 
     public prune = () => {
         if (!this.isEnabled())
-            return this.disabledError()
+            throw Errors.localStoreDisabled()
         for (let key in this.getKeys()){
             this.engine().removeItem(key)
             delete this.getKeys()[key]
@@ -97,7 +94,7 @@ class LocalStoreManager {
 
     private _fetchKeys = async () => {
         if (!this.isEnabled())
-            return this.disabledError()
+            throw Errors.localStoreDisabled()
         const keys = await this.engine().getItem(this.LOCAL_STORAGE_KEYS_ID)
         !_.isEmpty(keys) && this.toJSON(keys)
         this._analyzeExpired()
@@ -105,7 +102,7 @@ class LocalStoreManager {
 
     private _analyzeExpired = () => {
         if (!this.isEnabled())
-            return this.disabledError()
+            throw Errors.localStoreDisabled()
         const now = new Date()
         for (let key in this.getKeys()){
             const date = this.getKeyExpiration(key)

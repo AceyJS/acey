@@ -4,6 +4,7 @@ import config from './config'
 
 import LocalStoreManager from './local-store-manager'
 import CookieManager from './cookie-manager'
+import Errors from './errors'
 
 interface IAction {
     payload: any
@@ -86,7 +87,7 @@ class Manager {
         if (this.isInitialized())
             this.subscribers().forEach((e) => e())
         else if (config.isReactNative())
-            throw new Error(`You need to specify the config has done at the root of your project: "config.done()" to run Acey.`)
+            throw Errors.configNotDone()
     }
 
     public subscribe = (callback: Function) => {
@@ -128,7 +129,7 @@ class Manager {
 
     public hydrateCookies = (cookies: any) => {
         if (config.isReactNative())
-            throw new Error("cookie management are not available on React-Native");
+            throw Errors.cookieDisabledOnRN()
         this.modelsManager().forEach((m, key) => {
             key in cookies && m.areCookiesEnabled() && m.hydrate(cookies[key]).save()
         })

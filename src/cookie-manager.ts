@@ -1,6 +1,7 @@
 import * as Cookies from 'es-cookie';
 import config from './config'
 import LocalStoreManager from './local-store-manager'
+import Errors from './errors'
 
 class CookieManager {
 
@@ -11,33 +12,25 @@ class CookieManager {
         this._localStoreManagement = localStore
     }
 
-    disabledError = () => {
-        throw new Error("cookies management is not accessible on React Native, please use local store instead.");
-    }
-
     public isEnabled = (): boolean => !config.isNextJSServer()
 
     localStoreManagement = () => this._localStoreManagement
 
     addElement = (key: string, data: string, expires = 365) => {
-        if (config.isReactNative()){
-            return this.disabledError()
-        }
-        if (!this.isEnabled()){
+        if (config.isReactNative())
+            throw Errors.cookieDisabledOnRN()
+        if (!this.isEnabled())
             return
-        }
-        const dLength = data.length
-        if (dLength < this.COOKIE_SIZE_MAX){
-            this.localStoreManagement().isEnabled() && this.localStoreManagement().getKeyExpiration(key) && this.localStoreManagement().removeElement(key);
-            Cookies.set(key, data, {expires});
-        }
-        else 
-            throw new Error(`You've attempted to set cookie with the (key: ${key}), but this action can't be executed because the max length of a cookie is ${this.COOKIE_SIZE_MAX} for most browsers, the one you set was ${dLength}.`)
+        if (data.length >= this.COOKIE_SIZE_MAX)
+            throw Errors.cookieMaxLengthReached(key, this.COOKIE_SIZE_MAX, data.length)
+            
+        this.localStoreManagement().isEnabled() && this.localStoreManagement().getKeyExpiration(key) && this.localStoreManagement().removeElement(key);
+        Cookies.set(key, data, {expires});
     }
 
     getElement = (key: string) => {
         if (config.isReactNative())
-            return this.disabledError()
+            throw Errors.cookieDisabledOnRN()
         if (!this.isEnabled())
             return
 
@@ -47,7 +40,7 @@ class CookieManager {
 
     removeElement = (key: string) => {
         if (config.isReactNative())
-            return this.disabledError()
+            throw Errors.cookieDisabledOnRN()
         if (!this.isEnabled())
             return
         Cookies.remove(key)
@@ -55,7 +48,7 @@ class CookieManager {
 
     prune = () => {
         if (config.isReactNative())
-            return this.disabledError()
+            throw Errors.cookieDisabledOnRN()
         if (!this.isEnabled())
             return
         document.cookie = ""

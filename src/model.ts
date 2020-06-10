@@ -3,7 +3,9 @@ import _ from 'lodash'
 import Manager from './manager'
 import Config from './config'
 
+import Errors from './errors'
 import { hydrate } from './hydrate'
+import { toPlain } from './to-plain'
 
 import { 
     verifyIfContainArrayOfModel,
@@ -68,9 +70,9 @@ export default class Model {
 
         if (this.isConnected()){
             if (Config.isNextJS() && !key)
-                throw new Error("In a NextJS environment you need to manually setup a unique key for every connected Model and Collection you instance.")
+                throw Errors.uniqKeyRequiredOnNextJS()
             if (key && Manager.exist(key) && !Config.isNextJSServer())
-                throw new Error(`You have 2 connected Models/Collections using the same key: ${key}.`)
+                throw Errors.keyAlreadyExist(key)
             if (!key){
                 this._setOptions({key: this._generateKey()})
                 this._isKeyGenerated = true
@@ -109,7 +111,7 @@ export default class Model {
     private _setOptions = (o: any) => this._options = Object.assign({}, this.options, o)
 
     private _setInternalOptions = (options = DEFAULT_INTERNAL_OPTIONS) => {
-        this._internalOptions = Object.assign(this._internalOptions, options)
+        this._internalOptions = Object.assign({}, this._internalOptions, options)
     }
 
   /*    _setChildOptions is setting the options that any nested Model, the current one could have.
@@ -150,22 +152,18 @@ export default class Model {
             this._state = this.isCollection() ? this.toListClass(state) : state
         } else {
             if (!this.isCollection())
-                throw new Error(`The state of a Model, can only be instanced and replaced with an object type.`)
+                throw Errors.onlyObjectOnModelState()
             else 
-                throw new Error(`The state of a Collection, can only be instanced and replaced with an array type.`)
+                throw Errors.onlyArrayOnCollectionState()
         }
         return this._getConnectedActions()
     }
 
     private _save = () => {
-        if (this.isConnected()){
-            Manager.dispatch({
-                payload: this.toPlain(),
-                type: this.options.key,
-            })
-        }
+        if (this.isConnected())
+            Manager.dispatch({ payload: this.toPlain(), type: this.options.key })
         else 
-            throw new Error(`You've attempted to call save in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} but you either didn't specify it as a connected ${this.isCollection() ? 'Collection' : 'Model'} or didn't specify the config has done at the root of your project: "config.done()"`)
+            throw Errors.unauthorizedSave(this)
         return this._getConnectedActions()
     }
 
@@ -175,11 +173,11 @@ export default class Model {
             try {
                 Manager.cookieManager().addElement(key, this.toString(), expires)
             } catch (e) {
-                throw new Error(`error from coookie with Model/Collection: ${key}, ${e}`)
+                console.log(`error from coookie with Model/Collection: ${key}, ${e}`)
             }
         }
         else 
-            throw new Error(`You've attempted to call cookie in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.\n3. You didn't specify the config has done at the root of your project: "config.done()"\n4. You are using React Native`)
+            throw Errors.unauthorizedCookieAdd(this)
         
         return this._getConnectedActions()
     }
@@ -193,10 +191,10 @@ export default class Model {
             try {
                 Manager.localStoreManager().addElement(key, this.toString(), expires)
             } catch (e) {
-                throw new Error(`error from localStore with ${this.isCollection() ? 'Collection' : 'Model'}: ${key}, ${e}`)
+                console.log(`error from localStore with ${this.isCollection() ? 'Collection' : 'Model'}: ${key}, ${e}`)
             }
         } else 
-            throw new Error(`You've attempted to call localStore in the ${this.isCollection() ? 'Collection' : 'Model'} ${this.constructor.name} (key: ${this.options.key}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store\n3. You didn't specify the config has done at the root of your project: "config.done()"\n4. You are using NextJS.`)
+            throw Errors.unauthorizedLocalStore(this)
         return this._getConnectedActions()
     }
 
@@ -232,46 +230,9 @@ export default class Model {
 
     //Return the state to JSONified object.
     //It implies that the state is an array, an object or a Model typed class (model or extended from Model)
-    public toPlain = (): any => {
-        const ret: any = {}; 
-        
-        const recur = (o: any, path: string) => {
-            
-            //if this is a plain object
-            if (Model._isObject(o) && Object.keys(o).length > 0){
-                for (var key in o)
-                    recur(o[key], !path ? key : path + '.' + key)
-                return
-            }
-
-            //if this is an array
-            if (Model._isArray(o) && o.length > 0){
-                for (let i = 0; i < o.length; i++)
-                    recur(o[i], path + '.' + i.toString())
-                return
-            }
-
-            //if this is a Model class
-            if (o instanceof Model){
-                recur(o.state, path)
-                return
-            }
-
-            objectPath.set(ret, path, o)
-        }
-
-        recur(this.state, '')
-
-        if (this.isCollection()){
-            if (!ret[''])
-                return []
-            return ret['']
-        }
-
-        return ret
-    }
+    public toPlain = (): any => toPlain(this)
     
-    hydrate = (state: any) => {
+    public hydrate = (state: any) => {
         hydrate(state, this)
         this._set()
         if (!this.isEmpty())
@@ -332,9 +293,9 @@ export default class Model {
 
     private _doVerifications = () => {
         if (verifyIfContainArrayOfModel(this))
-            throw new Error(this.constructor.name + "'s state contains an Array of Model. Please use a Collection instead.")
+            throw Errors.forbiddenArrayModel(this)
         if (verifyIfContainAConnectedModel(this.state)){
-            throw new Error(this.constructor.name + " contains a connected Model. Connected Models can't be nested")
+            throw Errors.forbiddenNestedConnexion(this)
         }
     }
 }

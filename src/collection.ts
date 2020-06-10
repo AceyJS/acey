@@ -1,5 +1,7 @@
 import _ from 'lodash'
 import Model, {IAction}  from './model'
+import Errors from './errors'
+
 
 type Constructor<T> = new(...args: any[]) => T;
 
@@ -15,9 +17,9 @@ export default class Collection extends Model  {
         super([], ...Collection.assignInternalOptions(props, nodeModel))
         this.nodeModel = nodeModel
 
+        //check if nodeModel is a collection
         if (new (this._getNodeModel())(undefined, this.__childOptions) instanceof Collection){
-            throw new Error("You can't build a Collection with a Collection as a node element");
-            
+            throw Errors.forbiddenMultiDimCollection()
         }
 
         const assignWithStorage = async () => {
