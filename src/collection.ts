@@ -14,7 +14,8 @@ export default class Collection extends Model  {
     private nodeModel: Constructor<any>
 
     constructor(list: any[] = [], nodeModel: Constructor<Model>, ...props: any){
-        super([], ...Collection.assignInternalOptions(props, nodeModel))
+        super([], Object.assign({}, ...props, { nodeModel }))
+        this._setDefaultState(list)
         this.nodeModel = nodeModel
 
         //check if nodeModel is a collection
@@ -138,6 +139,8 @@ export default class Collection extends Model  {
         const v = this.state.splice(index, 1)
         return this.action(v ? v[0] : null)
     }
+
+    public defaultNodeState = () => new (this._getNodeModel())(undefined).defaultState
 
     public nodeAt = (index: number) => this.state[index] && this._isNodeModel(this.state[index]) ? this.state[index] : undefined
 

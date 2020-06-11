@@ -59,7 +59,6 @@ export default class Manager {
     public isInitialized = () => this._hasBeenInitialized
     public setInitialized = () => this._hasBeenInitialized = true
 
-
     public prepareModel = (m: Model) => {
         this.models().add(m)
         this.isInitialized() && this.connectModel(m)
@@ -76,6 +75,6 @@ export default class Manager {
         if (!storedData && m.localStore().isActive())
             storedData = await m.localStore().get()
 
-        storedData && this.pendingHydrationStore().set({ [key]: storedData})
+        storedData && this.pendingHydrationStore().set({ [key]: storedData })
     }
 }

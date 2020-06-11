@@ -22,9 +22,8 @@ export default class ModelsManager {
     public hydrate = (store: any) => this.forEach((m, key) => m.hydrate(store[key]).save())
 
     public connectAll = async () => {
-        for (let key in this.get()){
+        for (let key in this.get())
             await this.manager().connectModel(this.node(key))
-        }
     }
 
     public hydrateWithCookies = (cookies: any) => {

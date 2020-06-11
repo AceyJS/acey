@@ -22,6 +22,7 @@ export interface IAction {
 export default class Model {
 
     private _state: any = null
+    private _prevState: any = null
     private _defaultState: any = null
 
     private _cookie: CookieManager
@@ -36,7 +37,7 @@ export default class Model {
         this._option = new OptionManager(this)
 
         this._set(state)
-        this._defaultState = this.toPlain()
+        this._setDefaultState(this.toPlain())
         this.option().set(Object.assign({}, props[0], props[1]))
         this._initialize()
     }
@@ -57,9 +58,28 @@ export default class Model {
         }
     }
 
+    private _set = (state: any = this.state): IAction => {
+        if (Model._isObject(state) || Model._isArray(state)){
+            this._prevState = this.state
+            this._state = this.is().collection() ? this.toListClass(state) : state
+        } else {
+            if (!this.is().connected())
+                throw Errors.onlyObjectOnModelState()
+            else 
+                throw Errors.onlyArrayOnCollectionState()
+        }
+        return this.action()
+    }
+
     public get state(){
         return this._state
     }
+
+    public get prevState(){
+        return this._prevState
+    }
+
+    protected _setDefaultState = (state: any) => this._defaultState = state
 
     public get defaultState(){
         return this._defaultState
@@ -81,18 +101,6 @@ export default class Model {
         }
     }
     
-    private _set = (state: any = this.state): IAction => {
-        if (Model._isObject(state) || Model._isArray(state)){
-            this._state = this.is().collection() ? this.toListClass(state) : state
-        } else {
-            if (!this.is().connected())
-                throw Errors.onlyObjectOnModelState()
-            else 
-                throw Errors.onlyArrayOnCollectionState()
-        }
-        return this.action()
-    }
-
     public save = () => {
         if (this.is().connected())
             Manager.store().dispatch({ payload: this.toPlain(), type: this.option().key() })
