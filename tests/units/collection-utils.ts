@@ -8,14 +8,15 @@ import {
     USER_DATA
 } from './datas'
 
-class CollectionOfCollection extends Collection {
-    constructor(data: any[] = [], options: any){
-        super(data, PostCollection, options)
-    }
-}
+
 
 describe('Collection: initialization', () => {
     it('Collection of Collection (must error)', () => {
+        class CollectionOfCollection extends Collection {
+            constructor(data: any[] = [], options: any){
+                super(data, PostCollection, options)
+            }
+        }    
         expect(() => new CollectionOfCollection([], undefined)).to.throw(Error)
     })
 })
@@ -45,7 +46,17 @@ describe('Collection: Push', () => {
         PostList.hydrate([])
         PostList.push(postModel)
         expect(PostList.state[0].toString()).to.eq(postModel.toString())  
-
     })
+
+    // it('Push an object', () => {
+    //     PostList.push(post)
+    //     const postModel = new PostModel(post, undefined)
+    //     expect(PostList.count()).to.eq(1)  
+    //     expect(PostList.state[0].toString()).to.eq(postModel.toString())  
+
+    //     PostList.hydrate([])
+    //     PostList.push(postModel)
+    //     expect(PostList.state[0].toString()).to.eq(postModel.toString())  
+    // })
     
 })

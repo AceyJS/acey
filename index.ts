@@ -1,8 +1,10 @@
-import {IOptions, IAction } from './src/model'
+import { IAction } from './src/model/index'
+import { IOptions } from './src/model/option'
+
 import { TConnected } from './src/connect'
-import Model from './src/model'
+import Model from './src/model/index'
 import Collection from './src/collection'
-import manager from './src/manager'
+import manager from './src/manager/manager'
 import config from './src/config'
 import {connect, useAcey } from './src/connect'
 

@@ -18,12 +18,12 @@ export default class Collection extends Model  {
         this.nodeModel = nodeModel
 
         //check if nodeModel is a collection
-        if (new (this._getNodeModel())(undefined, this.__childOptions) instanceof Collection){
+        if (new (this._getNodeModel())(undefined, this.option().kids()) instanceof Collection){
             throw Errors.forbiddenMultiDimCollection()
         }
 
         const assignWithStorage = async () => {
-            if (!this.options.connected || (!this.fetchCookies() && !(await this.fetchLocalStore()))){
+            if (!this.is().connected() || (!this.cookie().get() && !(await this.localStore().get()))){
                 this.setState(this.toListClass(list))
             }
         }
@@ -43,7 +43,7 @@ export default class Collection extends Model  {
     public count = (): number => this.state.length
 
     //add an element to the list
-    public push = (v: any): IAction => this._getConnectedActions(this.state.push(this.newNode(v)))
+    public push = (v: any): IAction => this.action(this.state.push(this.newNode(v)))
 
     // Update the element at index or post it.
     public update = (v: any, index: number): IAction => {
@@ -54,7 +54,7 @@ export default class Collection extends Model  {
        else 
            this.push(vCopy)
        
-       return this._getConnectedActions(vCopy)
+       return this.action(vCopy)
     }
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
@@ -87,12 +87,12 @@ export default class Collection extends Model  {
 
     public concat = (list: any[] = []): IAction => {
         this.setState(this.state.concat(this.toListClass(list)))
-        return this._getConnectedActions(null)
+        return this.action(null)
     }
 
-    public reverse = (): IAction => this._getConnectedActions(this.state.reverse())
-    public pop = (): IAction => this._getConnectedActions(this.state.pop())
-    public shift = (): IAction => this._getConnectedActions(this.state.shift())
+    public reverse = (): IAction => this.action(this.state.reverse())
+    public pop = (): IAction => this.action(this.state.pop())
+    public shift = (): IAction => this.action(this.state.shift())
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
     public filter = (predicate: any) => {
@@ -120,7 +120,7 @@ export default class Collection extends Model  {
 
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
     public deleteAll = (predicate: any): IAction => {
-        return this._getConnectedActions(this.toListClass(_.remove(this.toPlain(), predicate)))
+        return this.action(this.toListClass(_.remove(this.toPlain(), predicate)))
     }
 
     //delete a node if it exists in the list.
@@ -129,14 +129,14 @@ export default class Collection extends Model  {
         if (index > -1){
             const v = this.state.splice(index, 1)
             if (v)
-                return this._getConnectedActions(v[0])
+                return this.action(v[0])
         }
-        return this._getConnectedActions()
+        return this.action()
     }
 
     public deleteIndex = (index: number): IAction => {
         const v = this.state.splice(index, 1)
-        return this._getConnectedActions(v ? v[0] : null)
+        return this.action(v ? v[0] : null)
     }
 
     public nodeAt = (index: number) => this.state[index] && this._isNodeModel(this.state[index]) ? this.state[index] : undefined
@@ -144,7 +144,7 @@ export default class Collection extends Model  {
     //return the index of the element passed in parameters if it exists in the list.
     public indexOf = (v: any): number => _.findIndex(this.toPlain(), this.newNode(v).toPlain())
 
-    public newNode = (v: any): Model => this._isNodeModel(v) ? v : new (this._getNodeModel())(v, this.__childOptions)
+    public newNode = (v: any): Model => this._isNodeModel(v) ? v : new (this._getNodeModel())(v, this.option().kids())
 
     private _isNodeModel = (value: any): boolean => value instanceof this._getNodeModel()
     private _getNodeModel = () => this.nodeModel

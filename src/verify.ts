@@ -1,5 +1,6 @@
 import Model from './model'
 import { TConnected } from './connect'
+import Errors from './errors'
 
 export const verifyIfContainAConnectedModel = (m: Model) => {
     let doesContain = false
@@ -10,11 +11,11 @@ export const verifyIfContainAConnectedModel = (m: Model) => {
             return
 
         if (v instanceof Model){
-            if (v.isConnected()){
+            if (v.is().connected()){
                 doesContain = true
                 return
             }
-            if (v.isCollection()){
+            if (v.is().collection()){
                 for (let e of v.state)
                     recur(e)
             } else {
@@ -52,7 +53,7 @@ export const verifyIfContainArrayOfModel = (v: Model) => {
             return
 
         if (v instanceof Model){
-            if (v.isCollection()){
+            if (v.is().collection()){
                 for (let e of v.state)
                     recur(e)
             } else {
@@ -96,5 +97,13 @@ export const verifyIfOnlyModelsAndFunction = (v: TConnected[], origin: string) =
                 ${defaultError}
                 Please check the ${i+1}${i == 0 ? 'st' : (i == 1) ? 'nd' : 'st'} element of the Array. Currently typed as a : ${typeof e}.
             `)
+    }
+}
+
+export const verifyAllModel = (m: Model) => {
+    if (verifyIfContainArrayOfModel(m))
+        throw Errors.forbiddenArrayModel(m)
+    if (verifyIfContainAConnectedModel(m.state)){
+        throw Errors.forbiddenNestedConnexion(m)
     }
 }

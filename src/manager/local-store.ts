@@ -1,7 +1,7 @@
 import * as Cookies from 'es-cookie';
-import config from './config'
+import config from '../config'
 import _ from 'lodash'
-import Errors from './errors'
+import Errors from '../errors'
 
 class LocalStoreManager {
 

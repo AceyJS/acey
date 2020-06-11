@@ -1,4 +1,4 @@
-import Manager from './manager'
+import Manager from './manager/'
 
 const REACT = 'react'
 const REACT_NATIVE = 'react-native'
@@ -19,7 +19,7 @@ class Config {
         }
     }
 
-    done = () => Manager.init()
+    done = async () => await Manager.init()
 
     isNextJSServer = () => this.isNextJS() && typeof document === 'undefined'
     isNextJS = () => this._env === NEXT_JS

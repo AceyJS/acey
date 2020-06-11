@@ -1,7 +1,7 @@
 import * as Cookies from 'es-cookie';
-import config from './config'
-import LocalStoreManager from './local-store-manager'
-import Errors from './errors'
+import config from '../config'
+import LocalStoreManager from './local-store'
+import Errors from '../errors'
 
 class CookieManager {
 
