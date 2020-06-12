@@ -14,7 +14,7 @@ describe('Collection: initialization', () => {
     it('Collection of Collection (must error)', () => {
         class CollectionOfCollection extends Collection {
             constructor(data: any[] = [], options: any){
-                super(data, PostCollection, options)
+                super(data, [PostCollection, CollectionOfCollection], options)
             }
         }    
         expect(() => new CollectionOfCollection([], undefined)).to.throw(Error)

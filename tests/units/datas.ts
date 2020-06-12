@@ -145,7 +145,7 @@ export class PostModel extends Model {
 
 export class PostCollection extends Collection {
     constructor(initialState: any[] = [], options: any){
-        super(initialState, PostModel, options)
+        super(initialState, [PostModel, PostCollection], options)
     }
 }
 
