@@ -9,6 +9,7 @@ export interface IOptions {
     localStore: TOptionFunc
     cookie: TOptionFunc,
     nodeModel: Model | null
+    collectionModel: Model | null
 }
 
 export default class OptionManager { 
@@ -20,7 +21,8 @@ export default class OptionManager {
         save: null,
         cookie: null,
         localStore: null,
-        nodeModel: null
+        nodeModel: null,
+        collectionModel: null
     }
 
     constructor(m: Model){
@@ -36,6 +38,7 @@ export default class OptionManager {
     public key = (): string => this.get().key
     public isConnected = (): boolean => this.get().connected    
     public nodeModel = () => this.get().nodeModel
+    public collectionModel = () => this.get().nodeModel
 
 
   /*    kids is setting the options for any nested Model/Collection.

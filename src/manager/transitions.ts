@@ -1,7 +1,10 @@
 import Manager from './manager'
 import Model from '../model'
 
-import { IAction } from './types'
+export interface IAction {
+    payload: any
+    type: string
+}
 
 export default class TransitionsManager {
     private _m: Manager

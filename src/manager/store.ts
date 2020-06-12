@@ -1,5 +1,6 @@
 import Manager from './manager'
-import { IAction } from './types'
+
+import { IAction } from './transitions'
 
 export default class StoreManager {
 

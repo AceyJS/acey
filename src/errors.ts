@@ -14,6 +14,7 @@ export default {
     forbiddenArrayModel: (m: Model) => new Error(`${m.constructor.name}'s state contains an Array of Model. Please use a Collection instead.`),
     forbiddenNestedConnexion: (m: Model) => new Error(`${m.constructor.name} contains a connected Model. Connected Models can't be nested`),
     forbiddenMultiDimCollection: () => new Error(`You can't build a Collection with a Collection as a node element`),
+    forbiddenModelCollection: () => new Error("You can't build a Collection with a Model as a collection element"),
 
     cookieDisabledOnRN: () => new Error(`Cookie Management is not accessible on React Native, please use local store instead.`),
     cookieMaxLengthReached: (key: string, max: number, length: number) => new Error(`You've attempted to set cookie with the (key: ${key}), but this action can't be executed because the max length of a cookie is ${max} for most browsers, the one you set was ${length}.`),
