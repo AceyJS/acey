@@ -1,4 +1,8 @@
 import Model, { IAction } from './'
+import Config from '../config'
+import Errors from '../errors'
+import Manager from '../manager'
+import { generateUniqModelKey } from '../lib'
 
 type TOptionFunc = (() => IAction) | null
 
@@ -15,6 +19,8 @@ export interface IOptions {
 export default class OptionManager { 
 
     private _m: Model
+    private _isKeyGenerated: boolean = false
+    
     private _options: IOptions = {
         key: '',
         connected: false,
@@ -29,14 +35,33 @@ export default class OptionManager {
         this._m = m
     }
 
-    public model = (): Model => this._m
+    public init = (options: any) => {
+        this.set(options)
+        const key = this.key()
+
+        if (this.isConnected()){
+            if (Config.isNextJS() && !key)
+                throw Errors.uniqKeyRequiredOnNextJS()
+            if (key && Manager.models().exist(key) && !Config.isNextJSServer())
+                throw Errors.keyAlreadyExist(key)
+            if (!key){
+                this.setKey(generateUniqModelKey(this._model()))
+                this.setKeyAsGenerated()
+            }
+        }
+        return this
+    }
+
+    private _model = (): Model => this._m
+
     public set = (o: Object) => this._options = Object.assign({}, this._options, o)
     public setKey = (key: string) => this.set({ key })
-
+    public setKeyAsGenerated = () => this._isKeyGenerated = true
 
     public get = () => this._options
     public key = (): string => this.get().key
-    public isConnected = (): boolean => this.get().connected    
+    public isConnected = (): boolean => this.get().connected  
+    public isKeyGenerated = (): boolean => this._isKeyGenerated  
     public nodeModel = () => this.get().nodeModel
     public collectionModel = () => this.get().nodeModel
 
@@ -67,9 +92,9 @@ export default class OptionManager {
     */
     public kids = () => {
         return {
-            save: this.model().action().save,
-            cookie: this.model().action().cookie,
-            localStore: this.model().action().localStore,
+            save: this._model().action().save,
+            cookie: this._model().action().cookie,
+            localStore: this._model().action().localStore,
         }
     }
 }

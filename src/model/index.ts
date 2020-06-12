@@ -1,16 +1,16 @@
 import _ from 'lodash'
 import Manager from '../manager'
-import Config from '../config'
 
 import Errors from '../errors'
 import { hydrate, toPlain } from './utils'
 import {  verifyAllModel } from '../verify'
-import { generateUniqModelKey } from '../lib'
 
 import CookieManager from './cookie'
 import LocalStoreManager from './local-store'
 import IsManager from './is'
 import OptionManager from './option'
+import WatchManager, {IWatchAction} from './watch'
+
 
 export interface IAction {
     save(): IAction
@@ -29,39 +29,26 @@ export default class Model {
     private _localStore: LocalStoreManager
     private _is: IsManager
     private _option: OptionManager
+    private _watch: WatchManager
 
     constructor(state: any, ...props: any){
         this._is = new IsManager(this)
+        this._option = new OptionManager(this).init(Object.assign({}, props[0], props[1]))
         this._cookie = new CookieManager(this)
         this._localStore = new LocalStoreManager(this)
-        this._option = new OptionManager(this)
-
+        this._watch = new WatchManager(this)
         this._set(state)
         this._setDefaultState(this.toPlain())
-        this.option().set(Object.assign({}, props[0], props[1]))
-        this._initialize()
-    }
 
-    private _initialize = () => {
-        const key = this.option().key()
 
-        if (this.is().connected()){
-            if (Config.isNextJS() && !key)
-                throw Errors.uniqKeyRequiredOnNextJS()
-            if (key && Manager.models().exist(key) && !Config.isNextJSServer())
-                throw Errors.keyAlreadyExist(key)
-            if (!key){
-                this.option().setKey(generateUniqModelKey(this))
-                this.is().setKeyAsGenerated()
-            }
-            Manager.prepareModel(this)
-        }
+        this.is().connected() && Manager.prepareModel(this)
     }
 
     private _set = (state: any = this.state): IAction => {
         if (Model._isObject(state) || Model._isArray(state)){
             this._prevState = this.state
             this._state = this.is().collection() ? this.toListClass(state) : state
+            this._watchManager().onStateChanged()
         } else {
             if (!this.is().connected())
                 throw Errors.onlyObjectOnModelState()
@@ -80,6 +67,7 @@ export default class Model {
     }
 
     protected _setDefaultState = (state: any) => this._defaultState = state
+    private _watchManager = () => this._watch
 
     public get defaultState(){
         return this._defaultState
@@ -89,7 +77,8 @@ export default class Model {
     public localStore = (): LocalStoreManager => this._localStore
     public is = (): IsManager => this._is
     public option = (): OptionManager => this._option
-    
+    public watch = (): IWatchAction => this._watchManager().action()
+
     public action = (value: any = undefined): IAction => {
         const { save, cookie, localStore } = this.option().get()
 
@@ -102,8 +91,10 @@ export default class Model {
     }
     
     public save = () => {
-        if (this.is().connected())
+        if (this.is().connected()){
             Manager.store().dispatch({ payload: this.toPlain(), type: this.option().key() })
+            this._watchManager().onStoreChanged()
+        }
         else 
             throw Errors.unauthorizedSave(this)
         return this.action()

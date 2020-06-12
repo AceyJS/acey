@@ -52,8 +52,11 @@ export default class Collection extends Model  {
     }
 
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
-    public deleteAll = (predicate: any): IAction => {
-        return this.action(this.toListClass(_.remove(this.toPlain(), predicate)))
+    public deleteBy = (predicate: any): IAction => {
+        const statePlain = this.toPlain()
+        _.remove(statePlain, predicate)
+        this.setState(this.toListClass(statePlain))
+        return this.action()
     }
 
     public deleteIndex = (index: number): IAction => {
@@ -139,23 +142,21 @@ export default class Collection extends Model  {
         const start = args[0]
         const deleteCount = args[1]
         const items = args.slice(2, args.length)
-
-        const state = this.state.slice()
         
         if (typeof start !== 'number')
             throw new Error("splice start parameter must be a number")
 
         if (!deleteCount){
-            state.splice(start)
-            return this._newCollectionModelInstance(state)
+            const value = this.state.splice(start)
+            return this.action(value)
         }
 
         if (typeof deleteCount !== 'number')
             throw new Error("splice deleteCount parameter must be a number")
 
         if (items.length == 0){
-            state.splice(start, deleteCount)
-            return this._newCollectionModelInstance(state)
+            const value = this.state.splice(start, deleteCount)
+            return this.action(value)
         }
 
         for (let i = 0; i < items.length; i++){
@@ -164,8 +165,9 @@ export default class Collection extends Model  {
             else 
                 items[i] = this.newNode(items[i])
         }
-        state.splice(start, deleteCount, ...items)
-        return this._newCollectionModelInstance(state)
+
+        const value = this.state.splice(start, deleteCount, ...items)
+        return this.action(value)
     }
 
     // Update the element at index or post it.

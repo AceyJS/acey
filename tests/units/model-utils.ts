@@ -87,4 +87,13 @@ describe('Model: deleteKey', () => {
     });
 });
 
+describe('Model: toListClass', () => {
+    const User = new UserModel(USER_DATA, undefined)
+    const PostList = new PostCollection(USER_DATA.post_list, undefined)
+
+    it('call it from a Model', () => {
+        expect(() => User.toListClass([])).to.throw(Error)
+    });
+});
+
 
