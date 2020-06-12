@@ -1,5 +1,5 @@
 import Model from './'
-import objectPath from "object-path"
+import _ from 'lodash'
 
 const splitPath = (path: string) => {
     return path.replace(/^[\|]+|[\|]+$/g, ".").split('.').filter(function(x){
@@ -80,7 +80,7 @@ export const hydrate = (from: any, to: Model) => {
                 return
             }
     
-            objectPath.set(ret, path, o)
+            _.set(ret, path, o)
         }
     
         recur(m.state, '')
