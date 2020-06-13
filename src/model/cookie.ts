@@ -14,7 +14,7 @@ export default class CookieManager {
     }
 
     private _model = () => this._m
-    public isActive = (): boolean => Manager.isInitialized() && !Config.isReactNative() && !this._model().is().keyGenerated() && this._model().is().connected() 
+    public isActive = (): boolean => Manager.isInitialized() && !Config.isReactNative() && !this._model().is().keyGenerated() && this._model().is().connected() && Manager.cookie() != null
     public get = () => this.isActive() ? Manager.cookie().getElement(this._model().option().key()) : undefined
 
     public prevState = () => this._prevState

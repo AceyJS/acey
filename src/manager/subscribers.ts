@@ -11,6 +11,8 @@ export default class SubscribersManager {
         this._m = m
     }
 
+    count = () => this._subscribers.length
+
     add = (callback: Function) => {
         callback()
         this.get().push(callback)

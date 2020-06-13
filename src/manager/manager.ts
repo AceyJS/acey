@@ -38,11 +38,13 @@ export default class Manager {
         this._hasBeenInitialized = false
     }
 
-    public init = async () => {
+    public init = async (instruction: any = undefined) => {
         if (!this.isInitialized()){
             this.setInitialized()
-            this._localStoreManager = new LocalStoreManager()
-            this._cookieManager = new CookieManager(this.localStoreManager())
+            if (instruction !== 'test'){
+                this._localStoreManager = new LocalStoreManager()
+                this._cookieManager = new CookieManager(this.localStoreManager())
+            }
             await this.models().connectAll()
             this.pendingHydrationStore().execute()
         }

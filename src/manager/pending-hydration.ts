@@ -1,4 +1,5 @@
 import Manager from './manager'
+import _ from 'lodash'
 
 export default class PendingHydrationManager {
     private _m: Manager
@@ -7,6 +8,8 @@ export default class PendingHydrationManager {
     constructor(m: Manager){
         this._m = m
     }
+    
+    public count = () => _.size(this.get())
 
     public get = (): any => this._pendingHydration
     public manager = () => this._m

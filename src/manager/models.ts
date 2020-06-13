@@ -2,6 +2,7 @@ import Manager from './manager'
 import config from '../config'
 import Errors from '../errors'
 import Model from '../model'
+import _ from 'lodash'
 
 export default class ModelsManager {
 
@@ -11,6 +12,8 @@ export default class ModelsManager {
     constructor(m: Manager){
         this._m = m
     }
+
+    public count = () => _.size(this.get())
 
     public get = () => this._models
     public manager = () => this._m
