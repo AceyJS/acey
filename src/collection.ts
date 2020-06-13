@@ -11,14 +11,10 @@ type Constructor<T> = new(...args: any[]) => T;
 //This can be useful to avoid redundant functions like sorting, filtering, pushing, deleting, updating etc...
 
 export default class Collection extends Model  {
-    private nodeModel: Constructor<any>
-    private collectionModel: Constructor<any>
-
+    
     constructor(list: any[] = [], models: [Constructor<Model>, Constructor<Collection>], ...props: any){
         super([], Object.assign({}, ...props, { nodeModel: models[0], collectionModel: models[1] }))
         this._setDefaultState(list)
-        this.nodeModel = models[0]
-        this.collectionModel = models[1]
 
         //check if nodeModel is not a Collection
         if (this._newNodeModelInstance(undefined) instanceof Collection)
@@ -182,8 +178,8 @@ export default class Collection extends Model  {
        return this.action(vCopy)
     }
 
-    private _getCollectionModel = () => this.collectionModel
-    private _getNodeModel = () => this.nodeModel
+    private _getCollectionModel = (): any => this.option().collectionModel() as Collection
+    private _getNodeModel = (): any => this.option().nodeModel() as Model
 
     private _isCollectionModel = (value: any): boolean => value instanceof this._getCollectionModel()
     private _isNodeModel = (value: any): boolean => value instanceof this._getNodeModel()

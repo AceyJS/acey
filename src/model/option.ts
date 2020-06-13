@@ -63,7 +63,7 @@ export default class OptionManager {
     public isConnected = (): boolean => this.get().connected  
     public isKeyGenerated = (): boolean => this._isKeyGenerated  
     public nodeModel = () => this.get().nodeModel
-    public collectionModel = () => this.get().nodeModel
+    public collectionModel = () => this.get().collectionModel
 
 
   /*    kids is setting the options for any nested Model/Collection.
