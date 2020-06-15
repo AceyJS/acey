@@ -1,7 +1,17 @@
-import { useAcey } from 'acey'
+import { useAcey, connect } from 'acey'
 import { Counter, Todolist, User } from '../src/models'
 
 const STORE_TYPE = 'cookie'
+
+
+class PCounter extends React.Component {
+
+  render = () => {
+    return <p> connected class: {User.counter().get()} </p>
+  }
+}
+
+const PrintCounter = connect([User])(PCounter)
 
 const Home = (props) => {
   
@@ -58,6 +68,8 @@ const Home = (props) => {
       <button onClick={clearAllCookie}>clear cookies</button>
       <button onClick={clearLocalStore}>clear local stores</button>
       <br />
+      <br />
+      <PrintCounter />
       <br />
 
       <button onClick={() => decrement(STORE_TYPE)}>decrement</button>

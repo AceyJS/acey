@@ -11,7 +11,7 @@ import {
 import { useAcey } from 'acey'
 import { Counter, Todolist, User } from './models'
 
-const STORE_TYPE = ''
+const STORE_TYPE = 'localStore'
 
 const Home = (props) => {
   

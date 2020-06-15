@@ -2,7 +2,11 @@ import React from 'react';
 import { useAcey } from 'acey'
 import { Counter, Todolist, User } from '../src/models'
 
-const STORE_TYPE = 'localStore'
+const STORE_TYPE = 'cookie'
+
+Todolist.watch().store(() => {
+  console.log('changed??')
+})
 
 const Home = (props) => {
   
@@ -15,41 +19,41 @@ const Home = (props) => {
     User
   ])
 
-  const method = (list = [], method = '', then = '' | 'coookie' | 'localStore') => {
+  const method = (list = [], method = '', then = '' | 'cookie' | 'localStore') => {
     list.forEach((v) => {
       const ret = v[method]()
       then && ret[then]()
     })
   }
   
-  const increment = (then = '' | 'coookie' | 'localStore') => {
+  const increment = (then = '' | 'cookie' | 'localStore') => {
     method(counters, 'increment', then)
     const list = []
     todolists.map((l) => l.map((t) => list.push(t.counter())))
     method(list, 'increment', then)
   }
-  const decrement = (then = '' | 'coookie' | 'localStore') => {
+  const decrement = (then = '' | 'cookie' | 'localStore') => {
     method(counters, 'decrement', then)
     const list = []
     todolists.map((l) => l.map((t) => list.push(t.counter())))
     method(list, 'decrement', then)
   }
-  const addTodo = (then = '' | 'coookie' | 'localStore') => method(todolists, 'add', then)
-  const deleteFirst = (then = '' | 'coookie' | 'localStore') => method(todolists, 'deleteFirst', then)
-  const deleteLast = (then = '' | 'coookie' | 'localStore') => method(todolists, 'deleteLast', then)
-  const toZZZLast = (then = '' | 'coookie' | 'localStore') => method(todolists, 'toZZZLast', then)
+  const addTodo = (then = '' | 'cookie' | 'localStore') => method(todolists, 'add', then)
+  const deleteFirst = (then = '' | 'cookie' | 'localStore') => method(todolists, 'deleteFirst', then)
+  const deleteLast = (then = '' | 'cookie' | 'localStore') => method(todolists, 'deleteLast', then)
+  const toZZZLast = (then = '' | 'cookie' | 'localStore') => method(todolists, 'toZZZLast', then)
 
   const clearAllCookie = () => {
-    Todolist.removeCookies()
-    Counter.removeCookies()
-    User.removeCookies()
+    Todolist.cookie().remove()
+    Counter.cookie().remove()
+    User.cookie().remove()
     window.location.reload()
   }
 
   const clearLocalStore = () => {
-    Todolist.removeLocalStore()
-    Counter.removeLocalStore()
-    User.removeLocalStore()
+    Todolist.localStore().remove()
+    Counter.localStore().remove()
+    User.localStore().remove()
     window.location.reload()
   }
 

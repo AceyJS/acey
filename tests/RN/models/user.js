@@ -12,8 +12,8 @@ class User extends Model {
     constructor(data = DEFAULT_DATA, options){
         super(data, options)
         this.setState({
-            counter: new Counter({counter: data.counter}, this.__childOptions),
-            todolist: new Todolist([], this.__childOptions), 
+            counter: new Counter({counter: data.counter}, this.option().kids()),
+            todolist: new Todolist([], this.option().kids()), 
         }).save()
     }
 

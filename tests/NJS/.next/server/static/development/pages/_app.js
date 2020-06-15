@@ -110,7 +110,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var acey__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(acey__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var next_acey_wrapper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! next-acey-wrapper */ "next-acey-wrapper");
 /* harmony import */ var next_acey_wrapper__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_acey_wrapper__WEBPACK_IMPORTED_MODULE_3__);
-var _jsxFileName = "/Users/louis/Acey/next-test/pages/_app.js";
+var _jsxFileName = "/Users/louis/Acey/tests/NJS/pages/_app.js";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }

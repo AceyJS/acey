@@ -363,21 +363,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var model_1 = __importDefault(__webpack_require__(/*! ./src/model */ "./node_modules/acey/dist/src/model.js"));
-exports.Model = model_1.default;
+var index_1 = __importDefault(__webpack_require__(/*! ./src/model/index */ "./node_modules/acey/dist/src/model/index.js"));
+exports.Model = index_1.default;
 var collection_1 = __importDefault(__webpack_require__(/*! ./src/collection */ "./node_modules/acey/dist/src/collection.js"));
 exports.Collection = collection_1.default;
-var manager_1 = __importDefault(__webpack_require__(/*! ./src/manager */ "./node_modules/acey/dist/src/manager.js"));
-exports.manager = manager_1.default;
+var index_2 = __importDefault(__webpack_require__(/*! ./src/manager/index */ "./node_modules/acey/dist/src/manager/index.js"));
+exports.manager = index_2.default;
 var config_1 = __importDefault(__webpack_require__(/*! ./src/config */ "./node_modules/acey/dist/src/config.js"));
 exports.config = config_1.default;
 var connect_1 = __webpack_require__(/*! ./src/connect */ "./node_modules/acey/dist/src/connect.js");
 exports.connect = connect_1.connect;
 exports.useAcey = connect_1.useAcey;
 var Ob = {
-    Model: model_1.default,
+    Model: index_1.default,
     Collection: collection_1.default,
-    manager: manager_1.default,
+    manager: index_2.default,
     config: config_1.default,
     connect: connect_1.connect,
     useAcey: connect_1.useAcey
@@ -457,81 +457,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var lodash_1 = __importDefault(__webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"));
-var model_1 = __importDefault(__webpack_require__(/*! ./model */ "./node_modules/acey/dist/src/model.js"));
+var model_1 = __importDefault(__webpack_require__(/*! ./model */ "./node_modules/acey/dist/src/model/index.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ./errors */ "./node_modules/acey/dist/src/errors.js"));
 //  i) this class can be improved by adding more than you can usually find in lists.
 //It aims to be the parent of any model class representing a list of object/classes
 //for example in a todolist it would be the parent of the TodoList class containing a list of Todos
 //This can be useful to avoid redundant functions like sorting, filtering, pushing, deleting, updating etc...
 var Collection = /** @class */ (function (_super) {
     __extends(Collection, _super);
-    function Collection(list, nodeModel) {
+    function Collection(list, models) {
         if (list === void 0) { list = []; }
         var props = [];
         for (var _i = 2; _i < arguments.length; _i++) {
             props[_i - 2] = arguments[_i];
         }
-        var _this = _super.apply(this, __spreadArrays([[]], Collection.assignInternalOptions(props, nodeModel))) || this;
-        //Return the number of element in the array
-        _this.count = function () { return _this.state.length; };
-        //add an element to the list
-        _this.push = function (v) { return _this._getConnectedActions(_this.state.push(_this.newNode(v))); };
-        // Update the element at index or post it.
-        _this.update = function (v, index) {
-            var vCopy = _this.newNode(v);
-            if (_this.state[index])
-                _this.state[index] = vCopy;
-            else
-                _this.push(vCopy);
-            return _this._getConnectedActions(vCopy);
-        };
-        //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
-        _this.orderBy = function (iteratees, orders) {
-            if (iteratees === void 0) { iteratees = []; }
-            if (orders === void 0) { orders = []; }
-            var list = lodash_1.default.orderBy(_this.toPlain(), iteratees, orders);
-            var ret = [];
-            for (var _i = 0, list_1 = list; _i < list_1.length; _i++) {
-                var elem = list_1[_i];
-                var m = _this.find(elem);
-                m && ret.push(m);
-            }
-            return ret;
-        };
-        _this.map = function (callback) {
-            var array = _this.state;
-            var ret = [];
-            for (var i = 0; i < array.length; i++) {
-                var v = callback(array[i], i);
-                v && ret.push(v);
-            }
-            return ret;
-        };
-        _this.reduce = function (callback, initialAccumulator) {
-            if (initialAccumulator === void 0) { initialAccumulator = _this.count() ? _this.nodeAt(0) : null; }
-            var array = _this.state;
-            for (var i = 0; i < array.length; i++)
-                initialAccumulator = callback(initialAccumulator, array[i]);
-            return initialAccumulator;
-        };
+        var _this = _super.call(this, [], Object.assign.apply(Object, __spreadArrays([{}], props, [{ nodeModel: models[0], collectionModel: models[1] }]))) || this;
         _this.concat = function (list) {
             if (list === void 0) { list = []; }
-            _this.setState(_this.state.concat(_this.toListClass(list)));
-            return _this._getConnectedActions(null);
+            return _this._newCollectionModelInstance(_this.state.slice().concat(_this.toListClass(list)));
         };
-        _this.reverse = function () { return _this._getConnectedActions(_this.state.reverse()); };
-        _this.pop = function () { return _this._getConnectedActions(_this.state.pop()); };
-        _this.shift = function () { return _this._getConnectedActions(_this.state.shift()); };
-        //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
-        _this.filter = function (predicate) {
-            var list = lodash_1.default.filter(_this.toPlain(), predicate);
-            var ret = [];
-            for (var _i = 0, list_2 = list; _i < list_2.length; _i++) {
-                var elem = list_2[_i];
-                var m = _this.find(elem);
-                m && ret.push(m);
+        //Return the number of element in the array
+        _this.count = function () { return _this.state.length; };
+        _this.defaultNodeState = function () { return _this._newNodeModelInstance(undefined).defaultState; };
+        //delete a node if it exists in the list.
+        _this.delete = function (v) {
+            var index = _this.indexOf(_this.newNode(v));
+            if (index > -1) {
+                var v_1 = _this.state.splice(index, 1);
+                _this.setState();
+                if (v_1)
+                    return _this.action(v_1[0]);
             }
-            return ret;
+            return _this.action();
         };
+        //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
+        _this.deleteBy = function (predicate) {
+            var statePlain = _this.toPlain();
+            var e = lodash_1.default.remove(statePlain, predicate);
+            !!e.length && _this.setState(_this.toListClass(statePlain));
+            return _this.action();
+        };
+        _this.deleteIndex = function (index) { return _this.action(_this.splice(index, 1).value); };
         //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
         _this.find = function (predicate) {
             var o = lodash_1.default.find(_this.toPlain(), predicate);
@@ -543,41 +509,144 @@ var Collection = /** @class */ (function (_super) {
         };
         //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
         _this.findIndex = function (predicate) { return lodash_1.default.findIndex(_this.toPlain(), predicate); };
-        //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
-        _this.deleteAll = function (predicate) {
-            return _this._getConnectedActions(_this.toListClass(lodash_1.default.remove(_this.toPlain(), predicate)));
-        };
-        //delete a node if it exists in the list.
-        _this.delete = function (v) {
-            var index = _this.indexOf(_this.newNode(v));
-            if (index > -1) {
-                var v_1 = _this.state.splice(index, 1);
-                if (v_1)
-                    return _this._getConnectedActions(v_1[0]);
+        //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
+        _this.filter = function (predicate) {
+            var list = lodash_1.default.filter(_this.toPlain(), predicate);
+            var ret = [];
+            for (var _i = 0, list_1 = list; _i < list_1.length; _i++) {
+                var elem = list_1[_i];
+                var m = _this.find(elem);
+                m && ret.push(m);
             }
-            return _this._getConnectedActions();
+            return _this._newCollectionModelInstance(ret);
         };
-        _this.deleteIndex = function (index) {
-            var v = _this.state.splice(index, 1);
-            return _this._getConnectedActions(v ? v[0] : null);
-        };
-        _this.nodeAt = function (index) { return _this.state[index] && _this._isNodeModel(_this.state[index]) ? _this.state[index] : undefined; };
         //return the index of the element passed in parameters if it exists in the list.
         _this.indexOf = function (v) { return lodash_1.default.findIndex(_this.toPlain(), _this.newNode(v).toPlain()); };
-        _this.newNode = function (v) { return _this._isNodeModel(v) ? v : new (_this._getNodeModel())(v, _this.__childOptions); };
+        _this.limit = function (limit) { return _this.slice(0, limit); };
+        _this.map = function (callback) {
+            var array = _this.state;
+            var ret = [];
+            for (var i = 0; i < array.length; i++) {
+                var v = callback(array[i], i);
+                v && ret.push(v);
+            }
+            return ret;
+        };
+        _this.newCollection = function (v) { return _this._isCollectionModel(v) ? v : _this._newCollectionModelInstance(v); };
+        _this.newNode = function (v) { return _this._isNodeModel(v) ? v : _this._newNodeModelInstance(v); };
+        _this.nodeAt = function (index) { return _this.state[index] && _this._isNodeModel(_this.state[index]) ? _this.state[index] : undefined; };
+        _this.offset = function (offset) { return _this.slice(offset); };
+        //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
+        _this.orderBy = function (iteratees, orders) {
+            if (iteratees === void 0) { iteratees = []; }
+            if (orders === void 0) { orders = []; }
+            var list = lodash_1.default.orderBy(_this.toPlain(), iteratees, orders);
+            var ret = [];
+            for (var _i = 0, list_2 = list; _i < list_2.length; _i++) {
+                var elem = list_2[_i];
+                var m = _this.find(elem);
+                m && ret.push(m);
+            }
+            return _this._newCollectionModelInstance(ret);
+        };
+        _this.pop = function () {
+            var poped = _this.state.pop();
+            poped && _this.setState();
+            return _this.action(poped);
+        };
+        //add an element to the list
+        _this.push = function (v) {
+            var n = _this.state.push(_this.newNode(v));
+            n && _this.setState();
+            return _this.action(n);
+        };
+        _this.reduce = function (callback, initialAccumulator) {
+            if (initialAccumulator === void 0) { initialAccumulator = _this.count() ? _this.nodeAt(0) : null; }
+            var array = _this.state;
+            for (var i = 0; i < array.length; i++)
+                initialAccumulator = callback(initialAccumulator, array[i]);
+            return initialAccumulator;
+        };
+        _this.reverse = function () {
+            var state = _this.state.slice().reverse();
+            return new (_this._getCollectionModel())(state, _this.option().kids());
+        };
+        _this.shift = function () {
+            var shifted = _this.state.shift();
+            !!shifted && _this.setState();
+            return _this.action(shifted);
+        };
+        _this.slice = function () {
+            var _a;
+            var indexes = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                indexes[_i] = arguments[_i];
+            }
+            return new (_this._getCollectionModel())((_a = _this.state).slice.apply(_a, indexes), _this.option().kids());
+        };
+        _this.splice = function () {
+            var _a;
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            var start = args[0];
+            var deleteCount = args[1];
+            var items = args.slice(2, args.length);
+            if (typeof start !== 'number')
+                throw new Error("splice start parameter must be a number");
+            if (!deleteCount) {
+                var value_1 = _this.state.splice(start);
+                !!value_1.length && _this.setState();
+                return _this.action(value_1);
+            }
+            if (typeof deleteCount !== 'number')
+                throw new Error("splice deleteCount parameter must be a number");
+            if (items.length == 0) {
+                var value_2 = _this.state.splice(start, deleteCount);
+                !!value_2.length && _this.setState();
+                return _this.action(value_2);
+            }
+            for (var i = 0; i < items.length; i++) {
+                if (!_this._isNodeModel(items[i]) && !model_1.default._isObject(items[i]))
+                    throw new Error("items parameter must be an Objet or the same Model than collection's nodes");
+                else
+                    items[i] = _this.newNode(items[i]);
+            }
+            var value = (_a = _this.state).splice.apply(_a, __spreadArrays([start, deleteCount], items));
+            !!value.length && _this.setState();
+            return _this.action(value);
+        };
+        // Update the element at index or post it.
+        _this.update = function (v, index) {
+            var vCopy = _this.newNode(v);
+            if (_this.state[index])
+                _this.state[index] = vCopy;
+            else
+                _this.push(vCopy);
+            _this.setState();
+            return _this.action(vCopy);
+        };
+        _this._getCollectionModel = function () { return _this.option().collectionModel(); };
+        _this._getNodeModel = function () { return _this.option().nodeModel(); };
+        _this._isCollectionModel = function (value) { return value instanceof _this._getCollectionModel(); };
         _this._isNodeModel = function (value) { return value instanceof _this._getNodeModel(); };
-        _this._getNodeModel = function () { return _this.nodeModel; };
-        _this.nodeModel = nodeModel;
+        _this._newCollectionModelInstance = function (defaultState) { return new (_this._getCollectionModel())(defaultState, _this.option().kids()); };
+        _this._newNodeModelInstance = function (defaultState) { return new (_this._getNodeModel())(defaultState, _this.option().kids()); };
+        _this._setDefaultState(list);
+        //check if nodeModel is not a Collection
+        if (_this._newNodeModelInstance(undefined) instanceof Collection)
+            throw errors_1.default.forbiddenMultiDimCollection();
         var assignWithStorage = function () { return __awaiter(_this, void 0, void 0, function () {
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        _a = !this.options.connected;
+                        _a = !this.is().connected();
                         if (_a) return [3 /*break*/, 3];
-                        _b = !this.fetchCookies();
+                        _b = !this.cookie().get();
                         if (!_b) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.fetchLocalStore()];
+                        return [4 /*yield*/, this.localStore().get()];
                     case 1:
                         _b = !(_c.sent());
                         _c.label = 2;
@@ -595,15 +664,6 @@ var Collection = /** @class */ (function (_super) {
         assignWithStorage();
         return _this;
     }
-    Collection.assignInternalOptions = function (options, nodeModel) {
-        if (options[1]) {
-            options[1] = { nodeModel: nodeModel };
-        }
-        else {
-            options.push({ nodeModel: nodeModel });
-        }
-        return options;
-    };
     return Collection;
 }(model_1.default));
 exports.default = Collection;
@@ -620,11 +680,47 @@ exports.default = Collection;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var manager_1 = __importDefault(__webpack_require__(/*! ./manager */ "./node_modules/acey/dist/src/manager.js"));
+var manager_1 = __importDefault(__webpack_require__(/*! ./manager/ */ "./node_modules/acey/dist/src/manager/index.js"));
 var REACT = 'react';
 var REACT_NATIVE = 'react-native';
 var NEXT_JS = 'next-js';
@@ -635,7 +731,12 @@ var Config = /** @class */ (function () {
         this._isDev = true;
         this._logger = false;
         this._storeEngine = typeof document === 'undefined' ? null : localStorage;
-        this.done = function () { return manager_1.default.init(); };
+        this.done = function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, manager_1.default.init()];
+                case 1: return [2 /*return*/, _a.sent()];
+            }
+        }); }); };
         this.isNextJSServer = function () { return _this.isNextJS() && typeof document === 'undefined'; };
         this.isNextJS = function () { return _this._env === NEXT_JS; };
         this.isReactNative = function () { return _this._env === REACT_NATIVE; };
@@ -693,7 +794,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
-var manager_1 = __importDefault(__webpack_require__(/*! ./manager */ "./node_modules/acey/dist/src/manager.js"));
+var manager_1 = __importDefault(__webpack_require__(/*! ./manager */ "./node_modules/acey/dist/src/manager/index.js"));
 var verify_1 = __webpack_require__(/*! ./verify */ "./node_modules/acey/dist/src/verify.js");
 var lib_1 = __webpack_require__(/*! ./lib */ "./node_modules/acey/dist/src/lib.js");
 exports.connect = function (list) {
@@ -704,7 +805,7 @@ exports.connect = function (list) {
             var _a = react_1.useState(lib_1.listModelAndGetterToJSON(list)), listJSON = _a[0], setListJSON = _a[1];
             react_1.useEffect(function () {
                 var prev = listJSON;
-                manager_1.default.subscribe(function () {
+                manager_1.default.subscribers().add(function () {
                     var current = lib_1.listModelAndGetterToJSON(list);
                     if (prev != current) {
                         prev = current;
@@ -721,7 +822,7 @@ exports.useAcey = function (list) {
     var _a = react_1.useState(lib_1.listModelAndGetterToJSON(list)), listJSON = _a[0], setListJSON = _a[1];
     react_1.useEffect(function () {
         var prev = listJSON;
-        manager_1.default.subscribe(function () {
+        manager_1.default.subscribers().add(function () {
             var current = lib_1.listModelAndGetterToJSON(list);
             if (prev != current) {
                 prev = current;
@@ -734,146 +835,34 @@ exports.useAcey = function (list) {
 
 /***/ }),
 
-/***/ "./node_modules/acey/dist/src/cookie-manager.js":
-/*!******************************************************!*\
-  !*** ./node_modules/acey/dist/src/cookie-manager.js ***!
-  \******************************************************/
+/***/ "./node_modules/acey/dist/src/errors.js":
+/*!**********************************************!*\
+  !*** ./node_modules/acey/dist/src/errors.js ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var Cookies = __importStar(__webpack_require__(/*! es-cookie */ "./node_modules/es-cookie/src/es-cookie.js"));
-var config_1 = __importDefault(__webpack_require__(/*! ./config */ "./node_modules/acey/dist/src/config.js"));
-var CookieManager = /** @class */ (function () {
-    function CookieManager(localStore) {
-        var _this = this;
-        this.COOKIE_SIZE_MAX = 4000;
-        this.disabledError = function () {
-            throw new Error("cookies management is not accessible on React Native, please use local store instead.");
-        };
-        this.isEnabled = function () { return !config_1.default.isNextJSServer(); };
-        this.localStoreManagement = function () { return _this._localStoreManagement; };
-        this.addElement = function (key, data, expires) {
-            if (expires === void 0) { expires = 365; }
-            if (config_1.default.isReactNative()) {
-                return _this.disabledError();
-            }
-            if (!_this.isEnabled()) {
-                return;
-            }
-            var dLength = data.length;
-            if (dLength < _this.COOKIE_SIZE_MAX) {
-                _this.localStoreManagement().isEnabled() && _this.localStoreManagement().getKeyExpiration(key) && _this.localStoreManagement().removeElement(key);
-                Cookies.set(key, data, { expires: expires });
-            }
-            else
-                throw new Error("You've attempted to set cookie with the (key: " + key + "), but this action can't be executed because the max length of a cookie is " + _this.COOKIE_SIZE_MAX + " for most browsers, the one you set was " + dLength + ".");
-        };
-        this.getElement = function (key) {
-            if (config_1.default.isReactNative())
-                return _this.disabledError();
-            if (!_this.isEnabled())
-                return;
-            var data = Cookies.get(key);
-            return data ? JSON.parse(data) : undefined;
-        };
-        this.removeElement = function (key) {
-            if (config_1.default.isReactNative())
-                return _this.disabledError();
-            if (!_this.isEnabled())
-                return;
-            Cookies.remove(key);
-        };
-        this.prune = function () {
-            if (config_1.default.isReactNative())
-                return _this.disabledError();
-            if (!_this.isEnabled())
-                return;
-            document.cookie = "";
-        };
-        this._localStoreManagement = localStore;
-    }
-    return CookieManager;
-}());
-exports.default = CookieManager;
-
-
-/***/ }),
-
-/***/ "./node_modules/acey/dist/src/hydrate.js":
-/*!***********************************************!*\
-  !*** ./node_modules/acey/dist/src/hydrate.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var model_1 = __importDefault(__webpack_require__(/*! ./model */ "./node_modules/acey/dist/src/model.js"));
-var splitPath = function (path) {
-    return path.replace(/^[\|]+|[\|]+$/g, ".").split('.').filter(function (x) {
-        return (x !== (undefined || null || ''));
-    });
-};
-var getValueAtPath = function (path, to) {
-    var pathSplited = splitPath(path);
-    for (var i = 0; i < pathSplited.length; i++) {
-        if (to instanceof model_1.default)
-            to = to.state[pathSplited[i]];
-        else
-            to = to[pathSplited[i]];
-    }
-    return to;
-};
-var updateInState = function (value, path, to) {
-    var _a;
-    var pathSplited = splitPath(path);
-    var lastKey = pathSplited[pathSplited.length - 1];
-    pathSplited.splice(pathSplited.length - 1, 1);
-    var v = getValueAtPath(pathSplited.join('.'), to);
-    if (v instanceof model_1.default && v.isCollection()) {
-        v.setState(v.toListClass(value));
-    }
-    else if (v instanceof model_1.default && !model_1.default._isCollection(v.state[lastKey])) {
-        v.setState((_a = {}, _a[lastKey] = value, _a));
-    }
-    else if (model_1.default._isCollection(v.state[lastKey])) {
-        var collec = v.state[lastKey];
-        collec.setState(collec.toListClass(value));
-    }
-    else {
-        if (lastKey)
-            v[lastKey] = value;
-    }
-};
-exports.hydrate = function (from, to) {
-    var recur = function (o, path) {
-        if (model_1.default._isArray(o))
-            updateInState(o, path, to);
-        else if (model_1.default._isObject(o)) {
-            for (var key in o)
-                recur(o[key], path + '.' + key);
-        }
-        else
-            updateInState(o, path, to);
-    };
-    recur(from, '');
+exports.default = {
+    unauthorizedSave: function (m) { return new Error("You've attempted to call save in the " + (m.is().collection() ? 'Collection' : 'Model') + " " + m.constructor.name + " but you either didn't specify it as a connected " + (m.is().collection() ? 'Collection' : 'Model') + " or didn't specify the config has done at the root of your project: \"config.done()\""); },
+    unauthorizedCookieAdd: function (m) { return new Error("You've attempted to call cookie in the " + (m.is().collection() ? 'Collection' : 'Model') + " " + m.constructor.name + " (key: " + m.option().key() + "), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.\n3. You didn't specify the config has done at the root of your project: \"config.done()\"\n4. You are using React Native"); },
+    unauthorizedLocalStore: function (m) { return new Error("You've attempted to call localStore in the " + (m.is().collection() ? 'Collection' : 'Model') + " " + m.constructor.name + " (key: " + m.option().key() + "), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store\n3. You didn't specify the config has done at the root of your project: \"config.done()\"\n4. You are using NextJS."); },
+    onlyObjectOnModelState: function () { return new Error("The state of a Model, can only be instanced and replaced with an object type."); },
+    onlyArrayOnCollectionState: function () { return new Error("The state of a Collection, can only be instanced and replaced with an array type."); },
+    uniqKeyRequiredOnNextJS: function () { return new Error("In a NextJS environment you need to manually setup a unique key for every connected Model and Collection you instance."); },
+    keyAlreadyExist: function (key) { return new Error("You have 2 connected Models/Collections using the same key: " + key + "."); },
+    forbiddenArrayModel: function (m) { return new Error(m.constructor.name + "'s state contains an Array of Model. Please use a Collection instead."); },
+    forbiddenNestedConnexion: function (m) { return new Error(m.constructor.name + " contains a connected Model. Connected Models can't be nested"); },
+    forbiddenMultiDimCollection: function () { return new Error("You can't build a Collection with a Collection as a node element"); },
+    forbiddenModelCollection: function () { return new Error("You can't build a Collection with a Model as a collection element"); },
+    cookieDisabledOnRN: function () { return new Error("Cookie Management is not accessible on React Native, please use local store instead."); },
+    cookieMaxLengthReached: function (key, max, length) { return new Error("You've attempted to set cookie with the (key: " + key + "), but this action can't be executed because the max length of a cookie is " + max + " for most browsers, the one you set was " + length + "."); },
+    unsetLocalStore: function () { return new Error("The local store engine should be set manually at the root of your app when using React-Native -> config.setStoreEngine(AsyncStore)"); },
+    localStoreDisabled: function () { return new Error("Local store is not accessible for one of these reasons.\n1. Local store doesn't work with NextJS.\n2. The local store engine should be set manually at the root of your app if using React-Native -> config.setStoreEngine(AsyncStore)"); },
+    cookiePriorityOverStore: function () { return new Error("You've attempted to add to the local store, a data already present in the cookies. Cookies have priority over local store, empty your cookes linked with the key before performing this action."); },
+    configNotDone: function () { return new Error("You need to specify the config has done at the root of your project: \"config.done()\" to run Acey."); }
 };
 
 
@@ -892,7 +881,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var model_1 = __importDefault(__webpack_require__(/*! ./model */ "./node_modules/acey/dist/src/model.js"));
+var manager_1 = __importDefault(__webpack_require__(/*! ./manager */ "./node_modules/acey/dist/src/manager/index.js"));
+var model_1 = __importDefault(__webpack_require__(/*! ./model */ "./node_modules/acey/dist/src/model/index.js"));
 exports.listModelAndGetterToJSON = function (list) {
     var ret = [];
     for (var _i = 0, list_1 = list; _i < list_1.length; _i++) {
@@ -918,13 +908,114 @@ exports.hash = function (s) {
     }
     return hash;
 };
+exports.generateUniqModelKey = function (m) {
+    var i = 1;
+    var key = '_auto_' + m.constructor.name;
+    var suffix;
+    while (true) {
+        suffix = '_' + i.toString();
+        if (!manager_1.default.models().exist(key + suffix))
+            break;
+        i++;
+    }
+    return key + suffix;
+};
 
 
 /***/ }),
 
-/***/ "./node_modules/acey/dist/src/local-store-manager.js":
+/***/ "./node_modules/acey/dist/src/manager/cookie.js":
+/*!******************************************************!*\
+  !*** ./node_modules/acey/dist/src/manager/cookie.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Cookies = __importStar(__webpack_require__(/*! es-cookie */ "./node_modules/es-cookie/src/es-cookie.js"));
+var config_1 = __importDefault(__webpack_require__(/*! ../config */ "./node_modules/acey/dist/src/config.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ../errors */ "./node_modules/acey/dist/src/errors.js"));
+var CookieManager = /** @class */ (function () {
+    function CookieManager(localStore) {
+        var _this = this;
+        this.COOKIE_SIZE_MAX = 4000;
+        this.isEnabled = function () { return !config_1.default.isNextJSServer(); };
+        this.localStoreManagement = function () { return _this._localStoreManagement; };
+        this.addElement = function (key, data, expires) {
+            if (expires === void 0) { expires = 365; }
+            if (config_1.default.isReactNative())
+                throw errors_1.default.cookieDisabledOnRN();
+            if (!_this.isEnabled())
+                return;
+            if (data.length >= _this.COOKIE_SIZE_MAX)
+                throw errors_1.default.cookieMaxLengthReached(key, _this.COOKIE_SIZE_MAX, data.length);
+            _this.localStoreManagement().isEnabled() && _this.localStoreManagement().getKeyExpiration(key) && _this.localStoreManagement().removeElement(key);
+            Cookies.set(key, data, { expires: expires });
+        };
+        this.getElement = function (key) {
+            if (config_1.default.isReactNative())
+                throw errors_1.default.cookieDisabledOnRN();
+            if (!_this.isEnabled())
+                return;
+            return Cookies.get(key);
+        };
+        this.removeElement = function (key) {
+            if (config_1.default.isReactNative())
+                throw errors_1.default.cookieDisabledOnRN();
+            if (!_this.isEnabled())
+                return;
+            Cookies.remove(key);
+        };
+        this.prune = function () {
+            if (config_1.default.isReactNative())
+                throw errors_1.default.cookieDisabledOnRN();
+            if (!_this.isEnabled())
+                return;
+            document.cookie = "";
+        };
+        this._localStoreManagement = localStore;
+    }
+    return CookieManager;
+}());
+exports.default = CookieManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/manager/index.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/acey/dist/src/manager/index.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var manager_1 = __importDefault(__webpack_require__(/*! ./manager */ "./node_modules/acey/dist/src/manager/manager.js"));
+exports.default = new manager_1.default();
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/manager/local-store.js":
 /*!***********************************************************!*\
-  !*** ./node_modules/acey/dist/src/local-store-manager.js ***!
+  !*** ./node_modules/acey/dist/src/manager/local-store.js ***!
   \***********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -979,16 +1070,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Cookies = __importStar(__webpack_require__(/*! es-cookie */ "./node_modules/es-cookie/src/es-cookie.js"));
-var config_1 = __importDefault(__webpack_require__(/*! ./config */ "./node_modules/acey/dist/src/config.js"));
+var config_1 = __importDefault(__webpack_require__(/*! ../config */ "./node_modules/acey/dist/src/config.js"));
 var lodash_1 = __importDefault(__webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ../errors */ "./node_modules/acey/dist/src/errors.js"));
 var LocalStoreManager = /** @class */ (function () {
     function LocalStoreManager() {
         var _this = this;
         this.LOCAL_STORAGE_KEYS_ID = '_ascey_local_ids';
         this._keys = {};
-        this.disabledError = function () {
-            throw new Error("Local store is not accessible for one of these reasons.\n1. Local store doesn't work with NextJS.\n2. The local store engine should be set manually at the root of your app if using React-Native -> config.setStoreEngine(AsyncStore)");
-        };
         this.engine = function () { return config_1.default.getStoreEngine(); };
         this.getKeys = function () { return _this._keys; };
         this.toString = function () { return JSON.stringify(_this._keys); };
@@ -1000,30 +1089,27 @@ var LocalStoreManager = /** @class */ (function () {
                 return;
             }
             if (!_this.isEnabled())
-                return _this.disabledError();
+                throw errors_1.default.localStoreDisabled();
             if (!config_1.default.isReactNative() && Cookies.get(key)) {
-                throw new Error("You've attempted to add to the local store, a data already present in the cookies. Cookies have priority over local store, empty your cookes linked with the key before performing this action.");
+                throw errors_1.default.cookiePriorityOverStore();
             }
             _this.engine().setItem(key, data);
             _this.addKey(key, expires);
         };
         this.getElement = function (key) { return __awaiter(_this, void 0, void 0, function () {
-            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!this.isEnabled())
-                            return [2 /*return*/, this.disabledError()];
+                            throw errors_1.default.localStoreDisabled();
                         return [4 /*yield*/, this.engine().getItem(key)];
-                    case 1:
-                        data = _a.sent();
-                        return [2 /*return*/, data ? JSON.parse(data) : undefined];
+                    case 1: return [2 /*return*/, (_a.sent()) || undefined];
                 }
             });
         }); };
         this.removeElement = function (key) {
             if (!_this.isEnabled())
-                return _this.disabledError();
+                throw errors_1.default.localStoreDisabled();
             _this.engine().removeItem(key);
             _this.removeKey(key);
         };
@@ -1032,7 +1118,7 @@ var LocalStoreManager = /** @class */ (function () {
             if (expires < 0)
                 throw new Error("expire value can't be negative.");
             if (!_this.isEnabled())
-                return _this.disabledError();
+                throw errors_1.default.localStoreDisabled();
             var d = new Date();
             d.setSeconds(d.getSeconds() + (expires * 86400));
             _this.getKeys()[key] = d.toString();
@@ -1040,7 +1126,7 @@ var LocalStoreManager = /** @class */ (function () {
         };
         this.removeKey = function (key) {
             if (!_this.isEnabled())
-                return _this.disabledError();
+                throw errors_1.default.localStoreDisabled();
             if (_this.getKeys()[key]) {
                 delete _this.getKeys()[key];
                 _this.engine().setItem(_this.LOCAL_STORAGE_KEYS_ID, _this.toString());
@@ -1048,13 +1134,13 @@ var LocalStoreManager = /** @class */ (function () {
         };
         this.getKeyExpiration = function (key) {
             if (!_this.isEnabled())
-                return _this.disabledError();
+                throw errors_1.default.localStoreDisabled();
             var dateString = _this.getKeys()[key];
             return dateString ? new Date(dateString) : undefined;
         };
         this.prune = function () {
             if (!_this.isEnabled())
-                return _this.disabledError();
+                throw errors_1.default.localStoreDisabled();
             for (var key in _this.getKeys()) {
                 _this.engine().removeItem(key);
                 delete _this.getKeys()[key];
@@ -1066,7 +1152,7 @@ var LocalStoreManager = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!this.isEnabled())
-                            return [2 /*return*/, this.disabledError()];
+                            throw errors_1.default.localStoreDisabled();
                         return [4 /*yield*/, this.engine().getItem(this.LOCAL_STORAGE_KEYS_ID)];
                     case 1:
                         keys = _a.sent();
@@ -1078,7 +1164,7 @@ var LocalStoreManager = /** @class */ (function () {
         }); };
         this._analyzeExpired = function () {
             if (!_this.isEnabled())
-                return _this.disabledError();
+                throw errors_1.default.localStoreDisabled();
             var now = new Date();
             for (var key in _this.getKeys()) {
                 var date = _this.getKeyExpiration(key);
@@ -1088,7 +1174,7 @@ var LocalStoreManager = /** @class */ (function () {
         if (config_1.default.isNextJS())
             return;
         else if (config_1.default.isReactNative() && !this.engine())
-            throw new Error("The local store engine should be set manually at the root of your app when using React-Native -> config.setStoreEngine(AsyncStore)");
+            throw errors_1.default.unsetLocalStore();
         this._fetchKeys();
     }
     return LocalStoreManager;
@@ -1098,10 +1184,10 @@ exports.default = LocalStoreManager;
 
 /***/ }),
 
-/***/ "./node_modules/acey/dist/src/manager.js":
-/*!***********************************************!*\
-  !*** ./node_modules/acey/dist/src/manager.js ***!
-  \***********************************************/
+/***/ "./node_modules/acey/dist/src/manager/manager.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/acey/dist/src/manager/manager.js ***!
+  \*******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1147,71 +1233,342 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var config_1 = __importDefault(__webpack_require__(/*! ./config */ "./node_modules/acey/dist/src/config.js"));
-var local_store_manager_1 = __importDefault(__webpack_require__(/*! ./local-store-manager */ "./node_modules/acey/dist/src/local-store-manager.js"));
-var cookie_manager_1 = __importDefault(__webpack_require__(/*! ./cookie-manager */ "./node_modules/acey/dist/src/cookie-manager.js"));
+var models_1 = __importDefault(__webpack_require__(/*! ./models */ "./node_modules/acey/dist/src/manager/models.js"));
+var subscribers_1 = __importDefault(__webpack_require__(/*! ./subscribers */ "./node_modules/acey/dist/src/manager/subscribers.js"));
+var transitions_1 = __importDefault(__webpack_require__(/*! ./transitions */ "./node_modules/acey/dist/src/manager/transitions.js"));
+var store_1 = __importDefault(__webpack_require__(/*! ./store */ "./node_modules/acey/dist/src/manager/store.js"));
+var pending_hydration_1 = __importDefault(__webpack_require__(/*! ./pending-hydration */ "./node_modules/acey/dist/src/manager/pending-hydration.js"));
+var local_store_1 = __importDefault(__webpack_require__(/*! ./local-store */ "./node_modules/acey/dist/src/manager/local-store.js"));
+var cookie_1 = __importDefault(__webpack_require__(/*! ./cookie */ "./node_modules/acey/dist/src/manager/cookie.js"));
 var Manager = /** @class */ (function () {
     function Manager() {
         var _this = this;
-        this._modelsManager = new Map();
-        this._transitionsManager = new Map();
-        this._store = {};
-        this._subscribers = [];
-        this._pendingHydrationStore = {};
         this._localStoreManager = null;
         this._cookieManager = null;
         this._hasBeenInitialized = false;
-        this._pendingModelConnexion = [];
         this.reset = function () {
-            _this._modelsManager = new Map();
-            _this._transitionsManager = new Map();
-            _this._store = {};
-            _this._pendingHydrationStore = {};
-            _this._subscribers = [];
+            _this.subscribers().reset();
+            _this.models().reset();
+            _this.transitions().reset();
+            _this.store().reset();
+            _this.pendingHydrationStore().reset();
             _this._hasBeenInitialized = false;
-            _this._pendingModelConnexion = [];
         };
-        this.init = function () { return __awaiter(_this, void 0, void 0, function () {
-            var _i, _a, o;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+        this.init = function (instruction) {
+            if (instruction === void 0) { instruction = undefined; }
+            return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!!this.isInitialized()) return [3 /*break*/, 2];
+                            this.setInitialized();
+                            if (instruction !== 'test') {
+                                this._localStoreManager = new local_store_1.default();
+                                this._cookieManager = new cookie_1.default(this.localStoreManager());
+                            }
+                            return [4 /*yield*/, this.models().connectAll()];
+                        case 1:
+                            _a.sent();
+                            this.pendingHydrationStore().execute();
+                            _a.label = 2;
+                        case 2: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        this.localStoreManager = function () { return _this._localStoreManager; };
+        this.cookie = function () { return _this._cookieManager; };
+        this.models = function () { return _this._modelsManager; };
+        this.transitions = function () { return _this._transitionsManager; };
+        this.subscribers = function () { return _this._subscribersManager; };
+        this.store = function () { return _this._store; };
+        this.pendingHydrationStore = function () { return _this._pendingHydrationStore; };
+        this.isInitialized = function () { return _this._hasBeenInitialized; };
+        this.setInitialized = function () { return _this._hasBeenInitialized = true; };
+        this.prepareModel = function (m) {
+            _this.models().add(m);
+            _this.isInitialized() && _this.connectModel(m);
+        };
+        this.connectModel = function (m) { return __awaiter(_this, void 0, void 0, function () {
+            var key, storedData;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        if (!!this.isInitialized()) return [3 /*break*/, 5];
-                        this._hasBeenInitialized = true;
-                        this._localStoreManager = new local_store_manager_1.default();
-                        this._cookieManager = new cookie_manager_1.default(this._localStoreManager);
-                        _i = 0, _a = this.pendingModelConnexion();
-                        _b.label = 1;
+                        key = m.option().key();
+                        this.transitions().add(m);
+                        this.store().set((_a = {}, _a[key] = m.defaultState, _a));
+                        if (m.cookie().isActive())
+                            storedData = m.cookie().get();
+                        if (!(!storedData && m.localStore().isActive())) return [3 /*break*/, 2];
+                        return [4 /*yield*/, m.localStore().get()];
                     case 1:
-                        if (!(_i < _a.length)) return [3 /*break*/, 4];
-                        o = _a[_i];
-                        return [4 /*yield*/, o.connect(o.model)];
+                        storedData = _c.sent();
+                        _c.label = 2;
                     case 2:
-                        _b.sent();
-                        _b.label = 3;
-                    case 3:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 4:
-                        this._pendingModelConnexion = [];
-                        this._privateExecPendingHydration();
-                        _b.label = 5;
-                    case 5: return [2 /*return*/];
+                        storedData && this.pendingHydrationStore().set((_b = {}, _b[key] = storedData, _b));
+                        return [2 /*return*/];
                 }
             });
         }); };
-        this.localStoreManager = function () { return _this._localStoreManager; };
-        this.cookieManager = function () { return _this._cookieManager; };
-        this.modelsManager = function () { return _this._modelsManager; };
-        this.transitionManager = function () { return _this._transitionsManager; };
-        this.subscribers = function () { return _this._subscribers; };
-        this.pendingHydrationStore = function () { return _this._pendingHydrationStore; };
-        this.store = function () { return _this._store; };
-        this.pendingModelConnexion = function () { return _this._pendingModelConnexion; };
-        this.isInitialized = function () { return _this._hasBeenInitialized; };
-        this._setPendingHydrationStore = function (store) {
-            _this._pendingHydrationStore = Object.assign({}, _this.pendingHydrationStore(), store);
+        this._subscribersManager = new subscribers_1.default(this);
+        this._modelsManager = new models_1.default(this);
+        this._transitionsManager = new transitions_1.default(this);
+        this._store = new store_1.default(this);
+        this._pendingHydrationStore = new pending_hydration_1.default(this);
+    }
+    return Manager;
+}());
+exports.default = Manager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/manager/models.js":
+/*!******************************************************!*\
+  !*** ./node_modules/acey/dist/src/manager/models.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = __importDefault(__webpack_require__(/*! ../config */ "./node_modules/acey/dist/src/config.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ../errors */ "./node_modules/acey/dist/src/errors.js"));
+var lodash_1 = __importDefault(__webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"));
+var ModelsManager = /** @class */ (function () {
+    function ModelsManager(m) {
+        var _this = this;
+        this._models = {};
+        this.count = function () { return lodash_1.default.size(_this.get()); };
+        this.get = function () { return _this._models; };
+        this.manager = function () { return _this._m; };
+        this.reset = function () { return _this._models = {}; };
+        this.node = function (key) { return _this.get()[key]; };
+        this.add = function (m) { return _this._models[m.option().key()] = m; };
+        this.exist = function (key) { return _this.get()[key]; };
+        this.hydrate = function (store) { return _this.forEach(function (m, key) { return m.hydrate(store[key]).save(); }); };
+        this.connectAll = function () { return __awaiter(_this, void 0, void 0, function () {
+            var _a, _b, _i, key;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _a = [];
+                        for (_b in this.get())
+                            _a.push(_b);
+                        _i = 0;
+                        _c.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        key = _a[_i];
+                        return [4 /*yield*/, this.manager().connectModel(this.node(key))];
+                    case 2:
+                        _c.sent();
+                        _c.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        }); };
+        this.hydrateWithCookies = function (cookies) {
+            if (config_1.default.isReactNative())
+                throw errors_1.default.cookieDisabledOnRN();
+            _this.forEach(function (m, key) {
+                key in cookies && m.cookie().isActive() && m.hydrate(cookies[key]).save();
+            });
         };
+        this.forEach = function (callback) {
+            for (var key in _this.get())
+                callback(_this.get()[key], key);
+        };
+        this._m = m;
+    }
+    return ModelsManager;
+}());
+exports.default = ModelsManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/manager/pending-hydration.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/acey/dist/src/manager/pending-hydration.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var lodash_1 = __importDefault(__webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"));
+var PendingHydrationManager = /** @class */ (function () {
+    function PendingHydrationManager(m) {
+        var _this = this;
+        this._pendingHydration = {};
+        this.count = function () { return lodash_1.default.size(_this.get()); };
+        this.get = function () { return _this._pendingHydration; };
+        this.manager = function () { return _this._m; };
+        this.reset = function () { return _this._pendingHydration = {}; };
+        this.set = function (o) { return _this._pendingHydration = Object.assign({}, _this.get(), o); };
+        this.node = function (key) { return _this.get()[key]; };
+        this.execute = function () {
+            for (var key in _this.get()) {
+                var m = _this.manager().models().node(key);
+                if (m) {
+                    m.hydrate(_this.node(key)).save();
+                    delete _this.get()[key];
+                }
+            }
+        };
+        this._m = m;
+    }
+    return PendingHydrationManager;
+}());
+exports.default = PendingHydrationManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/manager/store.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/acey/dist/src/manager/store.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var StoreManager = /** @class */ (function () {
+    function StoreManager(m) {
+        var _this = this;
+        this._store = {};
+        this.get = function () { return _this._store; };
+        this.manager = function () { return _this._m; };
+        this.reset = function () { return _this._store = {}; };
+        this.set = function (o) { return _this._store = Object.assign({}, _this.get(), o); };
+        this.node = function (key) { return _this.get()[key]; };
+        this.dispatch = function (action) {
+            _this.manager().transitions().execute(action);
+            _this.manager().subscribers().notify();
+        };
+        this._m = m;
+    }
+    return StoreManager;
+}());
+exports.default = StoreManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/manager/subscribers.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/acey/dist/src/manager/subscribers.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = __importDefault(__webpack_require__(/*! ../config */ "./node_modules/acey/dist/src/config.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ../errors */ "./node_modules/acey/dist/src/errors.js"));
+var SubscribersManager = /** @class */ (function () {
+    function SubscribersManager(m) {
+        var _this = this;
+        this._subscribers = [];
+        this.count = function () { return _this._subscribers.length; };
+        this.add = function (callback) {
+            callback();
+            _this.get().push(callback);
+            _this.manager().pendingHydrationStore().execute();
+        };
+        this.notify = function () {
+            if (_this.manager().isInitialized())
+                _this.get().forEach(function (e) { return e(); });
+            else if (config_1.default.isReactNative())
+                throw errors_1.default.configNotDone();
+        };
+        this.reset = function () { return _this._subscribers = []; };
+        this.manager = function () { return _this._m; };
+        this.get = function () { return _this._subscribers; };
+        this._m = m;
+    }
+    return SubscribersManager;
+}());
+exports.default = SubscribersManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/manager/transitions.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/acey/dist/src/manager/transitions.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var lodash_1 = __importDefault(__webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"));
+var TransitionsManager = /** @class */ (function () {
+    function TransitionsManager(m) {
+        var _this = this;
+        this._transitions = {};
+        this.get = function () { return _this._transitions; };
+        this.count = function () { return lodash_1.default.size(_this.get()); };
         this._newTransition = function (DEFAULT_DATA, STORE_KEY) {
             if (DEFAULT_DATA === void 0) { DEFAULT_DATA = {}; }
             if (STORE_KEY === void 0) { STORE_KEY = ''; }
@@ -1224,90 +1581,339 @@ var Manager = /** @class */ (function () {
                 return s;
             };
         };
-        this._updateStore = function (action) {
-            _this.transitionManager().forEach(function (transition, key) {
-                _this._store[key] = transition(_this._store[key], action);
-            });
+        this.add = function (m) {
+            var key = m.option().key();
+            _this.get()[key] = _this._newTransition(m.defaultState, key);
         };
-        this.dispatch = function (action) {
-            _this._updateStore(action);
-            _this.notifySubscribers();
+        this.forEach = function (callback) {
+            for (var key in _this.get())
+                callback(_this.get()[key], key);
         };
-        this.notifySubscribers = function () {
-            if (_this.isInitialized())
-                _this.subscribers().forEach(function (e) { return e(); });
-            else if (config_1.default.isReactNative())
-                throw new Error("You need to specify the config has done at the root of your project: \"config.done()\" to run Acey.");
-        };
-        this.subscribe = function (callback) {
-            callback();
-            _this.subscribers().push(callback);
-            _this._privateExecPendingHydration();
-        };
-        this.connectModel = function (m) {
-            var callback = function (m) { return __awaiter(_this, void 0, void 0, function () {
-                var key, defaultState, storedData;
+        this.execute = function (action) {
+            _this.forEach(function (transition, key) {
                 var _a;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            key = m.options.key;
-                            defaultState = m.defaultState;
-                            this.transitionManager().set(key, this._newTransition(defaultState, key));
-                            this.modelsManager().set(key, m);
-                            this._store[key] = defaultState;
-                            if (m.areCookiesEnabled())
-                                storedData = m.fetchCookies();
-                            if (!(!storedData && m.isStorageEnabled())) return [3 /*break*/, 2];
-                            return [4 /*yield*/, m.fetchLocalStore()];
-                        case 1:
-                            storedData = _b.sent();
-                            _b.label = 2;
-                        case 2:
-                            storedData && this._setPendingHydrationStore((_a = {}, _a[key] = storedData, _a));
-                            return [2 /*return*/];
-                    }
-                });
-            }); };
-            _this.isInitialized() ? callback(m) : _this.pendingModelConnexion().push({
-                model: m,
-                connect: callback
+                var store = _this.manager().store;
+                store().set((_a = {}, _a[key] = transition(store().node(key), action), _a));
             });
         };
-        this.exist = function (key) { return _this.modelsManager().get(key) !== undefined; };
-        this.addPendingHydration = function (store) {
-            _this._setPendingHydrationStore(store);
-            _this._privateExecPendingHydration();
-        };
-        this.hydrateCookies = function (cookies) {
-            if (config_1.default.isReactNative())
-                throw new Error("cookie management are not available on React-Native");
-            _this.modelsManager().forEach(function (m, key) {
-                key in cookies && m.areCookiesEnabled() && m.hydrate(cookies[key]).save();
-            });
-        };
-        this.hydrate = function (store) { return _this.modelsManager().forEach(function (m, key) { return m.hydrate(store[key]).save(); }); };
-        this._privateExecPendingHydration = function () {
-            for (var key in _this.pendingHydrationStore()) {
-                var m = _this.modelsManager().get(key);
-                if (m) {
-                    m.hydrate(_this.pendingHydrationStore()[key]).save();
-                    delete _this.pendingHydrationStore()[key];
-                }
-            }
-        };
+        this.manager = function () { return _this._m; };
+        this.reset = function () { return _this._transitions = {}; };
+        this._m = m;
     }
-    return Manager;
+    return TransitionsManager;
 }());
-exports.default = new Manager();
+exports.default = TransitionsManager;
 
 
 /***/ }),
 
-/***/ "./node_modules/acey/dist/src/model.js":
-/*!*********************************************!*\
-  !*** ./node_modules/acey/dist/src/model.js ***!
-  \*********************************************/
+/***/ "./node_modules/acey/dist/src/model/cookie.js":
+/*!****************************************************!*\
+  !*** ./node_modules/acey/dist/src/model/cookie.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = __importDefault(__webpack_require__(/*! ../config */ "./node_modules/acey/dist/src/config.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ../errors */ "./node_modules/acey/dist/src/errors.js"));
+var _1 = __importDefault(__webpack_require__(/*! ./ */ "./node_modules/acey/dist/src/model/index.js"));
+var manager_1 = __importDefault(__webpack_require__(/*! ../manager */ "./node_modules/acey/dist/src/manager/index.js"));
+var CookieManager = /** @class */ (function () {
+    function CookieManager(m) {
+        var _this = this;
+        this._model = function () { return _this._m; };
+        this.isActive = function () { return manager_1.default.isInitialized() && !config_1.default.isReactNative() && !_this._model().is().keyGenerated() && _this._model().is().connected() && manager_1.default.cookie() != null; };
+        this.getByKey = function (key) {
+            if (_this.isActive()) {
+                var data = manager_1.default.cookie().getElement(key);
+                if (data) {
+                    return _1.default.ParseStoredJSON(data);
+                }
+            }
+            return undefined;
+        };
+        this.get = function () { return _this.getByKey(_this._model().option().key()); };
+        this.prevState = function () { return _this._prevState; };
+        this.pull = function () {
+            _this._throwErrorIfInactive();
+            var data = _this.get();
+            data && _this._model().hydrate(data).save();
+        };
+        this.set = function (expires) {
+            if (expires === void 0) { expires = 365; }
+            _this._throwErrorIfInactive();
+            var key = _this._model().option().key();
+            try {
+                _this._prevState = _this.getByKey(key);
+                manager_1.default.cookie().addElement(key, _this._model().toLocallyStorableString(), expires);
+            }
+            catch (e) {
+                console.log("error from cookie set with " + (_this._model().is().collection() ? 'Collection' : 'Model') + ": " + key + ", " + e);
+            }
+            return _this._model().action();
+        };
+        this.remove = function () {
+            _this._throwErrorIfInactive();
+            var key = _this._model().option().key();
+            try {
+                manager_1.default.cookie().removeElement(key);
+            }
+            catch (e) {
+                console.log("error from cookie remove with " + (_this._model().is().collection() ? 'Collection' : 'Model') + ": " + key + ", " + e);
+            }
+        };
+        this._throwErrorIfInactive = function () {
+            if (!_this.isActive()) {
+                throw errors_1.default.unauthorizedCookieAdd(_this._model());
+            }
+        };
+        this._m = m;
+        this._prevState = undefined;
+    }
+    return CookieManager;
+}());
+exports.default = CookieManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/model/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/acey/dist/src/model/index.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var manager_1 = __importDefault(__webpack_require__(/*! ../manager */ "./node_modules/acey/dist/src/manager/index.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ../errors */ "./node_modules/acey/dist/src/errors.js"));
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/acey/dist/src/model/utils.js");
+var verify_1 = __webpack_require__(/*! ../verify */ "./node_modules/acey/dist/src/verify.js");
+var cookie_1 = __importDefault(__webpack_require__(/*! ./cookie */ "./node_modules/acey/dist/src/model/cookie.js"));
+var local_store_1 = __importDefault(__webpack_require__(/*! ./local-store */ "./node_modules/acey/dist/src/model/local-store.js"));
+var is_1 = __importDefault(__webpack_require__(/*! ./is */ "./node_modules/acey/dist/src/model/is.js"));
+var option_1 = __importDefault(__webpack_require__(/*! ./option */ "./node_modules/acey/dist/src/model/option.js"));
+var watch_1 = __importDefault(__webpack_require__(/*! ./watch */ "./node_modules/acey/dist/src/model/watch.js"));
+var Model = /** @class */ (function () {
+    function Model(state) {
+        var _this = this;
+        var props = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            props[_i - 1] = arguments[_i];
+        }
+        this._state = null;
+        this._prevState = null;
+        this._defaultState = null;
+        this._set = function (state) {
+            if (state === void 0) { state = _this.state; }
+            if (Model._isObject(state) || Model._isArray(state)) {
+                _this._prevState = _this.state;
+                _this._state = _this.is().collection() ? _this.toListClass(state) : state;
+            }
+            else {
+                if (!_this.is().connected())
+                    throw errors_1.default.onlyObjectOnModelState();
+                else
+                    throw errors_1.default.onlyArrayOnCollectionState();
+            }
+            return _this.action();
+        };
+        this._setDefaultState = function (state) { return _this._defaultState = state; };
+        this._watchManager = function () { return _this._watch; };
+        this.cookie = function () { return _this._cookie; };
+        this.localStore = function () { return _this._localStore; };
+        this.is = function () { return _this._is; };
+        this.option = function () { return _this._option; };
+        this.watch = function () { return _this._watchManager().action(); };
+        this.action = function (value) {
+            if (value === void 0) { value = undefined; }
+            var _a = _this.option().get(), save = _a.save, cookie = _a.cookie, localStore = _a.localStore;
+            return {
+                cookie: !cookie ? _this.cookie().set : cookie,
+                save: !save ? _this.save : save,
+                localStore: !localStore ? _this.localStore().set : localStore,
+                value: value
+            };
+        };
+        this.save = function () {
+            if (_this.is().connected()) {
+                manager_1.default.store().dispatch({ payload: _this.toPlain(), type: _this.option().key() });
+                _this._watchManager().onStoreChanged();
+            }
+            else
+                throw errors_1.default.unauthorizedSave(_this);
+            return _this.action();
+        };
+        //Only usable in a Model/State
+        this.setState = function (o) {
+            if (o === void 0) { o = _this.state; }
+            if (_this.is().collection()) {
+                var action = _this._set(o);
+                _this._watchManager().onStateChanged();
+                return action;
+            }
+            else if (!Model._isObject(o))
+                throw new Error("You can only set an object to setState on a Model");
+            _this._set(Object.assign({}, _this.state, o));
+            _this._watchManager().onStateChanged();
+            verify_1.verifyAllModel(_this);
+            return _this.action();
+        };
+        //Only usable in a Model/State
+        this.deleteKey = function (key) {
+            if (_this.is().collection())
+                throw new Error("deleteKey can't be used in a Collection");
+            var isIn = key in _this.state;
+            isIn && delete _this.state[key];
+            return isIn ? _this.setState() : _this.action();
+        };
+        this.deleteMultiKey = function () {
+            var keys = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                keys[_i] = arguments[_i];
+            }
+            if (_this.is().collection())
+                throw new Error("deleteMultiKey can't be used in a Collection");
+            var isIn = false;
+            for (var i = 0; i < keys.length; i++) {
+                if (!isIn) {
+                    isIn = keys[i] in _this.state;
+                }
+                delete _this.state[keys[i]];
+            }
+            return isIn ? _this.setState() : _this.action();
+        };
+        //Return the state to JSONified object.
+        //It implies that the state is an array, an object or a Model typed class (model or extended from Model)
+        this.toPlain = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return utils_1.toPlain(_this, args[0]);
+        };
+        this.hydrate = function (state) {
+            utils_1.hydrate(state, _this);
+            if (!_this.is().empty())
+                verify_1.verifyAllModel(_this);
+            return _this.setState();
+        };
+        /*
+            Transform an array of object into an array of instancied Model
+            Exemple =>
+            [{content: '123', id: 'abc'}, {content: '456', id: 'def'}]
+            to
+            [new Model(content: '123', id: 'abc'}), new Model({content: '456', id: 'def'})]
+            the class used to instance the objects is the one passed in parameters as nodeModel in the constructor.
+    
+        */
+        this.toListClass = function (elem) {
+            if (elem === void 0) { elem = []; }
+            var nodeModel = _this.option().nodeModel();
+            if (!_this.is().collection() || nodeModel == null)
+                throw new Error("toListClass can only be called from a Collection");
+            var ret = [];
+            for (var i = 0; i < elem.length; i++) {
+                if (!(elem[i] instanceof Model))
+                    ret.push(new nodeModel(elem[i], _this.option().kids()));
+                else
+                    ret.push(elem[i]);
+            }
+            return ret;
+        };
+        this.toLocallyStorableString = function () { return JSON.stringify(_this.toPlain('store')); };
+        this.toString = function () { return JSON.stringify(_this.toPlain()); };
+        this._is = new is_1.default(this);
+        this._option = new option_1.default(this).init(Object.assign({}, props[0], props[1]));
+        this._cookie = new cookie_1.default(this);
+        this._localStore = new local_store_1.default(this);
+        this._watch = new watch_1.default(this);
+        this._set(state);
+        this._setDefaultState(this.toPlain());
+        this.is().connected() && manager_1.default.prepareModel(this);
+    }
+    Object.defineProperty(Model.prototype, "state", {
+        get: function () {
+            return this._state;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Model.prototype, "prevState", {
+        get: function () {
+            return this._prevState;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Model.prototype, "defaultState", {
+        get: function () {
+            return this._defaultState;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Model.ParseStoredJSON = function (data) { return utils_1.ParseJSONLocallyStored(data); };
+    Model._isArray = function (value) { return Array.isArray(value); };
+    Model._isObject = function (value) { return value !== null && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Model) && !(value instanceof Date); };
+    Model._isCollection = function (value) { return value instanceof Model && value.is().collection(); };
+    return Model;
+}());
+exports.default = Model;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/model/is.js":
+/*!************************************************!*\
+  !*** ./node_modules/acey/dist/src/model/is.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var lodash_1 = __importDefault(__webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"));
+var _1 = __importDefault(__webpack_require__(/*! ./ */ "./node_modules/acey/dist/src/model/index.js"));
+var IsManager = /** @class */ (function () {
+    function IsManager(m) {
+        var _this = this;
+        this._model = function () { return _this._m; };
+        this.connected = function () { return _this._model().option().isConnected(); };
+        this.equal = function (m) { return _this._model().toString() === m.toString(); };
+        this.empty = function () { return lodash_1.default.isEmpty(_this._model().state); };
+        this.collection = function () { return _1.default._isArray(_this._model().state); };
+        this.keyGenerated = function () { return _this._model().option().isKeyGenerated(); };
+        this.cookiesEnabled = function () { return _this._model().cookie().isActive(); };
+        this.localStoreEnabled = function () { return _this._model().localStore().isActive(); };
+        this._m = m;
+    }
+    return IsManager;
+}());
+exports.default = IsManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/model/local-store.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/acey/dist/src/model/local-store.js ***!
+  \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1353,66 +1959,131 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var object_path_1 = __importDefault(__webpack_require__(/*! object-path */ "./node_modules/object-path/index.js"));
-var lodash_1 = __importDefault(__webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"));
-var manager_1 = __importDefault(__webpack_require__(/*! ./manager */ "./node_modules/acey/dist/src/manager.js"));
-var config_1 = __importDefault(__webpack_require__(/*! ./config */ "./node_modules/acey/dist/src/config.js"));
-var hydrate_1 = __webpack_require__(/*! ./hydrate */ "./node_modules/acey/dist/src/hydrate.js");
-var verify_1 = __webpack_require__(/*! ./verify */ "./node_modules/acey/dist/src/verify.js");
-var DEFAULT_OPTIONS = {
-    key: '',
-    connected: false,
-    save: null,
-    cookie: null,
-    localStore: null
-};
-var DEFAULT_INTERNAL_OPTIONS = {
-    nodeModel: undefined
-};
-var Model = /** @class */ (function () {
-    function Model(state) {
+var config_1 = __importDefault(__webpack_require__(/*! ../config */ "./node_modules/acey/dist/src/config.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ../errors */ "./node_modules/acey/dist/src/errors.js"));
+var _1 = __importDefault(__webpack_require__(/*! ./ */ "./node_modules/acey/dist/src/model/index.js"));
+var manager_1 = __importDefault(__webpack_require__(/*! ../manager */ "./node_modules/acey/dist/src/manager/index.js"));
+var LocalStoreManager = /** @class */ (function () {
+    function LocalStoreManager(m) {
         var _this = this;
-        var props = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            props[_i - 1] = arguments[_i];
-        }
-        this._state = null;
-        this._defaultState = null;
-        this._options = DEFAULT_OPTIONS;
-        this._internalOptions = DEFAULT_INTERNAL_OPTIONS;
-        this.__childOptions = this._options;
-        this._isKeyGenerated = false;
-        this._initialize = function () {
-            var key = _this.options.key;
-            if (_this.isConnected()) {
-                if (config_1.default.isNextJS() && !key)
-                    throw new Error("In a NextJS environment you need to manually setup a unique key for every connected Model and Collection you instance.");
-                if (key && manager_1.default.exist(key) && !config_1.default.isNextJSServer())
-                    throw new Error("You have 2 connected Models/Collections using the same key: " + key + ".");
-                if (!key) {
-                    _this._setOptions({ key: _this._generateKey() });
-                    _this._isKeyGenerated = true;
+        this._model = function () { return _this._m; };
+        this.isActive = function () { return manager_1.default.isInitialized() && !config_1.default.isNextJS() && !_this._model().is().keyGenerated() && _this._model().is().connected() && manager_1.default.localStoreManager() != null; };
+        this.get = function () { return __awaiter(_this, void 0, void 0, function () {
+            var key, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.isActive()) return [3 /*break*/, 2];
+                        key = this._model().option().key();
+                        return [4 /*yield*/, manager_1.default.localStoreManager().getElement(key)];
+                    case 1:
+                        data = _a.sent();
+                        if (data) {
+                            return [2 /*return*/, _1.default.ParseStoredJSON(data)];
+                        }
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, undefined];
                 }
-                manager_1.default.connectModel(_this);
+            });
+        }); };
+        this.pull = function () {
+            _this._throwErrorIfInactive();
+            var data = _this.get();
+            data && _this._model().hydrate(data).save();
+        };
+        this.set = function (expires) {
+            if (expires === void 0) { expires = 365; }
+            _this._throwErrorIfInactive();
+            var key = _this._model().option().key();
+            try {
+                manager_1.default.localStoreManager().addElement(key, _this._model().toLocallyStorableString(), expires);
+            }
+            catch (e) {
+                console.log("error from localStore set with " + (_this._model().is().collection() ? 'Collection' : 'Model') + ": " + key + ", " + e);
+            }
+            return _this._model().action();
+        };
+        this.remove = function () {
+            _this._throwErrorIfInactive();
+            var key = _this._model().option().key();
+            try {
+                manager_1.default.localStoreManager().removeElement(key);
+            }
+            catch (e) {
+                console.log("error from localStore remove with " + (_this._model().is().collection() ? 'Collection' : 'Model') + ": " + key + ", " + e);
             }
         };
-        this._getConnectedActions = function (value) {
-            if (value === void 0) { value = undefined; }
-            var _a = _this.options, save = _a.save, cookie = _a.cookie, localStore = _a.localStore;
-            return {
-                cookie: !cookie ? _this._cookie : cookie,
-                save: !save ? _this._save : save,
-                localStore: !localStore ? _this._localStore : localStore,
-                value: value
-            };
+        this._throwErrorIfInactive = function () {
+            if (!_this.isActive()) {
+                throw errors_1.default.unauthorizedLocalStore(_this._model());
+            }
         };
-        this._setOptions = function (o) { return _this._options = Object.assign({}, _this.options, o); };
-        this._setInternalOptions = function (options) {
-            if (options === void 0) { options = DEFAULT_INTERNAL_OPTIONS; }
-            _this._internalOptions = Object.assign(_this._internalOptions, options);
+        this._m = m;
+    }
+    return LocalStoreManager;
+}());
+exports.default = LocalStoreManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/model/option.js":
+/*!****************************************************!*\
+  !*** ./node_modules/acey/dist/src/model/option.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = __importDefault(__webpack_require__(/*! ../config */ "./node_modules/acey/dist/src/config.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ../errors */ "./node_modules/acey/dist/src/errors.js"));
+var manager_1 = __importDefault(__webpack_require__(/*! ../manager */ "./node_modules/acey/dist/src/manager/index.js"));
+var lib_1 = __webpack_require__(/*! ../lib */ "./node_modules/acey/dist/src/lib.js");
+var OptionManager = /** @class */ (function () {
+    function OptionManager(m) {
+        var _this = this;
+        this._isKeyGenerated = false;
+        this._options = {
+            key: '',
+            connected: false,
+            save: null,
+            cookie: null,
+            localStore: null,
+            nodeModel: null,
+            collectionModel: null
         };
-        /*    _setChildOptions is setting the options that any nested Model, the current one could have.
-              It makes the nested one using the same connected methods than the model that welcomes it.
+        this.init = function (options) {
+            _this.set(options);
+            var key = _this.key();
+            if (_this.isConnected()) {
+                if (config_1.default.isNextJS() && !key)
+                    throw errors_1.default.uniqKeyRequiredOnNextJS();
+                if (key && manager_1.default.models().exist(key) && !config_1.default.isNextJSServer())
+                    throw errors_1.default.keyAlreadyExist(key);
+                if (!key) {
+                    _this.setKey(lib_1.generateUniqModelKey(_this._model()));
+                    _this.setKeyAsGenerated();
+                }
+            }
+            return _this;
+        };
+        this._model = function () { return _this._m; };
+        this.set = function (o) { return _this._options = Object.assign({}, _this._options, o); };
+        this.setKey = function (key) { return _this.set({ key: key }); };
+        this.setKeyAsGenerated = function () { return _this._isKeyGenerated = true; };
+        this.get = function () { return _this._options; };
+        this.key = function () { return _this.get().key; };
+        this.isConnected = function () { return _this.get().connected; };
+        this.isKeyGenerated = function () { return _this._isKeyGenerated; };
+        this.nodeModel = function () { return _this.get().nodeModel; };
+        this.collectionModel = function () { return _this.get().collectionModel; };
+        /*    kids is setting the options for any nested Model/Collection.
+              It makes the nested one using the same connected action than its parent.
               Example:
               We assume that we have a connected Model called `User` with a state Object that contains
               a non-connected Model called `Device`.
@@ -1432,237 +2103,289 @@ var Model = /** @class */ (function () {
       
               {
                   first_name: ''
-                  device: new Device({id: 'iPhone X'}, this.__childOptions)
+                  device: new Device({id: 'iPhone X'}, this.options().kids())
               }
           */
-        this._setChildOptions = function () {
-            _this.__childOptions = Object.assign({}, _this.__childOptions, {
-                save: _this._getConnectedActions().save,
-                cookie: _this._getConnectedActions().cookie,
-                localStore: _this._getConnectedActions().localStore,
-            });
+        this.kids = function () {
+            return {
+                save: _this._model().action().save,
+                cookie: _this._model().action().cookie,
+                localStore: _this._model().action().localStore,
+            };
         };
-        this._set = function (state) {
-            if (state === void 0) { state = _this.state; }
-            if (Model._isObject(state) || Model._isArray(state)) {
-                _this._state = _this.isCollection() ? _this.toListClass(state) : state;
+        this._m = m;
+    }
+    return OptionManager;
+}());
+exports.default = OptionManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/model/utils.js":
+/*!***************************************************!*\
+  !*** ./node_modules/acey/dist/src/model/utils.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var _1 = __importDefault(__webpack_require__(/*! ./ */ "./node_modules/acey/dist/src/model/index.js"));
+var lodash_1 = __importDefault(__webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"));
+exports.STORE_OPTION = 'store';
+var isStoreOption = function (option) { return option === exports.STORE_OPTION; };
+var DATE_PATTERN = '____AS-Date____';
+var splitPath = function (path) {
+    return path.replace(/^[\|]+|[\|]+$/g, ".").split('.').filter(function (x) {
+        return (x !== (undefined || null || ''));
+    });
+};
+var getValueAtPath = function (path, to) {
+    var pathSplited = splitPath(path);
+    for (var i = 0; i < pathSplited.length; i++) {
+        if (to instanceof _1.default)
+            to = to.state[pathSplited[i]];
+        else
+            to = to[pathSplited[i]];
+    }
+    return to;
+};
+var updateInState = function (value, path, to) {
+    var _a;
+    var pathSplited = splitPath(path);
+    var lastKey = pathSplited[pathSplited.length - 1];
+    pathSplited.splice(pathSplited.length - 1, 1);
+    var v = getValueAtPath(pathSplited.join('.'), to);
+    if (v instanceof _1.default && v.is().collection()) {
+        v.setState(v.toListClass(value));
+    }
+    else if (v instanceof _1.default && !_1.default._isCollection(v.state[lastKey])) {
+        v.setState((_a = {}, _a[lastKey] = value, _a));
+    }
+    else if (_1.default._isCollection(v.state[lastKey])) {
+        var collec = v.state[lastKey];
+        collec.setState(collec.toListClass(value));
+    }
+    else {
+        if (lastKey)
+            v[lastKey] = value;
+    }
+};
+exports.hydrate = function (from, to) {
+    var recur = function (o, path) {
+        if (_1.default._isArray(o))
+            updateInState(o, path, to);
+        else if (_1.default._isObject(o)) {
+            for (var key in o)
+                recur(o[key], path + '.' + key);
+        }
+        else
+            updateInState(o, path, to);
+    };
+    recur(from, '');
+};
+//Return the state to JSONified object.
+//It implies that the state is an array, an object or a Model typed class (model or extended from Model)
+exports.toPlain = function (m, option) {
+    var ret = {};
+    var recur = function (o, path) {
+        //if this is a plain object
+        if (_1.default._isObject(o) && Object.keys(o).length > 0) {
+            for (var key in o)
+                recur(o[key], !path ? key : path + '.' + key);
+            return;
+        }
+        //if this is an array
+        if (_1.default._isArray(o) && o.length > 0) {
+            for (var i = 0; i < o.length; i++)
+                recur(o[i], path + '.' + i.toString());
+            return;
+        }
+        //if this is a Model class
+        if (o instanceof _1.default) {
+            recur(o.state, path);
+            return;
+        }
+        if (isStoreOption(option) && o instanceof Date) {
+            o = "" + DATE_PATTERN + o.getTime().toString();
+        }
+        lodash_1.default.set(ret, path, o);
+    };
+    recur(m.state, '');
+    if (m.is().collection()) {
+        if (!ret[''])
+            return [];
+        return ret[''];
+    }
+    return ret;
+};
+exports.ParseJSONLocallyStored = function (data) {
+    var ret = {};
+    var recur = function (o, path) {
+        //if this is a plain object
+        if (_1.default._isObject(o) && Object.keys(o).length > 0) {
+            for (var key in o)
+                recur(o[key], !path ? key : path + '.' + key);
+            return;
+        }
+        //if this is an array
+        if (_1.default._isArray(o) && o.length > 0) {
+            for (var i = 0; i < o.length; i++)
+                recur(o[i], path + '.' + i.toString());
+            return;
+        }
+        if (typeof o === 'string' && o.startsWith(DATE_PATTERN)) {
+            o = new Date(parseInt(o.replace(DATE_PATTERN, '')));
+        }
+        lodash_1.default.set(ret, path, o);
+    };
+    recur(JSON.parse(data), '');
+    return ret;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/acey/dist/src/model/watch.js":
+/*!***************************************************!*\
+  !*** ./node_modules/acey/dist/src/model/watch.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var lodash_1 = __importDefault(__webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"));
+var lib_1 = __webpack_require__(/*! ../lib */ "./node_modules/acey/dist/src/lib.js");
+var SubscriberManager = /** @class */ (function () {
+    function SubscriberManager(m, watchActionKids) {
+        var _this = this;
+        this._subscribers = {};
+        this._kidsSubscribersActions = {}; //for the node of a collection
+        this._watchActionKids = null;
+        this._model = function () { return _this._m; };
+        this._allKidsSubscriberActions = function () { return _this._kidsSubscribersActions; };
+        this._subscriberKidsActions = function (key) { return _this._allKidsSubscriberActions()[key]; };
+        this._isKidsActionsEnabled = function () { return _this._watchActionKids !== null && _this._model().is().collection(); };
+        this._watchSelector = function (m) { return _this._watchActionKids(m); };
+        this._addKidsSubscriberActions = function (id, callback) {
+            if (_this._isKidsActionsEnabled()) {
+                var ret = [];
+                var list = _this._model().state;
+                for (var _i = 0, list_1 = list; _i < list_1.length; _i++) {
+                    var e = list_1[_i];
+                    ret.push(_this._watchSelector(e)(callback));
+                }
+                _this.get()[id] = ret;
             }
-            else {
-                if (!_this.isCollection())
-                    throw new Error("The state of a Model, can only be instanced and replaced with an object type.");
-                else
-                    throw new Error("The state of a Collection, can only be instanced and replaced with an array type.");
-            }
-            return _this._getConnectedActions();
         };
-        this._save = function () {
-            if (_this.isConnected()) {
-                manager_1.default.dispatch({
-                    payload: _this.toPlain(),
-                    type: _this.options.key,
+        this._refreshKidsSubscriberActions = function () {
+            for (var key in _this._allKidsSubscriberActions()) {
+                var list = _this._subscriberKidsActions(key);
+                for (var i = 0; i < list.length; i++)
+                    list[i].stop();
+                list.forEach(function (f) {
+                    var list = _this._model().state;
+                    list.map(function (m) { return m.watch().state(f); });
                 });
             }
-            else
-                throw new Error("You've attempted to call save in the " + (_this.isCollection() ? 'Collection' : 'Model') + " " + _this.constructor.name + " but you either didn't specify it as a connected " + (_this.isCollection() ? 'Collection' : 'Model') + " or didn't specify the config has done at the root of your project: \"config.done()\"");
-            return _this._getConnectedActions();
         };
-        this._cookie = function (expires) {
-            if (expires === void 0) { expires = 365; }
-            var key = _this.options.key;
-            if (_this.areCookiesEnabled()) {
-                try {
-                    manager_1.default.cookieManager().addElement(key, _this.toString(), expires);
-                }
-                catch (e) {
-                    throw new Error("error from coookie with Model/Collection: " + key + ", " + e);
-                }
-            }
-            else
-                throw new Error("You've attempted to call cookie in the " + (_this.isCollection() ? 'Collection' : 'Model') + " " + _this.constructor.name + " (key: " + _this.options.key + "), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.\n3. You didn't specify the config has done at the root of your project: \"config.done()\"\n4. You are using React Native");
-            return _this._getConnectedActions();
-        };
-        this.fetchCookies = function () { return _this.areCookiesEnabled() ? manager_1.default.cookieManager().getElement(_this.options.key) : undefined; };
-        this.removeCookies = function () { return _this.areCookiesEnabled() ? manager_1.default.cookieManager().removeElement(_this.options.key) : undefined; };
-        this._localStore = function (expires) {
-            if (expires === void 0) { expires = 365; }
-            var key = _this.options.key;
-            if (_this.isStorageEnabled()) {
-                try {
-                    manager_1.default.localStoreManager().addElement(key, _this.toString(), expires);
-                }
-                catch (e) {
-                    throw new Error("error from localStore with " + (_this.isCollection() ? 'Collection' : 'Model') + ": " + key + ", " + e);
-                }
-            }
-            else
-                throw new Error("You've attempted to call localStore in the " + (_this.isCollection() ? 'Collection' : 'Model') + " " + _this.constructor.name + " (key: " + _this.options.key + "), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store\n3. You didn't specify the config has done at the root of your project: \"config.done()\"\n4. You are using NextJS.");
-            return _this._getConnectedActions();
-        };
-        this.fetchLocalStore = function () { return __awaiter(_this, void 0, void 0, function () { var _a; return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (!this.isStorageEnabled()) return [3 /*break*/, 2];
-                    return [4 /*yield*/, manager_1.default.localStoreManager().getElement(this.options.key)];
-                case 1:
-                    _a = (_b.sent());
-                    return [3 /*break*/, 3];
-                case 2:
-                    _a = undefined;
-                    _b.label = 3;
-                case 3: return [2 /*return*/, _a];
-            }
-        }); }); };
-        this.removeLocalStore = function () { return _this.isStorageEnabled() ? manager_1.default.localStoreManager().removeElement(_this.options.key) : undefined; };
-        //Only usable in a Model/State
-        this.setState = function (o) {
-            if (o === void 0) { o = _this.state; }
-            if (_this.isCollection())
-                return _this._set(o);
-            for (var k in o) {
-                if (o[k] instanceof Model) {
-                    _this._doVerifications();
-                    break;
-                }
-            }
-            return _this._set(Object.assign({}, _this.state, o));
-        };
-        //Only usable in a Model/State
-        this.deleteKey = function (key) {
-            if (_this.isCollection())
-                throw new Error("deleteKey can't be used in a Collection");
-            delete _this.state[key];
-            return _this._set(_this.state);
-        };
-        //Return the state to JSONified object.
-        //It implies that the state is an array, an object or a Model typed class (model or extended from Model)
-        this.toPlain = function () {
-            var ret = {};
-            var recur = function (o, path) {
-                //if this is a plain object
-                if (Model._isObject(o) && Object.keys(o).length > 0) {
-                    for (var key in o)
-                        recur(o[key], !path ? key : path + '.' + key);
-                    return;
-                }
-                //if this is an array
-                if (Model._isArray(o) && o.length > 0) {
-                    for (var i = 0; i < o.length; i++)
-                        recur(o[i], path + '.' + i.toString());
-                    return;
-                }
-                //if this is a Model class
-                if (o instanceof Model) {
-                    recur(o.state, path);
-                    return;
-                }
-                object_path_1.default.set(ret, path, o);
-            };
-            recur(_this.state, '');
-            if (_this.isCollection()) {
-                if (!ret[''])
-                    return [];
-                return ret[''];
-            }
-            return ret;
-        };
-        this.hydrate = function (state) {
-            if (!_this.isEmpty())
-                _this._doVerifications();
-            hydrate_1.hydrate(state, _this);
-            return _this._set();
-        };
-        /*
-            Transform an array of object into an array of instancied Model
-            Exemple =>
-            [{content: '123', id: 'abc'}, {content: '456', id: 'def'}]
-            to
-            [new Model(content: '123', id: 'abc'}), new Model({content: '456', id: 'def'})]
-            the class used to instance the objects is the one passed in parameters as nodeModel in the constructor.
-    
-        */
-        this.toListClass = function (elem) {
-            if (elem === void 0) { elem = []; }
-            var nodeModel = _this.internalOptions.nodeModel;
-            if (!_this.isCollection() || nodeModel == null)
-                throw new Error("toListClass can only be called from a Collection");
-            var ret = [];
-            for (var i = 0; i < elem.length; i++) {
-                if (!(elem[i] instanceof Model))
-                    ret.push(new nodeModel(elem[i], _this.__childOptions));
-                else
-                    ret.push(elem[i]);
-            }
-            return ret;
-        };
-        this.toString = function () { return JSON.stringify(_this.toPlain()); };
-        this.areCookiesEnabled = function () { return manager_1.default.isInitialized() && !config_1.default.isReactNative() && !_this.hasKeyBeenGenerated() && _this.isConnected(); };
-        this.isStorageEnabled = function () { return manager_1.default.isInitialized() && !config_1.default.isNextJS() && !_this.hasKeyBeenGenerated() && _this.isConnected(); };
-        this.hasKeyBeenGenerated = function () { return _this._isKeyGenerated; };
-        this.isConnected = function () { return _this.options.connected; };
-        this.isEqual = function (m) { return _this.toString() === m.toString(); };
-        this.isEmpty = function () { return lodash_1.default.isEmpty(_this.state); };
-        this.isCollection = function () { return Model._isArray(_this.state); };
-        this._generateKey = function () {
-            var i = 1;
-            var key = '_auto_' + _this.constructor.name;
-            var suffix;
-            while (true) {
-                suffix = '_' + i.toString();
-                if (!manager_1.default.exist(key + suffix))
-                    break;
-                i++;
-            }
-            return key + suffix;
-        };
-        this._doVerifications = function () {
-            if (verify_1.verifyIfContainArrayOfModel(_this))
-                throw new Error(_this.constructor.name + "'s state contains an Array of Model. Please use a Collection instead.");
-            if (verify_1.verifyIfContainAConnectedModel(_this.state)) {
-                throw new Error(_this.constructor.name + " contains a connected Model. Connected Models can't be nested");
+        this._stopKidsSubscriberActions = function (id) {
+            var list = _this._subscriberKidsActions(id);
+            if (list) {
+                for (var i = 0; i < list.length; i++)
+                    list[i].stop();
+                list.length = 0;
+                delete _this._allKidsSubscriberActions()[id];
             }
         };
-        this._set(state);
-        this._defaultState = this.toPlain();
-        this._setOptions(props[0]);
-        this._setInternalOptions(props[1]);
-        this._setChildOptions();
-        this._initialize();
+        this.count = function () { return lodash_1.default.size(_this.get()); };
+        this.add = function (callback) {
+            var ID = lib_1.hash(Math.random().toString()).toString();
+            _this.get()[ID] = callback;
+            _this._isKidsActionsEnabled() && _this._addKidsSubscriberActions(ID, callback);
+            return new SubscribeAction(ID, function () {
+                _this._isKidsActionsEnabled() && _this._stopKidsSubscriberActions(ID);
+                _this.stop(ID);
+            });
+        };
+        this.stop = function (id) {
+            delete _this.get()[id];
+            return _this.count();
+        };
+        this.forEach = function (callback) {
+            for (var key in _this.get())
+                callback(_this.get()[key], key);
+            return _this.count();
+        };
+        this.notify = function () {
+            _this.forEach(function (f) { return f(); });
+            _this._isKidsActionsEnabled() && _this._refreshKidsSubscriberActions();
+            return _this.count();
+        };
+        this.reset = function () {
+            var count = _this.count();
+            _this.forEach(function (f, key) { return delete _this.get()[key]; });
+            return count;
+        };
+        this.get = function () { return _this._subscribers; };
+        this._m = m;
+        this._watchActionKids = watchActionKids;
     }
-    Object.defineProperty(Model.prototype, "options", {
-        get: function () {
-            return lodash_1.default.cloneDeepWith(this._options);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Model.prototype, "internalOptions", {
-        get: function () {
-            return this._internalOptions;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Model.prototype, "state", {
-        get: function () {
-            return this._state;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Model.prototype, "defaultState", {
-        get: function () {
-            return this._defaultState;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Model._isArray = function (value) { return Array.isArray(value); };
-    Model._isObject = function (value) { return value !== null && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Model) && !Model._isDateClass(value); };
-    Model._isDateClass = function (value) { return value instanceof Date; };
-    Model._isCollection = function (value) { return value instanceof Model && value.isCollection(); };
-    return Model;
+    return SubscriberManager;
 }());
-exports.default = Model;
+var SubscribeAction = /** @class */ (function () {
+    function SubscribeAction(id, stopAction) {
+        var _this = this;
+        this.ID = function () { return _this._id; };
+        this.stop = function () { return _this._stopAction(); };
+        this._id = id;
+        this._stopAction = stopAction;
+    }
+    return SubscribeAction;
+}());
+var Watch = /** @class */ (function () {
+    function Watch(m) {
+        var _this = this;
+        this._model = function () { return _this._m; };
+        this._stateSubscriber = function () { return _this._stateSubscriberManager; };
+        this._storeSubscriber = function () { return _this._storeSubscriberManager; };
+        this.onStateChanged = function () { return _this._stateSubscriber().notify(); };
+        this.onStoreChanged = function () { return _this._storeSubscriber().notify(); };
+        this.state = function (callback) { return _this._stateSubscriber().add(callback); };
+        this.store = function (callback) { return _this._storeSubscriber().add(callback); };
+        this.all = function (callback) {
+            var stateWatcher = _this.state(callback);
+            var storeWatcher = _this.store(callback);
+            var ID = lib_1.hash(Math.random().toString()).toString();
+            return new SubscribeAction(ID, function () {
+                console.log(stateWatcher.stop());
+                console.log(storeWatcher.stop());
+            });
+        };
+        this.action = function () {
+            return {
+                state: _this.state,
+                store: _this.store,
+                all: _this.all
+            };
+        };
+        this._m = m;
+        this._stateSubscriberManager = new SubscriberManager(m, function (m) { return m.watch().state; });
+        this._storeSubscriberManager = new SubscriberManager(m, null);
+    }
+    return Watch;
+}());
+exports.default = Watch;
 
 
 /***/ }),
@@ -1680,18 +2403,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var model_1 = __importDefault(__webpack_require__(/*! ./model */ "./node_modules/acey/dist/src/model.js"));
+var model_1 = __importDefault(__webpack_require__(/*! ./model */ "./node_modules/acey/dist/src/model/index.js"));
+var errors_1 = __importDefault(__webpack_require__(/*! ./errors */ "./node_modules/acey/dist/src/errors.js"));
 exports.verifyIfContainAConnectedModel = function (m) {
     var doesContain = false;
     var recur = function (v) {
         if (doesContain)
             return;
         if (v instanceof model_1.default) {
-            if (v.isConnected()) {
+            if (v.is().connected()) {
                 doesContain = true;
                 return;
             }
-            if (v.isCollection()) {
+            if (v.is().collection()) {
                 for (var _i = 0, _a = v.state; _i < _a.length; _i++) {
                     var e = _a[_i];
                     recur(e);
@@ -1726,7 +2450,7 @@ exports.verifyIfContainArrayOfModel = function (v) {
         if (!v || v instanceof Date)
             return;
         if (v instanceof model_1.default) {
-            if (v.isCollection()) {
+            if (v.is().collection()) {
                 for (var _i = 0, _a = v.state; _i < _a.length; _i++) {
                     var e = _a[_i];
                     recur(e);
@@ -1766,6 +2490,13 @@ exports.verifyIfOnlyModelsAndFunction = function (v, origin) {
         var e = v[i];
         if (!(e instanceof model_1.default) && !(typeof e === 'function'))
             throw new Error("\n                " + defaultError + "\n                Please check the " + (i + 1) + (i == 0 ? 'st' : (i == 1) ? 'nd' : 'st') + " element of the Array. Currently typed as a : " + typeof e + ".\n            ");
+    }
+};
+exports.verifyAllModel = function (m) {
+    if (exports.verifyIfContainArrayOfModel(m))
+        throw errors_1.default.forbiddenArrayModel(m);
+    if (exports.verifyIfContainAConnectedModel(m.state)) {
+        throw errors_1.default.forbiddenNestedConnexion(m);
     }
 };
 
@@ -19121,7 +19852,7 @@ exports.withAcey = function (App, Acey) {
                     return newProps;
                 };
                 _this.render = function () { return react_1.default.createElement(App, __assign({}, _this.getClearedProps())); };
-                !_this.isServer() && manager.addPendingHydration(props.pageProps[STORE_KEY]);
+                !_this.isServer() && manager.pendingHydrationStore().set(props.pageProps[STORE_KEY]);
                 return _this;
             }
             return Wrap;
@@ -19141,10 +19872,10 @@ exports.withAcey = function (App, Acey) {
                                 cookies = {};
                                 gotCookies = Cookies.parse(ctx.req.headers.cookie);
                                 for (key in gotCookies) {
-                                    if (manager.exist(key))
+                                    if (manager.models().exist(key))
                                         cookies[key] = JSON.parse(gotCookies[key]);
                                 }
-                                manager.hydrateCookies(cookies);
+                                manager.models().hydrateWithCookies(cookies);
                             }
                             if (!Component.getInitialProps) return [3 /*break*/, 2];
                             return [4 /*yield*/, Component.getInitialProps(ctx)];
@@ -19157,7 +19888,7 @@ exports.withAcey = function (App, Acey) {
                             ret = {
                                 pageProps: __assign({}, pageProps)
                             };
-                            ret.pageProps[STORE_KEY] = manager.store();
+                            ret.pageProps[STORE_KEY] = manager.store().get();
                             return [2 /*return*/, ret];
                     }
                 });
@@ -19207,7 +19938,7 @@ exports.withAcey = function (App, Acey) {
 
 var _construct = __webpack_require__(/*! @babel/runtime/helpers/construct */ "./node_modules/@babel/runtime/helpers/construct.js");
 
-function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
@@ -20624,309 +21355,6 @@ exports.ST = exports.SP && typeof performance.mark === 'function' && typeof perf
 
 /***/ }),
 
-/***/ "./node_modules/object-path/index.js":
-/*!*******************************************!*\
-  !*** ./node_modules/object-path/index.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory){
-  'use strict';
-
-  /*istanbul ignore next:cant test*/
-  if ( true && typeof module.exports === 'object') {
-    module.exports = factory();
-  } else if (true) {
-    // AMD. Register as an anonymous module.
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else {}
-})(this, function(){
-  'use strict';
-
-  var toStr = Object.prototype.toString;
-  function hasOwnProperty(obj, prop) {
-    if(obj == null) {
-      return false
-    }
-    //to handle objects with null prototypes (too edge case?)
-    return Object.prototype.hasOwnProperty.call(obj, prop)
-  }
-
-  function isEmpty(value){
-    if (!value) {
-      return true;
-    }
-    if (isArray(value) && value.length === 0) {
-        return true;
-    } else if (typeof value !== 'string') {
-        for (var i in value) {
-            if (hasOwnProperty(value, i)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    return false;
-  }
-
-  function toString(type){
-    return toStr.call(type);
-  }
-
-  function isObject(obj){
-    return typeof obj === 'object' && toString(obj) === "[object Object]";
-  }
-
-  var isArray = Array.isArray || function(obj){
-    /*istanbul ignore next:cant test*/
-    return toStr.call(obj) === '[object Array]';
-  }
-
-  function isBoolean(obj){
-    return typeof obj === 'boolean' || toString(obj) === '[object Boolean]';
-  }
-
-  function getKey(key){
-    var intKey = parseInt(key);
-    if (intKey.toString() === key) {
-      return intKey;
-    }
-    return key;
-  }
-
-  function factory(options) {
-    options = options || {}
-
-    var objectPath = function(obj) {
-      return Object.keys(objectPath).reduce(function(proxy, prop) {
-        if(prop === 'create') {
-          return proxy;
-        }
-
-        /*istanbul ignore else*/
-        if (typeof objectPath[prop] === 'function') {
-          proxy[prop] = objectPath[prop].bind(objectPath, obj);
-        }
-
-        return proxy;
-      }, {});
-    };
-
-    function hasShallowProperty(obj, prop) {
-      return (options.includeInheritedProps || (typeof prop === 'number' && Array.isArray(obj)) || hasOwnProperty(obj, prop))
-    }
-
-    function getShallowProperty(obj, prop) {
-      if (hasShallowProperty(obj, prop)) {
-        return obj[prop];
-      }
-    }
-
-    function set(obj, path, value, doNotReplace){
-      if (typeof path === 'number') {
-        path = [path];
-      }
-      if (!path || path.length === 0) {
-        return obj;
-      }
-      if (typeof path === 'string') {
-        return set(obj, path.split('.').map(getKey), value, doNotReplace);
-      }
-      var currentPath = path[0];
-      var currentValue = getShallowProperty(obj, currentPath);
-      if (path.length === 1) {
-        if (currentValue === void 0 || !doNotReplace) {
-          obj[currentPath] = value;
-        }
-        return currentValue;
-      }
-
-      if (currentValue === void 0) {
-        //check if we assume an array
-        if(typeof path[1] === 'number') {
-          obj[currentPath] = [];
-        } else {
-          obj[currentPath] = {};
-        }
-      }
-
-      return set(obj[currentPath], path.slice(1), value, doNotReplace);
-    }
-
-    objectPath.has = function (obj, path) {
-      if (typeof path === 'number') {
-        path = [path];
-      } else if (typeof path === 'string') {
-        path = path.split('.');
-      }
-
-      if (!path || path.length === 0) {
-        return !!obj;
-      }
-
-      for (var i = 0; i < path.length; i++) {
-        var j = getKey(path[i]);
-
-        if((typeof j === 'number' && isArray(obj) && j < obj.length) ||
-          (options.includeInheritedProps ? (j in Object(obj)) : hasOwnProperty(obj, j))) {
-          obj = obj[j];
-        } else {
-          return false;
-        }
-      }
-
-      return true;
-    };
-
-    objectPath.ensureExists = function (obj, path, value){
-      return set(obj, path, value, true);
-    };
-
-    objectPath.set = function (obj, path, value, doNotReplace){
-      return set(obj, path, value, doNotReplace);
-    };
-
-    objectPath.insert = function (obj, path, value, at){
-      var arr = objectPath.get(obj, path);
-      at = ~~at;
-      if (!isArray(arr)) {
-        arr = [];
-        objectPath.set(obj, path, arr);
-      }
-      arr.splice(at, 0, value);
-    };
-
-    objectPath.empty = function(obj, path) {
-      if (isEmpty(path)) {
-        return void 0;
-      }
-      if (obj == null) {
-        return void 0;
-      }
-
-      var value, i;
-      if (!(value = objectPath.get(obj, path))) {
-        return void 0;
-      }
-
-      if (typeof value === 'string') {
-        return objectPath.set(obj, path, '');
-      } else if (isBoolean(value)) {
-        return objectPath.set(obj, path, false);
-      } else if (typeof value === 'number') {
-        return objectPath.set(obj, path, 0);
-      } else if (isArray(value)) {
-        value.length = 0;
-      } else if (isObject(value)) {
-        for (i in value) {
-          if (hasShallowProperty(value, i)) {
-            delete value[i];
-          }
-        }
-      } else {
-        return objectPath.set(obj, path, null);
-      }
-    };
-
-    objectPath.push = function (obj, path /*, values */){
-      var arr = objectPath.get(obj, path);
-      if (!isArray(arr)) {
-        arr = [];
-        objectPath.set(obj, path, arr);
-      }
-
-      arr.push.apply(arr, Array.prototype.slice.call(arguments, 2));
-    };
-
-    objectPath.coalesce = function (obj, paths, defaultValue) {
-      var value;
-
-      for (var i = 0, len = paths.length; i < len; i++) {
-        if ((value = objectPath.get(obj, paths[i])) !== void 0) {
-          return value;
-        }
-      }
-
-      return defaultValue;
-    };
-
-    objectPath.get = function (obj, path, defaultValue){
-      if (typeof path === 'number') {
-        path = [path];
-      }
-      if (!path || path.length === 0) {
-        return obj;
-      }
-      if (obj == null) {
-        return defaultValue;
-      }
-      if (typeof path === 'string') {
-        return objectPath.get(obj, path.split('.'), defaultValue);
-      }
-
-      var currentPath = getKey(path[0]);
-      var nextObj = getShallowProperty(obj, currentPath)
-      if (nextObj === void 0) {
-        return defaultValue;
-      }
-
-      if (path.length === 1) {
-        return nextObj;
-      }
-
-      return objectPath.get(obj[currentPath], path.slice(1), defaultValue);
-    };
-
-    objectPath.del = function del(obj, path) {
-      if (typeof path === 'number') {
-        path = [path];
-      }
-
-      if (obj == null) {
-        return obj;
-      }
-
-      if (isEmpty(path)) {
-        return obj;
-      }
-      if(typeof path === 'string') {
-        return objectPath.del(obj, path.split('.'));
-      }
-
-      var currentPath = getKey(path[0]);
-      if (!hasShallowProperty(obj, currentPath)) {
-        return obj;
-      }
-
-      if(path.length === 1) {
-        if (isArray(obj)) {
-          obj.splice(currentPath, 1);
-        } else {
-          delete obj[currentPath];
-        }
-      } else {
-        return objectPath.del(obj[currentPath], path.slice(1));
-      }
-
-      return obj;
-    }
-
-    return objectPath;
-  }
-
-  var mod = factory();
-  mod.create = factory;
-  mod.withInheritedProps = factory({includeInheritedProps: true})
-  return mod;
-});
-
-
-/***/ }),
-
 /***/ "./node_modules/querystring-es3/decode.js":
 /*!************************************************!*\
   !*** ./node_modules/querystring-es3/decode.js ***!
@@ -21394,12 +21822,12 @@ if (false) {} else {
 
 /***/ "./node_modules/react/index.js":
 /*!*******************************************************************************************!*\
-  !*** delegated ./node_modules/react/index.js from dll-reference dll_c2e10d183b950a67d9e7 ***!
+  !*** delegated ./node_modules/react/index.js from dll-reference dll_2adc2403d89adc16ead0 ***!
   \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = (__webpack_require__(/*! dll-reference dll_c2e10d183b950a67d9e7 */ "dll-reference dll_c2e10d183b950a67d9e7"))("./node_modules/react/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dll_2adc2403d89adc16ead0 */ "dll-reference dll_2adc2403d89adc16ead0"))("./node_modules/react/index.js");
 
 /***/ }),
 
@@ -22228,7 +22656,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var _this = undefined,
-    _jsxFileName = "/Users/louis/Acey/next-test/pages/_app.js";
+    _jsxFileName = "/Users/louis/Acey/tests/NJS/pages/_app.js";
 
 var __jsx = react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement;
 
@@ -22261,19 +22689,19 @@ var MyApp = function MyApp(props) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! next-client-pages-loader?page=%2F_app&absolutePagePath=private-next-pages%2F_app.js&hotRouterUpdates=true! */"./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_app&absolutePagePath=private-next-pages%2F_app.js&hotRouterUpdates=true!./");
-module.exports = __webpack_require__(/*! /Users/louis/Acey/next-test/node_modules/next/dist/client/router.js */"./node_modules/next/dist/client/router.js");
+module.exports = __webpack_require__(/*! /Users/louis/Acey/tests/NJS/node_modules/next/dist/client/router.js */"./node_modules/next/dist/client/router.js");
 
 
 /***/ }),
 
-/***/ "dll-reference dll_c2e10d183b950a67d9e7":
+/***/ "dll-reference dll_2adc2403d89adc16ead0":
 /*!*******************************************!*\
-  !*** external "dll_c2e10d183b950a67d9e7" ***!
+  !*** external "dll_2adc2403d89adc16ead0" ***!
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = dll_c2e10d183b950a67d9e7;
+module.exports = dll_2adc2403d89adc16ead0;
 
 /***/ })
 

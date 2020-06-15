@@ -4,7 +4,7 @@ import Todo from './todo'
 class Todolist extends Collection {
 
     constructor(data = [], options: any){
-        super(data, Todo, options)
+        super(data, [Todo, Todolist], options)
     }
 
     add = () => this.push({content: Math.random().toString(), id: Math.random()}).save()

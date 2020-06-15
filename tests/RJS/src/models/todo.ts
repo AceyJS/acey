@@ -14,7 +14,7 @@ class Todo extends Model {
     constructor(data = DEFAULT_DATA, options: any){
         super(data, options)
         this.setState({
-            counter: new Counter(data.counter, this.__childOptions)
+            counter: new Counter(data.counter, this.option().kids())
         })
     }
 
