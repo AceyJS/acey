@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
+import { Model } from '../../index'
 
 import { 
     USER_DATA,
@@ -89,11 +90,48 @@ describe('Model: deleteKey', () => {
 
 describe('Model: toListClass', () => {
     const User = new UserModel(USER_DATA, undefined)
-    const PostList = new PostCollection(USER_DATA.post_list, undefined)
+    const PostList = new PostCollection([], undefined)
+
+    const post = {
+        id: '123456',
+        content: 'keiofeomfge',
+        created_at: new Date('11/11/2018'),
+        random: 1001,
+        device_origin: {
+            id: '0930g',
+            connected_at: new Date('03/04/2020'),
+            n_connexion: 103,
+            ips: ['0.0.0.1', '192.167.0.3']
+        }
+    }
 
     it('call it from a Model', () => {
         expect(() => User.toListClass([])).to.throw(Error)
     });
+});
+
+
+describe('Model: Local Storage and Date', () => {
+    const User = new UserModel(USER_DATA, undefined)
+    const PostList = new PostCollection(USER_DATA.post_list, undefined)
+
+    it('from a Model', () => {
+        const uStr = User.toString()
+        const uLocalStr = User.toLocallyStorableString()
+
+        const parsedLocalStr = Model.ParseStoredJSON(uLocalStr)
+        User.hydrate(parsedLocalStr)
+        expect(User.toString()).to.equal(uStr)
+    });
+
+    it('from a Collection', () => {
+        const plStr = PostList.toString()
+        const uLocalStr = PostList.toLocallyStorableString()
+        const parsedLocalStr = Model.ParseStoredJSON(uLocalStr)
+        PostList.hydrate(parsedLocalStr)
+        expect(PostList.toString()).to.equal(plStr)
+    });
+
 });
 
 

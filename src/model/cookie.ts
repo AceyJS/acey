@@ -15,7 +15,18 @@ export default class CookieManager {
 
     private _model = () => this._m
     public isActive = (): boolean => Manager.isInitialized() && !Config.isReactNative() && !this._model().is().keyGenerated() && this._model().is().connected() && Manager.cookie() != null
-    public get = () => this.isActive() ? Manager.cookie().getElement(this._model().option().key()) : undefined
+
+    public getByKey = (key: string) => {
+        if (this.isActive()){
+            const data = Manager.cookie().getElement(key)
+            if (data){
+                return Model.ParseStoredJSON(data)
+            }
+        }
+        return undefined
+    }
+    
+    public get = () => this.getByKey(this._model().option().key())
 
     public prevState = () => this._prevState
 
@@ -29,7 +40,7 @@ export default class CookieManager {
         this._throwErrorIfInactive()
         const key = this._model().option().key()
         try {
-            this._prevState = Manager.cookie().getElement(key)
+            this._prevState = this.getByKey(key)
             Manager.cookie().addElement(key, this._model().toLocallyStorableString(), expires)
         } catch (e) {
             console.log(`error from cookie set with ${this._model().is().collection() ? 'Collection' : 'Model'}: ${key}, ${e}`)

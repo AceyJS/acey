@@ -2,7 +2,7 @@ import _ from 'lodash'
 import Manager from '../manager'
 
 import Errors from '../errors'
-import { hydrate, toPlain } from './utils'
+import { hydrate, toPlain, ParseJSONLocallyStored } from './utils'
 import {  verifyAllModel } from '../verify'
 
 import CookieManager from './cookie'
@@ -176,6 +176,8 @@ export default class Model {
 
     public toLocallyStorableString = (): string => JSON.stringify(this.toPlain('store'))
     public toString = (): string => JSON.stringify(this.toPlain())
+
+    static ParseStoredJSON = (data: string) => ParseJSONLocallyStored(data)
 
     static _isArray = (value: any): boolean => Array.isArray(value)
     static _isObject = (value: any): boolean => value !== null && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Model) && !(value instanceof Date)

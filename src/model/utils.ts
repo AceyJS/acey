@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 export const STORE_OPTION = 'store'
 const isStoreOption = (option: any) => option === STORE_OPTION
-const DATE_PATTERN = '__ASDate__'
+const DATE_PATTERN = '____AS-Date____'
 
 const splitPath = (path: string) => {
     return path.replace(/^[\|]+|[\|]+$/g, ".").split('.').filter(function(x){
@@ -57,47 +57,77 @@ export const hydrate = (from: any, to: Model) => {
     recur(from, '')
 }
 
-  //Return the state to JSONified object.
-    //It implies that the state is an array, an object or a Model typed class (model or extended from Model)
-    export const toPlain = (m: Model, option: any): any => {
-        const ret: any = {}; 
+//Return the state to JSONified object.
+//It implies that the state is an array, an object or a Model typed class (model or extended from Model)
+export const toPlain = (m: Model, option: any): any => {
+    const ret: any = {}; 
+    
+    const recur = (o: any, path: string) => {
         
-        const recur = (o: any, path: string) => {
-            
-            //if this is a plain object
-            if (Model._isObject(o) && Object.keys(o).length > 0){
-                for (var key in o)
-                    recur(o[key], !path ? key : path + '.' + key)
-                return
-            }
-    
-            //if this is an array
-            if (Model._isArray(o) && o.length > 0){
-                for (let i = 0; i < o.length; i++)
-                    recur(o[i], path + '.' + i.toString())
-                return
-            }
-    
-            //if this is a Model class
-            if (o instanceof Model){
-                recur(o.state, path)
-                return
-            }
+        //if this is a plain object
+        if (Model._isObject(o) && Object.keys(o).length > 0){
+            for (var key in o)
+                recur(o[key], !path ? key : path + '.' + key)
+            return
+        }
 
-            if (isStoreOption(option) && o instanceof Date){
-                o = `${DATE_PATTERN}${o.toString()}`
-            }
-    
-            _.set(ret, path, o)
+        //if this is an array
+        if (Model._isArray(o) && o.length > 0){
+            for (let i = 0; i < o.length; i++)
+                recur(o[i], path + '.' + i.toString())
+            return
         }
-    
-        recur(m.state, '')
-    
-        if (m.is().collection()){
-            if (!ret[''])
-                return []
-            return ret['']
+
+        //if this is a Model class
+        if (o instanceof Model){
+            recur(o.state, path)
+            return
         }
-    
-        return ret
+
+        if (isStoreOption(option) && o instanceof Date){
+            o = `${DATE_PATTERN}${o.getTime().toString()}`
+        }
+
+        _.set(ret, path, o)
     }
+
+    recur(m.state, '')
+
+    if (m.is().collection()){
+        if (!ret[''])
+            return []
+        return ret['']
+    }
+
+    return ret
+}
+
+export const ParseJSONLocallyStored = (data: string) => {
+    const ret: any = {}; 
+
+    const recur = (o: any, path: string) => {
+        
+        //if this is a plain object
+        if (Model._isObject(o) && Object.keys(o).length > 0){
+            for (var key in o)
+                recur(o[key], !path ? key : path + '.' + key)
+            return
+        }
+
+        //if this is an array
+        if (Model._isArray(o) && o.length > 0){
+            for (let i = 0; i < o.length; i++)
+                recur(o[i], path + '.' + i.toString())
+            return
+        }
+
+        if (typeof o === 'string' && o.startsWith(DATE_PATTERN)){
+            o = new Date(parseInt(o.replace(DATE_PATTERN, '')))
+        }
+
+        _.set(ret, path, o)
+    }
+
+    recur(JSON.parse(data), '')
+    return ret
+}

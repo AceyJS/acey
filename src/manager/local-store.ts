@@ -44,8 +44,7 @@ class LocalStoreManager {
         if (!this.isEnabled())
             throw Errors.localStoreDisabled()
 
-        const data = await this.engine().getItem(key)
-        return data ? JSON.parse(data) : undefined
+        return await this.engine().getItem(key) || undefined
     }
 
     public removeElement = (key: string) => {

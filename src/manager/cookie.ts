@@ -33,9 +33,8 @@ class CookieManager {
             throw Errors.cookieDisabledOnRN()
         if (!this.isEnabled())
             return
-
-        const data = Cookies.get(key)
-        return data ? JSON.parse(data) : undefined
+            
+        return Cookies.get(key)
     } 
 
     removeElement = (key: string) => {

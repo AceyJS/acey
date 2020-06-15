@@ -11,7 +11,17 @@ export default class LocalStoreManager {
 
     private _model = (): Model => this._m
     public isActive = (): boolean => Manager.isInitialized() && !Config.isNextJS() && !this._model().is().keyGenerated() && this._model().is().connected() && Manager.localStoreManager() != null
-    public get = async () => this.isActive() ? (await Manager.localStoreManager().getElement(this._model().option().key())) : undefined
+
+    public get = async () => {
+        if (this.isActive()){
+            const key = this._model().option().key()
+            const data = await Manager.localStoreManager().getElement(key)
+            if (data){
+                return Model.ParseStoredJSON(data)
+            }
+        }
+        return undefined
+    }
     
     public pull = () => {
         this._throwErrorIfInactive()
