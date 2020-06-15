@@ -518,6 +518,7 @@ export default App;
 ### Table of contents
 * [Model](#model)
 * [Collection](#collection)
+* [General](#General)
 
 <br />
 
@@ -558,8 +559,6 @@ export default Todo
 
 <br />
 
-<br />
-
 - **Model's values**:
 
     | Name | Type | Description |
@@ -588,6 +587,95 @@ export default Todo
     
 <br />
 
+<br />
+
+## Collection
+
+<p align="center" font-style="italic" >
+  <a>
+    <img alt="react-ascey" src="https://i.postimg.cc/hvYp1C0h/collection.png" width="100%">
+  </a>
+</p>
+
+#### prototype: `class Collection extends Model` 🌳
+
+A Collection is a Model that has for state an array of Models. (Example: a Todolist is a Collection of Todo Models.)
+
+#### Example of a Collection:
+```ts
+import { Collection } from 'acey'
+import Todo from './todo'
+
+class Todolist extends Collection {
+
+    constructor(initialState = [], options){
+        super(initialState, [Todo, Todolist], options)
+    }
+    
+    sortByContent = (): Todolist => this.orderBy(['content'], ['desc]) as Todolist
+}
+
+export default Todolist
+```
+
+<br />
+
+### `super(initialState: Array, nodeAndCo: [Model, Collection], options: IOption)`
+
+<br />
+
+- **Collection's values**:
+
+    | Name | Type | Description |
+    | -- | -- | -- |
+    | state |`Array` | return the current Collection's data state |
+    | prevState |`Array` | return the previous Collection's data state |
+
+<br />
+
+- **Collection's methods**: 
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | cookie() |`CookieManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's CookieManager to deal with the cookies related with the Model |
+    | localStore() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
+    | is() |`IsManager` | return a class containing boolean functions concerning the Model |
+    | option() |`OptionManager` | return the Model's OptionManager to deal with the Model's options |
+    | watch() |`IWatchAction` | return a class enabling you to monitor some part of your Model to receive a callback 
+    | count() |`number` | Return the length of the Collection |
+    | toListClass(elem: any[]) |`Collection` | Transform an object array into an instanced Model array |
+    | push(v: Object | Model) | `IAction` | Add an element in the state |
+    | update(v: Object | Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
+    | pop() | `IAction` | Remove the last state element |
+    | shift() | `IAction` | Remove the first state element |
+    | map(callback: (v: Model, index: number) => any) | `any` | creates a new array with the results of calling a function for every array element (same than javascript map on arrays) |
+    | reduce(callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any) | `any` | Reduces Collection to a value which is the accumulated result of running each element in collection, where each successive invocation is supplied the return value of the previous. If initialAccumulator is not given, the first Model of Collection is used as the initial value. |
+    | orderBy(iteratees: any[], orders: any[]) | `Collection` | Return a sorted array of instanced Model upon the parameters passed |
+    | filter(predicate: any) | `Collection` | Pick up a list of node matching the predicate |
+    | limit(n: number) | `Collection` | Pick up the `n` first element of the list  |
+    | offset(n: number) | `Collection` | Remove the `n` first element of the list  |
+    | slice(begin: number (optional), end: number (optional)) | `Collection` | Same than the slice method for arrays  |
+    | splice(begin: number, nbToDelete[, elem1[, elem2[, ...]]]) | `Collection` | Same than the splice method for arrays  |
+    | find(predicate: any) | `Model | undefined` | Find the first node matching the predicate |
+    | findIndex(predicate: any) | `number` | Return the index of the first node matching the predicate |
+    | deleteBy(predicate: any) | `IAction` | Delete all the nodes matching the predicate |
+    | delete(v: Object | Model) | `IAction` | Delete the model passed in parameter if in the list. |
+    | deleteIndex(index: number) | `IAction` | Remove an element at index.
+    | indexOf(v: Object | Model) | `number` | Get the index of a node in the list.
+    | nodeAt(index: number) | `Model` | Get the node at index in the list, undefined it not found. |
+    | newNode(v: Object) | `Model` | Return fresh instanced Model with the value sent in parameter | 
+    | newCollection(v: Array) | `Collection` | Return fresh instanced Collection with the value sent in parameter | 
+    | hydrate(state: Array) | `IAction` | fill the Model's state with the JS `array` passed in parameter. |
+    | toPlain() | `Object` | return the state of model as a plain javascript array. |
+    | defaultState() | Object | return the state of data of the instanciation. |
+    
+<br />
+
+<br />
+
+## General
+
+<br />
 
 - **IOption (or Model's options)**: 
 
@@ -667,84 +755,6 @@ export default Todo
 
 <br />
 
-<br />
-
-## Collection
-
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/hvYp1C0h/collection.png" width="100%">
-  </a>
-</p>
-
-#### prototype: `class Collection extends Model` 🌳
-
-#### A Collection is a Model that has for state an array of Models. (Example: a Todolist is a Collection of Todo Models.)
-
-You build a Collection with :
-1. An array of Models or Objects.
-2. A non-instanced Model class that represents the Model of the elements in the array.
-3. Options
-
-#### Example of a Collection:
-```js
-import { Collection } from 'acey'
-import Todo from './todo'
-
-class Todolist extends Collection {
-
-    constructor(initialState = [], options){
-        super(initialState, [Todo, Todolist], options)
-    }
-    
-    //method example
-    sortByID = () => this.orderBy(['id'], ['desc])
-}
-
-export default Todolist
-```
-
-<br />
-
-- **Collection's values**:
-
-    | Name | Type | Description |
-    | -- | -- | -- |
-    | state |`Object` | return the current Collection's data state |
-    | options | `Object` | return the Collection's options |
-    | __childOptions | `Object` | return the connected methods of the current Collection (as options). You can then pass this object as options for any instanced Model inside a connected Collection, to make them connected as well without separating each other. |
-
-<br />
-
-- **Collection's methods**: 
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | count() |`number` | Return the length of the Collection |
-    | toListClass(elem: any[]) |`Model[]` | Transform an object array into an instanced Model array |
-    | push(v: Object | Model) | `IAction` | Add an element in the array |
-    | update(v: Object | Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
-    | pop() | `IAction` | Remove the last element |
-    | shift() | `IAction` | Remove the first element |
-    | map(callback: (v: Model, index: number) => any) | `any` | creates a new array with the results of calling a function for every array element (same than javascript map on arrays) |
-    | reduce(callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any) | `any` | Reduces Collection to a value which is the accumulated result of running each element in collection, where each successive invocation is supplied the return value of the previous. If initialAccumulator is not given, the first Model of Collection is used as the initial value. |
-    | orderBy(iteratees: any[], orders: any[]) | `Model[]` | Return a sorted array of instanced Model upon the parameters passed |
-    | filter(predicate: any) | `Model[]` | Pick up a list of node matching the predicate |
-    | find(predicate: any) | `Model | undefined` | Find the first node matching the predicate |
-    | findIndex(predicate: any) | `number` | Return the index of the first node matching the predicate |
-    | deleteAll(predicate: any) | `IAction` | Delete all the nodes matching the predicate |
-    | delete(v: Object | Model) | `IAction` | Delete the model passed in parameter if in the list. |
-    | deleteIndex(index: number) | `IAction` | Remove an element at index.
-    | indexOf(v: Object | Model) | `number` | Get the index of a node in the list.
-    | nodeAt(index: number) | `Model` | Get the node at index in the list, undefined it not found. |
-    | newNode(v: Object) | `Model` | Return fresh instanced Model with the value sent in parameter | 
-    | hydrate(state: Object) | `IAction` | fill the Model's state with the JS object `state` passed in parameter. |
-    | toPlain() | `Object` | return the state of model as a plain javascript array. |
-    | isCollection() | boolean | return true if the Model is a Collection. |
-    | defaultState() | Object | return the state of data of the instanciation. |
-    | fetchCookies() | Object |  **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the cookies stored by the Collection. |
-    | clearCookies() | any |  **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** remove the cookies stored by the Collection. |
-    
 <br />
 
 - **IOption (or Collection's options)**: 
