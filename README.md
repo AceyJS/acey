@@ -1,4 +1,3 @@
-
 <p align="center" font-style="italic" >
   <a>
     <img alt="acey" src="https://siasky.net/BAA8tXYO7Ec4f7wEvKPYwM-L-paOU3ZZlcDnucQA2yh4Vg" width="100%">
@@ -8,34 +7,21 @@
 
 <br />
 
+## Acey - Innovative State Manager for React, Next and React-Native. 📱⚡
 
-# Acey - A React State Manager.
-
-#### Acey is an innovative Global State Manager for React Apps. 💡
- 
-It allows you to encapsulate your states inside Model class. Then you can gather the methods you need to treat, access, format, and organize their state. 🍱
-
-You can :
-
-- Update and access your Model’s state wherever you want in your App without any binding. 🔓
-- Connect conveniently any Model with any component, so they re-render when the Model’s state changes. 🔄
+Encapsulate your states inside Model and Collection to treat, access, format and organize your data in the most efficient way. 
 
 <br />
-
-It implements many useful built-in features to make your life easier, building, and maintaining your app architecture. 🛠️
-
-Acey helps you to keep your code **organized**, **maintainable**, and easy to **scale**. 🌱
-
-
 <br />
 
-## Quick start
+### Quick example
 
-```js
-import React from 'react';
-import { Model, useAcey } from 'acey'
+1. **./counter-model.ts** *(state)*
+```ts
+import { Model } from 'acey'
 
 class CounterModel extends Model {
+
   constructor(initialState: any, options: any){
     super(initialState, options)
   }
@@ -48,7 +34,16 @@ class CounterModel extends Model {
 }
 
 /* A `connected` Model enable the feature `save` that re-render the components they are bound with */
-const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
+export default const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
+```
+
+<br />
+
+2. **./counter.ts** *(component)* 
+```ts
+import React from 'react'
+import { useAcey } from 'acey'
+import Counter from './counter-model
 
 const App = () => {
 
