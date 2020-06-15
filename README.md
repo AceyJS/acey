@@ -11,8 +11,11 @@
 
 Encapsulate your states inside Model and Collection to treat, access, format and organize your data in the most efficient way. 
 
+<br />
 
-1. **./counter-model.ts** *(state)*
+## Quick implementation
+
+1. **`./counter-model.ts`** *(state)*
 ```ts
 import { Model } from 'acey'
 
@@ -23,23 +26,23 @@ class CounterModel extends Model {
   }
   
   get = () => this.state.counter
-  increment = () => this.setState({counter: Counter.get() + 1}).save()
-  decrement = () => this.setState({counter: Counter.get() - 1}).save()
+  increment = () => this.setState({counter: this.get() + 1}).save()
+  decrement = () => this.setState({counter: this.get() - 1}).save()
   
   /* i) `save()` re-render the components bound with the Model (if a change occured) */
 }
 
 /* A `connected` Model enable the feature `save` that re-render the components they are bound with */
-export default const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
+export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 ```
 
 <br />
 
-2. **./counter.ts** *(component)* 
-```ts
+2. **`./counter.ts`** *(component)* 
+```js
 import React from 'react'
 import { useAcey } from 'acey'
-import Counter from './counter-model
+import Counter from './counter-model'
 
 const App = () => {
 
@@ -60,11 +63,7 @@ export default App;
 
 <br />
 
-<br />
-
-## Get started
-
-### Installation
+## Usage
 
 ```
 yarn add acey
@@ -225,7 +224,7 @@ const Tweet extends Model {
 class TweetList extends Collection {
   
   constructor(initialState = [], options){
-    super(initialState, Tweet, options)
+    super(initialState, [Tweet, TweetList], options)
   }
   
   filterByWorld = (word) => this.filter(o => o.content.indexOf(word) != -1)
@@ -514,9 +513,7 @@ export default App;
 
 <br />
 
-# Acey - Core.
-
-## Documentation
+# API
 
 ### Table of contents
 * [Model](#model)
