@@ -11,10 +11,6 @@
 
 Encapsulate your states inside Model and Collection to treat, access, format and organize your data in the most efficient way. 
 
-<br />
-<br />
-
-### Quick example
 
 1. **./counter-model.ts** *(state)*
 ```ts
