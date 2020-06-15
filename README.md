@@ -573,16 +573,16 @@ export default Todo
     | Prototype | Return value | Description |
     | -- | -- | -- |
     | cookie() |`CookieManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's CookieManager to deal with the cookies related with the Model |
-    | localStore() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
     | is() |`IsManager` | return a class containing boolean functions concerning the Model |
+    | localStore() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
     | option() |`OptionManager` | return the Model's OptionManager to deal with the Model's options |
-    | watch() |`IWatchAction` | return a class enabling you to monitor some part of your Model to receive a callback notification when a change occurs somewhere (state or store) |
-    | setState(state: Object) |`IAction` | update the state by merging it with the `Object` parameteer. |
-    | hydrate(state: Object) | `IAction` | fill the Model's state with the `Object` passed in parameter. |
+    | watch() |`IWatchAction` | return a class enabling you to watch changes on the Model's state and store |
     | deleteKey(key: string) | `IAction` | remove a key in the Model's state object |
     | deleteMultiKey(keys: string[]) | `IAction` | remove many keys in the Model's state object |
-    | toPlain() | `Object` | return the state to a plain javascript object. |
+    | hydrate(state: Object) | `IAction` | fill the Model's state with the `Object` passed in parameter. |
+    | setState(state: Object) |`IAction` | update the state by merging it with the `Object` parameteer. |
     | defaultState() | `Object` | return the Model's state when it instanced. |
+    | toPlain() | `Object` | return the state to a plain javascript object. |
     | toString() | `string` | return state of your Model as a string |
     
 <br />
@@ -628,8 +628,8 @@ export default Todolist
 
     | Name | Type | Description |
     | -- | -- | -- |
-    | state |`Array` | return the current Collection's data state |
     | prevState |`Array` | return the previous Collection's data state |
+    | state |`Array` | return the current Collection's data state |
 
 <br />
 
@@ -637,37 +637,37 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | cookie() |`CookieManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's CookieManager to deal with the cookies related with the Model |
-    | localStore() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
-    | is() |`IsManager` | return a class containing boolean functions concerning the Model |
-    | option() |`OptionManager` | return the Model's OptionManager to deal with the Model's options |
-    | watch() |`IWatchAction` | return a class enabling you to monitor some part of your Model to receive a callback 
+    | cookie() |`CookieManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Collection's CookieManager to deal with the cookies related with the Collection |
+    | is() |`IsManager` | return a class containing boolean functions concerning the Collection |
+    | localStore() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Collection's LocalStoreManager to deal with the local store related with the Collection |
+    | option() |`OptionManager` | return the Model's OptionManager to deal with the Collection's options |
+    | watch() |`IWatchAction` | return a class enabling you to watch changes on the Collection's state and store |
     | count() |`number` | Return the length of the Collection |
-    | toListClass(elem: any[]) |`Collection` | Transform an object array into an instanced Model array |
-    | push(v: Object | Model) | `IAction` | Add an element in the state |
-    | update(v: Object | Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
-    | pop() | `IAction` | Remove the last state element |
-    | shift() | `IAction` | Remove the first state element |
+    | findIndex(predicate: any) | `number` | Return the index of the first node matching the predicate |
+    | indexOf(v: Object | Model) | `number` | Get the index of a node in the list.
     | map(callback: (v: Model, index: number) => any) | `any` | creates a new array with the results of calling a function for every array element (same than javascript map on arrays) |
     | reduce(callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any) | `any` | Reduces Collection to a value which is the accumulated result of running each element in collection, where each successive invocation is supplied the return value of the previous. If initialAccumulator is not given, the first Model of Collection is used as the initial value. |
-    | orderBy(iteratees: any[], orders: any[]) | `Collection` | Return a sorted array of instanced Model upon the parameters passed |
     | filter(predicate: any) | `Collection` | Pick up a list of node matching the predicate |
     | limit(n: number) | `Collection` | Pick up the `n` first element of the list  |
+    | newCollection(v: Array) | `Collection` | Return fresh instanced Collection with the value sent in parameter | 
     | offset(n: number) | `Collection` | Remove the `n` first element of the list  |
+    | orderBy(iteratees: any[], orders: any[]) | `Collection` | Return a sorted array of instanced Model upon the parameters passed |
     | slice(begin: number (optional), end: number (optional)) | `Collection` | Same than the slice method for arrays  |
     | splice(begin: number, nbToDelete[, elem1[, elem2[, ...]]]) | `Collection` | Same than the splice method for arrays  |
-    | find(predicate: any) | `Model | undefined` | Find the first node matching the predicate |
-    | findIndex(predicate: any) | `number` | Return the index of the first node matching the predicate |
-    | deleteBy(predicate: any) | `IAction` | Delete all the nodes matching the predicate |
+    | toListClass(elem: any[]) |`Collection` | Transform an object array into an instanced Model array |
     | delete(v: Object | Model) | `IAction` | Delete the model passed in parameter if in the list. |
+    | deleteBy(predicate: any) | `IAction` | Delete all the nodes matching the predicate |
     | deleteIndex(index: number) | `IAction` | Remove an element at index.
-    | indexOf(v: Object | Model) | `number` | Get the index of a node in the list.
-    | nodeAt(index: number) | `Model` | Get the node at index in the list, undefined it not found. |
-    | newNode(v: Object) | `Model` | Return fresh instanced Model with the value sent in parameter | 
-    | newCollection(v: Array) | `Collection` | Return fresh instanced Collection with the value sent in parameter | 
+    | find(predicate: any) | `Model | undefined` | Find the first node matching the predicate |
     | hydrate(state: Array) | `IAction` | fill the Model's state with the JS `array` passed in parameter. |
-    | toPlain() | `Object` | return the state of model as a plain javascript array. |
+    | newNode(v: Object) | `Model` | Return fresh instanced Model with the value sent in parameter | 
+    | nodeAt(index: number) | `Model` | Get the node at index in the list, undefined it not found. |
+    | pop() | `IAction` | Remove the last state element |
+    | push(v: Object | Model) | `IAction` | Add an element in the state |
+    | shift() | `IAction` | Remove the first state element |
+    | update(v: Object | Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
     | defaultState() | Object | return the state of data of the instanciation. |
+    | toPlain() | `Object` | return the state of model as a plain javascript array. |
     
 <br />
 
@@ -681,8 +681,8 @@ export default Todolist
 
     | Name | Type | Default | Description |
     | -- | -- | -- | -- |
-    | key | `string` | "" | Model's unique key, if `not set` Acey will set it automatically for you. |
     | connected | `bool` | false | If set to `true` the Model is connected to the Acey Store, it will also re-render your component connected with it on changes. |
+    | key | `string` | "" | Model's unique key, if `not set` Acey will set it automatically for you. |
     
 <br />
 
@@ -690,9 +690,9 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to the store and re-render all the components connected with the Model. |
     | cookie(expires = 365) | `IAction` | **(Only on ReactJS and NextJS if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to a string and store it in the cookies. |
     | localStore(expires = 365) | `IAction` | **(Only on React-Native and ReactJS if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to a string and store it in the localStore. |
+    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to the store and re-render all the components connected with the Model. |
     
 <br />
 
@@ -700,9 +700,9 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
+    | all(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state or store changes. Return a `SubscriberAction` class with a `stop` method. |
     | state(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state changes. Return a `SubscriberAction` class with a `stop` method. |
     | store(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's store changes. Return a `SubscriberAction` class with a `stop` method. |
-    | all(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state or store changes. Return a `SubscriberAction` class with a `stop` method. |
     
  <br />
     
@@ -710,12 +710,12 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | connected() |`boolean` | return `true` if the Model is connected to the store. |
-    | equal(m: Model) |`boolean` | return `true` if the Model's state is equal to the one passed in parameter. |
-    | empty() |`boolean` | return `true` if the Model's state is empty |
     | collection() |`boolean` | return `true` if the Model is a collection |
-    | keyGenerated() |`boolean` | return `true` if the Model's key has been automatically generated (if no key set when the model is connected (only on ReactJS) |
+    | connected() |`boolean` | return `true` if the Model is connected to the store. |
     | cookiesEnabled() |`boolean` | return `true` if the cookies are enabled with the Model |
+    | empty() |`boolean` | return `true` if the Model's state is empty |
+    | equal(m: Model) |`boolean` | return `true` if the Model's state is equal to the one passed in parameter. |
+    | keyGenerated() |`boolean` | return `true` if the Model's key has been automatically generated (if no key set when the model is connected (only on ReactJS) |
     | localStoreEnabled() |`boolean` | return `true` if the localStore is enabled with the Model |
 
 <br />
@@ -724,8 +724,8 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | key() | `string` | return the Model's key |
     | get() | `IOptions` | return the Model's option Object |
+    | key() | `string` | return the Model's key |
     | kids() | `Object` |  return the connected methods of the current Model (as options). You can then pass this object as options for any instanced Model/Collection inside a connected Model, to make them connected without separating them from each other. |
     
     
@@ -736,10 +736,10 @@ export default Todolist
     | Prototype | Return value | Description |
     | -- | -- | -- |
     | get() | `Object` | return the Model's plain state stored in the cookies |
-    | pull() | `undefined` | get the Model's state stored in the cookies and set it has the current state of the Model |
-    | set() | `IAction` | set the Model's current state to the cookies |
-    | remove() | `undefined` | remove the Model's state stored in the cookies |
     | isActive() | `boolean` | return `true` if the cookies are enabled on the Model |
+    | pull() | `undefined` | get the Model's state stored in the cookies and set it has the current state of the Model |
+    | remove() | `undefined` | remove the Model's state stored in the cookies |
+    | set() | `IAction` | set the Model's current state to the cookies |
     
 <br />
 
@@ -748,31 +748,12 @@ export default Todolist
     | Prototype | Return value | Description |
     | -- | -- | -- |
     | get() | `Object` | return the Model's plain state stored in the local store |
-    | pull() | `undefined` | get the Model's state stored in the local store and set it has the current state of the Model |
-    | set() | `IAction` | set the Model's current state to the local store |
-    | remove() | `undefined` | remove the Model's state stored in the local store |
     | isActive() | `boolean` | return `true` if the local store are enabled on the Model |
+    | pull() | `undefined` | get the Model's state stored in the local store and set it has the current state of the Model |
+    | remove() | `undefined` | remove the Model's state stored in the local store |
+    | set() | `IAction` | set the Model's current state to the local store |
 
 <br />
-
-<br />
-
-- **IOption (or Collection's options)**: 
-
-    | Name | Type | Default | Description |
-    | -- | -- | -- | -- |
-    | key | `string` | "" | Model's unique key, if `not set` Acey will set it automatically for you. |
-    | connected | `bool` | false | If set to `true` the Collection is connected to the Acey Store, it will also re-render your component connected with it on changes. |
-    
-<br />
-
-- **IAction (or Collection's actions)**:
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to the store and re-render all the components connected with the Collection. |
-    | cookie(expires = 365) | `IAction` | **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to JSON and store it in the cookies. |
-
 
 <br />
 
