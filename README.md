@@ -15,7 +15,7 @@ Encapsulate your states inside Model and Collection to treat, access, format and
 
 ## Quick implementation
 
-1. **`./counter-model.ts`** *(state)*
+**1.** **`./counter-model.ts`** *(state)*
 ```ts
 import { Model } from 'acey'
 
@@ -38,7 +38,7 @@ export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
 <br />
 
-2. **`./counter.ts`** *(component)* 
+**2.** **`./counter.ts`** *(component)* 
 ```js
 import React from 'react'
 import { useAcey } from 'acey'
@@ -532,29 +532,19 @@ export default App;
 
 #### prototype: `class Model` 🌿
 
-A Model is a class built with an **object of data**. 
-It allows you to create all the methods you need related to a specific type of data like **utils**, **getters**, and **setters**.
+A Model is a class built with an **object**.
 
-You build a Model from an Object and options.
-
-`super(data: Object, options: IOptions)`
-
-#### Example of a Model:
+#### Todo Model:
 ```js
 import { Model } from 'acey'
 
-// A Model must always have a default state.
-const DEFAULT_STATE = {
-    id: 0,
-    content: ''
-}
-
 class Todo extends Model {
 
-    constructor(initialState = DEFAULT_STATE, options){
+    /* A Model must always have a default state. */
+    constructor(initialState = {id: 0, content: ''}, options){
         super(initialState, options)
     }
-    
+ 
     content = () => this.state.content
     ID = () => this.state.id
 }
@@ -564,13 +554,18 @@ export default Todo
 
 <br />
 
+### `super(initialState: Object, options: IOption)`
+
+<br />
+
+<br />
+
 - **Model's values**:
 
     | Name | Type | Description |
     | -- | -- | -- |
     | state |`Object` | return the current Model's data state |
-    | options | `Object` | return the Model's options |
-    | __childOptions | `Object` | return the connected methods of the current Model (as options). You can then pass this object as options for any instanced Model/Collection inside a connected Model, to make them connected as well without separating each other. |
+    | prevState |`Object` | return the prev Model's data state |
 
 <br />
 
@@ -578,15 +573,21 @@ export default Todo
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | setState(array: Array) |`IAction` | update the state by assigning the current state with the array parameter. |
-    | hydrate(state: Array) | `IAction` | fill the Model's state with the JS array `state` passed in parameter. |
+    | cookie() |`CookieManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's CookieManager to deal with the cookies related with the Model |
+    | localStore() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
+    | is() |`IsManager` | return a class containing boolean functions concerning the Model |
+    | option() |`OptionManager` | return the Model's OptionManager to deal with the Model's options |
+    | watch() |`IWatchAction` | return a class enabling you to monitor some part of your Model to receive a callback notification when a change occurs somewhere (state or store) |
+    | setState(state: Object) |`IAction` | update the state by merging it with the `Object` parameteer. |
+    | hydrate(state: Object) | `IAction` | fill the Model's state with the `Object` passed in parameter. |
+    | deleteKey(key: string) | `IAction` | remove a key in the Model's state object |
+    | deleteMultiKey(keys: string[]) | `IAction` | remove many keys in the Model's state object |
     | toPlain() | `Object` | return the state to a plain javascript object. |
-    | isCollection() | boolean | return true if the Model is a Collection. |
-    | defaultState() | Object | return the state of data of the instanciation. |
-    | fetchCookies() | Object |  **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the cookies stored by the Model. |
-    | clearCookies() | any |  **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** remove the cookies stored by the Model. |
+    | defaultState() | `Object` | return the Model's state when it instanced. |
+    | toString() | `string` | return state of your Model as a string |
     
 <br />
+
 
 - **IOption (or Model's options)**: 
 
@@ -601,8 +602,68 @@ export default Todo
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Give the order to refresh the store with the new data when the function is called. It will then re-render all the components connected with the Model. |
-    | cookie(expires = 365) | `IAction` | **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to JSON and store it in the cookies. |
+    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to the store and re-render all the components connected with the Model. |
+    | cookie(expires = 365) | `IAction` | **(Only on ReactJS and NextJS if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to a string and store it in the cookies. |
+    | localStore(expires = 365) | `IAction` | **(Only on React-Native and ReactJS if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to a string and store it in the localStore. |
+    
+<br />
+
+- **IWatchAction**:
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | state(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state changes. Return a `SubscriberAction` class with a `stop` method. |
+    | store(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's store changes. Return a `SubscriberAction` class with a `stop` method. |
+    | all(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state or store changes. Return a `SubscriberAction` class with a `stop` method. |
+    
+ <br />
+    
+- **IsManager**:
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | connected() |`boolean` | return `true` if the Model is connected to the store. |
+    | equal(m: Model) |`boolean` | return `true` if the Model's state is equal to the one passed in parameter. |
+    | empty() |`boolean` | return `true` if the Model's state is empty |
+    | collection() |`boolean` | return `true` if the Model is a collection |
+    | keyGenerated() |`boolean` | return `true` if the Model's key has been automatically generated (if no key set when the model is connected (only on ReactJS) |
+    | cookiesEnabled() |`boolean` | return `true` if the cookies are enabled with the Model |
+    | localStoreEnabled() |`boolean` | return `true` if the localStore is enabled with the Model |
+
+<br />
+
+- **OptionManager**:
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | key() | `string` | return the Model's key |
+    | get() | `IOptions` | return the Model's option Object |
+    | kids() | `Object` |  return the connected methods of the current Model (as options). You can then pass this object as options for any instanced Model/Collection inside a connected Model, to make them connected without separating them from each other. |
+    
+    
+<br />
+    
+- **CookieManager** *(only ReactJS and NextJS)*:
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | get() | `Object` | return the Model's plain state stored in the cookies |
+    | pull() | `undefined` | get the Model's state stored in the cookies and set it has the current state of the Model |
+    | set() | `IAction` | set the Model's current state to the cookies |
+    | remove() | `undefined` | remove the Model's state stored in the cookies |
+    | isActive() | `boolean` | return `true` if the cookies are enabled on the Model |
+    
+<br />
+
+- **LocalStoreManager** *(only ReactJS and React Native)*: 
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | get() | `Object` | return the Model's plain state stored in the local store |
+    | pull() | `undefined` | get the Model's state stored in the local store and set it has the current state of the Model |
+    | set() | `IAction` | set the Model's current state to the local store |
+    | remove() | `undefined` | remove the Model's state stored in the local store |
+    | isActive() | `boolean` | return `true` if the local store are enabled on the Model |
 
 <br />
 
@@ -699,7 +760,7 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Give the order to refresh the store with the new data when the function is called. It will then re-render all the components connected with the Collection. |
+    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to the store and re-render all the components connected with the Collection. |
     | cookie(expires = 365) | `IAction` | **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to JSON and store it in the cookies. |
 
 
