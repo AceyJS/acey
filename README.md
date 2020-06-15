@@ -39,11 +39,15 @@ class CounterModel extends Model {
   constructor(initialState: any, options: any){
     super(initialState, options)
   }
+  
   get = () => this.state.counter
+  increment = () => this.setState({counter: Counter.get() + 1}).save()
+  decrement = () => this.setState({counter: Counter.get() - 1}).save()
+  
+  /* i) `save()` re-render the components bound with the Model (if a change occured) */
 }
 
-/* A connected Model re-render the components they are bound with
-   when their state change. */
+/* A `connected` Model enable the feature `save` that re-render the components they are bound with */
 const Counter = new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
 const App = () => {
@@ -53,12 +57,11 @@ const App = () => {
 
   return (
     <div>
-      <button onClick={ () => Counter.setState({counter: Counter.get() - 1}).save() }>decrement</button>
+      <button onClick={Counter.decrement}>decrement</button>
       {Counter.get()}
-      <button onClick={ () => Counter.setState({counter: Counter.get() + 1}).save() }>increment</button>
+      <button onClick={Counter.increment}>increment</button>
     </div>
   );
-   /* i) `save()` re-render the components bound with the Model (if a change occured) */
 }
 
 export default App;
@@ -186,11 +189,11 @@ class User extends Model {
     super(initialState, options)
     const { device, tweet_list } = initialState
     this.setState({
-      device: new Device(device, this.__childOptions),
-      tweet_list: new TweetCollection(tweet_list, this.__childOptions)    
+      device: new Device(device, this.option().kids() ),
+      tweet_list: new TweetCollection(tweet_list, this.option().kids())    
     })
     /* 
-      __childOptions allow you to in some way connect Device and TweetCollection to the store, 
+      `kids()` allow you to connect Device and TweetCollection to the store, 
       while binding them to User. 
     */
   }
@@ -234,8 +237,8 @@ class TweetList extends Collection {
     super(initialState, Tweet, options)
   }
   
-  filterByWorld = (word) => new TweetList(this.filter(o => o.content.indexOf(word) != -1), this.__childOptions)
-  sortByContentLength = () => new TodoCollection(this.orderBy([(o) => o.content.length], ['asc']), this.__childOptions)
+  filterByWorld = (word) => this.filter(o => o.content.indexOf(word) != -1)
+  sortByContentLength = () => this.orderBy([(o) => o.content.length], ['asc'])
 }
 
 const DEFAULT_TWEET_LIST = [
@@ -469,10 +472,10 @@ class CounterModel extends Model {
         save:     dispatch the new state to the store and re-render 
                   all the components bound with the Model
                 
-        cookie:   Store the Model's state in the cookies. (OPTION)
+        cookie:   Store the Model's state in the store with AsyncStorage. (OPTION)
   */
-  increment = () => this.setState({counter: this.get() + 1}).save().cookie()
-  decrement = () => this.setState({counter: this.get() - 1}).save().cookie()
+  increment = () => this.setState({counter: this.get() + 1}).save().localStore()
+  decrement = () => this.setState({counter: this.get() - 1}).save().localStore()
 }
 
 /* 
@@ -642,22 +645,11 @@ import Todo from './todo'
 class Todolist extends Collection {
 
     constructor(initialState = [], options){
-        super(initialState, Todo, options)
+        super(initialState, [Todo, Todolist], options)
     }
     
     //method example
-    sortByID = () => {
-        /*
-            - orderBy sort the list by data and return an array
-            of model.
-            - We return a fresh instance of a collection with the array
-            returned by orderBy
-            - __childOptions passes the connected method of the current Collection to the
-            the new instanced one. This way if any data is updated in the fresh instance,
-            it will be in the state of the current Collection.
-        */
-        return new TodoCollection( this.orderBy(['id'], ['desc]), this.__childOptions)
-    }
+    sortByID = () => this.orderBy(['id'], ['desc])
 }
 
 export default Todolist
