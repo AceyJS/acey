@@ -1,3 +1,5 @@
+### 🌱 *Version 1.3 released on 06/15/2020. [Click here](https://github.com/Fantasim/acey/releases/tag/1.3.0) to check out the news.*
+
 <p align="center" font-style="italic" >
   <a>
     <img alt="acey" src="https://siasky.net/BAA8tXYO7Ec4f7wEvKPYwM-L-paOU3ZZlcDnucQA2yh4Vg" width="100%">
@@ -518,7 +520,7 @@ export default App;
 ### Table of contents
 * [Model](#model)
 * [Collection](#collection)
-* [General](#General)
+* [General](#general)
 
 <br />
 
@@ -644,7 +646,7 @@ export default Todolist
     | watch() |`IWatchAction` | return a class enabling you to watch changes on the Collection's state and store |
     | count() |`number` | Return the length of the Collection |
     | findIndex(predicate: any) | `number` | Return the index of the first node matching the predicate |
-    | indexOf(v: Object | Model) | `number` | Get the index of a node in the list.
+    | indexOf(v: Object or Model) | `number` | Get the index of a node in the list.
     | map(callback: (v: Model, index: number) => any) | `any` | creates a new array with the results of calling a function for every array element (same than javascript map on arrays) |
     | reduce(callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any) | `any` | Reduces Collection to a value which is the accumulated result of running each element in collection, where each successive invocation is supplied the return value of the previous. If initialAccumulator is not given, the first Model of Collection is used as the initial value. |
     | filter(predicate: any) | `Collection` | Pick up a list of node matching the predicate |
@@ -655,18 +657,18 @@ export default Todolist
     | slice(begin: number (optional), end: number (optional)) | `Collection` | Same than the slice method for arrays  |
     | splice(begin: number, nbToDelete[, elem1[, elem2[, ...]]]) | `Collection` | Same than the splice method for arrays  |
     | toListClass(elem: any[]) |`Collection` | Transform an object array into an instanced Model array |
-    | delete(v: Object | Model) | `IAction` | Delete the model passed in parameter if in the list. |
+    | delete(v: Object or Model) | `IAction` | Delete the model passed in parameter if in the list. |
     | deleteBy(predicate: any) | `IAction` | Delete all the nodes matching the predicate |
     | deleteIndex(index: number) | `IAction` | Remove an element at index.
-    | find(predicate: any) | `Model | undefined` | Find the first node matching the predicate |
+    | find(predicate: any) | `Model or undefined` | Find the first node matching the predicate |
     | hydrate(state: Array) | `IAction` | fill the Model's state with the JS `array` passed in parameter. |
     | newNode(v: Object) | `Model` | Return fresh instanced Model with the value sent in parameter | 
     | nodeAt(index: number) | `Model` | Get the node at index in the list, undefined it not found. |
     | pop() | `IAction` | Remove the last state element |
-    | push(v: Object | Model) | `IAction` | Add an element in the state |
+    | push(v: Object or Model) | `IAction` | Add an element in the state |
     | shift() | `IAction` | Remove the first state element |
-    | update(v: Object | Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
-    | defaultState() | Object | return the state of data of the instanciation. |
+    | update(v: Object or Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
+    | defaultState() | `Object` | return the state of data of the instanciation. |
     | toPlain() | `Object` | return the state of model as a plain javascript array. |
     
 <br />
