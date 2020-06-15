@@ -23,7 +23,7 @@ export default class LocalStoreManager {
         this._throwErrorIfInactive()
         const key = this._model().option().key()
         try {
-            Manager.localStoreManager().addElement(key, this._model().toString(), expires)
+            Manager.localStoreManager().addElement(key, this._model().toLocallyStorableString(), expires)
         } catch (e) {
             console.log(`error from localStore set with ${this._model().is().collection() ? 'Collection' : 'Model'}: ${key}, ${e}`)
         }

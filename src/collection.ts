@@ -28,7 +28,7 @@ export default class Collection extends Model  {
 
         assignWithStorage()
     }
-
+    
     public concat = (list: any[] = []) => this._newCollectionModelInstance(this.state.slice().concat(this.toListClass(list)))
     
     //Return the number of element in the array
@@ -41,6 +41,7 @@ export default class Collection extends Model  {
         const index = this.indexOf(this.newNode(v))
         if (index > -1){
             const v = this.state.splice(index, 1)
+            this.setState()
             if (v)
                 return this.action(v[0])
         }
@@ -50,15 +51,12 @@ export default class Collection extends Model  {
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
     public deleteBy = (predicate: any): IAction => {
         const statePlain = this.toPlain()
-        _.remove(statePlain, predicate)
-        this.setState(this.toListClass(statePlain))
+        const e = _.remove(statePlain, predicate)
+        !!e.length && this.setState(this.toListClass(statePlain))
         return this.action()
     }
 
-    public deleteIndex = (index: number): IAction => {
-        const v = this.state.splice(index, 1)
-        return this.action(v ? v[0] : null)
-    }
+    public deleteIndex = (index: number): IAction => this.action(this.splice(index, 1).value)
 
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
     public find = (predicate: any) => {
@@ -117,9 +115,17 @@ export default class Collection extends Model  {
         return this._newCollectionModelInstance(ret)
     }
 
-    public pop = (): IAction => this.action(this.state.pop())
+    public pop = (): IAction => {
+        const poped = this.state.pop()
+        poped && this.setState()
+        return this.action(poped)
+    }
     //add an element to the list
-    public push = (v: any): IAction => this.action(this.state.push(this.newNode(v)))
+    public push = (v: any): IAction => {
+        const n = this.state.push(this.newNode(v))
+        n && this.setState()
+        return this.action(n)
+    }
 
     public reduce = (callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any = this.count() ? this.nodeAt(0) : null) => {
         const array = this.state
@@ -128,9 +134,16 @@ export default class Collection extends Model  {
         return initialAccumulator
     }
 
-    public reverse = (): IAction => this.action(this.state.reverse())
+    public reverse = () => {
+        const state = this.state.slice().reverse()
+        return new (this._getCollectionModel())(state, this.option().kids())
+    }
 
-    public shift = (): IAction => this.action(this.state.shift())
+    public shift = (): IAction => {
+        const shifted = this.state.shift()
+        !!shifted && this.setState()
+        return this.action(shifted)
+    }
 
     public slice = (...indexes: any) => new (this._getCollectionModel())(this.state.slice(...indexes), this.option().kids())
 
@@ -144,6 +157,7 @@ export default class Collection extends Model  {
 
         if (!deleteCount){
             const value = this.state.splice(start)
+            !!value.length && this.setState()
             return this.action(value)
         }
 
@@ -152,6 +166,7 @@ export default class Collection extends Model  {
 
         if (items.length == 0){
             const value = this.state.splice(start, deleteCount)
+            !!value.length && this.setState()
             return this.action(value)
         }
 
@@ -163,6 +178,7 @@ export default class Collection extends Model  {
         }
 
         const value = this.state.splice(start, deleteCount, ...items)
+        !!value.length && this.setState()
         return this.action(value)
     }
 
@@ -172,10 +188,11 @@ export default class Collection extends Model  {
         
         if (this.state[index])
            this.state[index] = vCopy
-       else 
+        else 
            this.push(vCopy)
        
-       return this.action(vCopy)
+        this.setState()
+        return this.action(vCopy)
     }
 
     private _getCollectionModel = (): any => this.option().collectionModel() as Collection

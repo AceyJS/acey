@@ -38,6 +38,7 @@ export default class Model {
         this._localStore = new LocalStoreManager(this)
         this._watch = new WatchManager(this)
         this._set(state)
+
         this._setDefaultState(this.toPlain())
 
 
@@ -48,7 +49,6 @@ export default class Model {
         if (Model._isObject(state) || Model._isArray(state)){
             this._prevState = this.state
             this._state = this.is().collection() ? this.toListClass(state) : state
-            this._watchManager().onStateChanged()
         } else {
             if (!this.is().connected())
                 throw Errors.onlyObjectOnModelState()
@@ -78,7 +78,7 @@ export default class Model {
     public is = (): IsManager => this._is
     public option = (): OptionManager => this._option
     public watch = (): IWatchAction => this._watchManager().action()
-
+    
     public action = (value: any = undefined): IAction => {
         const { save, cookie, localStore } = this.option().get()
 
@@ -101,42 +101,53 @@ export default class Model {
     }
 
     //Only usable in a Model/State
-    public setState = (o = this.state) => {
-        if (this.is().collection())
-            return this._set(o)
-        else if (!Model._isObject(o))
+    public setState = (o = this.state): IAction => {
+        if (this.is().collection()){
+            const action = this._set(o)
+            this._watchManager().onStateChanged()
+            return action
+        } else if (!Model._isObject(o))
             throw new Error("You can only set an object to setState on a Model")
 
         this._set(Object.assign({}, this.state, o))
+        this._watchManager().onStateChanged()
+
         verifyAllModel(this)
         return this.action()
     }
 
     //Only usable in a Model/State
-    public deleteKey = (key: string) => {
+    public deleteKey = (key: string): IAction => {
         if (this.is().collection())
             throw new Error(`deleteKey can't be used in a Collection`)
 
-        delete this.state[key]
-        return this._set(this.state)
+        const isIn = key in this.state
+        isIn && delete this.state[key]
+        return isIn ? this.setState() : this.action()
     }
 
-    public deleteMultiKey = (keys: string[]) => {
-        for (let key of keys)
-            this.deleteKey(key)
-        return this.action()
+    public deleteMultiKey = (...keys: string[]): IAction => {
+        if (this.is().collection())
+            throw new Error(`deleteMultiKey can't be used in a Collection`)
+        let isIn = false
+        for (let i = 0; i < keys.length; i++){
+            if (!isIn){
+                isIn = keys[i] in this.state
+            }
+            delete this.state[keys[i]]
+        }
+        return isIn ? this.setState() : this.action()
     }
 
     //Return the state to JSONified object.
     //It implies that the state is an array, an object or a Model typed class (model or extended from Model)
-    public toPlain = (): any => toPlain(this)
+    public toPlain = (...args: any): any => toPlain(this, args[0])
     
-    public hydrate = (state: any) => {
+    public hydrate = (state: any): IAction => {
         hydrate(state, this)
-        this._set()
         if (!this.is().empty())
             verifyAllModel(this)
-        return this.action()
+        return this.setState()
     }
 
     /*
@@ -163,6 +174,7 @@ export default class Model {
         return ret
     }
 
+    public toLocallyStorableString = (): string => JSON.stringify(this.toPlain('store'))
     public toString = (): string => JSON.stringify(this.toPlain())
 
     static _isArray = (value: any): boolean => Array.isArray(value)

@@ -9,8 +9,6 @@ import {
     USER_DATA
 } from './datas'
 
-
-
 describe('Collection: initialization', () => {
     it('Collection of Collection (must error)', () => {
         class CollectionOfCollection extends Collection {
@@ -173,9 +171,10 @@ describe('Collection: methods', () => {
     it('reverse', () => {
         const head = PostList.nodeAt(0)
         const tail = PostList.nodeAt(PostList.count() -1)
-        PostList.reverse()
-        const newHead = PostList.nodeAt(0)
-        const newTail = PostList.nodeAt(PostList.count() -1)
+        const newList = PostList.reverse()
+       
+        const newHead = newList.nodeAt(0)
+        const newTail = newList.nodeAt(newList.count() -1)
 
         expect(head.toString()).to.eq(newTail.toString())
         expect(newHead.toString()).to.eq(tail.toString())

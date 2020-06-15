@@ -4,7 +4,7 @@ import { IOptions } from './src/model/option'
 import { TConnected } from './src/connect'
 import Model from './src/model/index'
 import Collection from './src/collection'
-import manager from './src/manager/manager'
+import manager from './src/manager/index'
 import config from './src/config'
 import {connect, useAcey } from './src/connect'
 

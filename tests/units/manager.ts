@@ -149,6 +149,144 @@ const main = async () => {
         })
     })
 
+    describe('Model: watch', () => {
+        
+        it('store', () => {
+            let i = 0;
+            let j = 0;
+            const watch1 = PostList.watch().store(() => {
+                i++
+            })
+            const watch2 = PostList.watch().store(() => {
+                j++
+            })
+            PostList.push(post2).save()
+            const node = PostList.nodeAt(1)
+            node.setState({content: 'coco rio'}).save()
+            node.setState({content: 'coco rio2'})
+            node.setState({content: 'coco rio3'})
+            node.action().save()
+            expect(i).to.eq(3)
+            expect(j).to.eq(3)
+            watch1.stop()
+            node.setState({content: 'coco rio4'}).save()
+            expect(i).to.eq(3)
+            expect(j).to.eq(4)
+            watch2.stop()
+            node.setState({content: 'coco rio5'}).save()
+            expect(i).to.eq(3)
+            expect(j).to.eq(4)
+        });
+
+        it('state', () => {
+            let i = 0;
+            let j = 0;
+            const watcher1 = PostList.watch().state(() => {
+                i++
+            })
+            PostList.push(post2) //1
+            PostList.pop() //2
+            PostList.shift() //3 
+            PostList.push(post2) //4
+            PostList.delete(post2) //5
+            PostList.delete({id: '90cccc'}) 
+            PostList.push(post2) //6
+            PostList.deleteBy({id: post2.id}) //7
+            PostList.push(post2) //8
+            expect(i).to.eq(8)
+            PostList.deleteBy({id: '8934rnefwe'}) 
+            PostList.deleteIndex(PostList.findIndex(post2)) // 9
+            PostList.deleteIndex(30)
+            expect(i).to.eq(9)
+            PostList.shift()
+            expect(i).to.eq(9)
+            PostList.push(post2) //10
+            PostList.push(post2) //11
+            expect(i).to.eq(11) 
+            PostList.splice(PostList.count() - 1, 1) //12
+            PostList.push(post2) //13
+            expect(i).to.eq(13)
+            PostList.update(post, PostList.findIndex(post2)) //14
+            expect(i).to.eq(14)
+            const head = PostList.nodeAt(0)
+            head.setState({content: 'Miky :)'}) //15
+            head.deleteKey('content') //16
+            expect(i).to.eq(16)
+            head.deleteMultiKey('id', 'random') //17
+            expect(i).to.eq(17)
+            const count = PostList.count()
+            PostList.delete(head) //18
+            const newCount = PostList.count()
+            expect(count - 1).to.eq(newCount)
+            expect(i).to.eq(18)
+            const watcher2 = PostList.watch().state(() => {
+                j++
+            })
+            PostList.push(post)
+            PostList.push(post2)
+            expect(i).to.eq(20)
+            expect(j).to.eq(2)
+            PostList.deleteBy({random: 9332})
+            expect(i).to.eq(21)
+            expect(j).to.eq(3)
+            expect(PostList.count()).to.eq(1)            
+            PostList.deleteIndex(3)
+            expect(i).to.eq(21)
+            expect(j).to.eq(3)
+            expect(PostList.count()).to.eq(1)       
+            watcher1.stop()
+            PostList.pop()
+            expect(i).to.eq(21)
+            expect(j).to.eq(4)
+            expect(PostList.count()).to.eq(0)
+            PostList.push(post2).save()
+            const node = PostList.nodeAt(0)
+            node.setState({content: 'hey zin'}).save()
+            expect(j).to.eq(6)
+            watcher2.stop()
+            node.setState({content: 'hey zine'}).save()
+            PostList.deleteIndex(0).save()
+            expect(j).to.eq(6)
+            let h = 0;
+            const watcher3 = Post.watch().state(() => {
+                h++
+            })
+            Post.deleteKey('random')
+            Post.setState({'content': 'new content'})
+            watcher3.stop()
+            Post.setState({'content': 'new content!'})
+            expect(h).to.equal(2)
+
+        });
+
+        it('all', () => {
+            let i = 0;
+            const watch = PostList.watch().all(() => {
+                i++
+            })
+            PostList.push(post2).save()
+            expect(i).to.eq(2)
+            const node = PostList.nodeAt(PostList.count() - 1)
+            const action = node.setState({content: 'YESSSS!'})
+            expect(i).to.eq(3)
+            action.save()
+            expect(i).to.eq(4)
+            watch.stop()
+            node.setState({content: 'PO:)'}).save()
+            expect(i).to.eq(4)        
+            node.setState({content: 'PO:('})
+            node.setState({content: 'PO:('})
+            node.setState({content: 'PO:('})
+            node.setState({content: 'PO:('})
+            node.setState({content: 'PO:('})
+            node.setState({content: 'PO:('})
+            node.setState({content: 'PO:('})
+            expect(i).to.eq(4)        
+        })
+    
+    });
+    
+
 
 }
 

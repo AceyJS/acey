@@ -1,6 +1,10 @@
 import Model from './'
 import _ from 'lodash'
 
+export const STORE_OPTION = 'store'
+const isStoreOption = (option: any) => option === STORE_OPTION
+const DATE_PATTERN = '__ASDate__'
+
 const splitPath = (path: string) => {
     return path.replace(/^[\|]+|[\|]+$/g, ".").split('.').filter(function(x){
         return (x !== (undefined || null || ''));
@@ -18,7 +22,7 @@ const getValueAtPath = (path: string, to: Model) => {
     return to
 }
 
-const updateInState = (value: any, path: string, to: Model ) => {
+const updateInState = (value: any, path: string, to: Model) => {
     const pathSplited = splitPath(path)
     const lastKey = pathSplited[pathSplited.length - 1]
     pathSplited.splice(pathSplited.length - 1, 1)
@@ -55,7 +59,7 @@ export const hydrate = (from: any, to: Model) => {
 
   //Return the state to JSONified object.
     //It implies that the state is an array, an object or a Model typed class (model or extended from Model)
-    export const toPlain = (m: Model): any => {
+    export const toPlain = (m: Model, option: any): any => {
         const ret: any = {}; 
         
         const recur = (o: any, path: string) => {
@@ -78,6 +82,10 @@ export const hydrate = (from: any, to: Model) => {
             if (o instanceof Model){
                 recur(o.state, path)
                 return
+            }
+
+            if (isStoreOption(option) && o instanceof Date){
+                o = `${DATE_PATTERN}${o.toString()}`
             }
     
             _.set(ret, path, o)
