@@ -9,13 +9,15 @@
 
 <br />
 
-## Acey - Innovative State Manager for React, Next and React-Native. 📱⚡
+## Acey - Model oriented State Manager for React, Next and React-Native. 📱⚡
 
 Encapsulate your states inside Model and Collection to treat, access, format and organize your data in the most efficient way. 
 
 <br />
 
 ## Quick implementation
+
+<img src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
 
 **1.** **`./counter-model.ts`** *(state)*
 ```ts
@@ -28,10 +30,12 @@ class CounterModel extends Model {
   }
   
   get = () => this.state.counter
-  increment = () => this.setState({counter: this.get() + 1}).save()
-  decrement = () => this.setState({counter: this.get() - 1}).save()
+  increment = () => this.setState({counter: this.get() + 1}).save().cookie()
+  decrement = () => this.setState({counter: this.get() - 1}).save().cookie()
   
-  /* i) `save()` re-render the components bound with the Model (if a change occured) */
+  /* 1) `save()` re-render the components bound with the Model (if a change occured) */
+  /* 2) `cookie()` store the Model's state into the cookies and automatically hydrate the
+  Model when the page is refreshed */
 }
 
 /* A `connected` Model enable the feature `save` that re-render the components they are bound with */
