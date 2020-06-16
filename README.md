@@ -44,7 +44,7 @@ export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
 <br />
 
-**Component** | *`./counter.tsx`* 
+**Component** | *`./app.tsx`* 
 ```jsx
 import React from 'react'
 import { useAcey } from 'acey'
