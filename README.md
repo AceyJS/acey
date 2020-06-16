@@ -19,7 +19,7 @@ Encapsulate your states inside Model and Collection to treat, access, format and
 
 <img src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
 
-**1. State** | *`./counter-model.ts`* 
+**State** | *`./counter-model.ts`* 
 ```ts
 import { Model } from 'acey'
 
@@ -44,7 +44,7 @@ export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
 <br />
 
-**2. Component** | *`./counter.tsx`* 
+**Component** | *`./counter.tsx`* 
 ```jsx
 import React from 'react'
 import { useAcey } from 'acey'
