@@ -8,10 +8,10 @@
 
 <br />
 
-# Developer experience oriented State Manager for React. 📱💻⚡
+# Dev Experience oriented State Manager for React. 🛋️
 
 #### In one sentence ?
-Encapsulate your states inside Models and Collections to treat, access, format and organize your data in a one and same place. 🏛️
+> **Encapsulate your states inside Models and Collections to treat, access, format and organize your data in a one and same place. 🏛️⚡**
 
 <br />
 
