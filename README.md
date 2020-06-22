@@ -532,7 +532,7 @@ export default App;
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/ZnmTKcNB/model.png" width="100%">
+    <img alt="react-ascey" src="https://i.postimg.cc/bw0t1Vyh/model.jpg" width="100%">
   </a>
 </p>
 
@@ -599,7 +599,7 @@ export default Todo
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/hvYp1C0h/collection.png" width="100%">
+    <img alt="react-ascey" src="https://i.postimg.cc/WtLdkgxz/collection.jpg" width="100%">
   </a>
 </p>
 
