@@ -2,7 +2,7 @@
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="acey" src="https://siasky.net/BAA8tXYO7Ec4f7wEvKPYwM-L-paOU3ZZlcDnucQA2yh4Vg" width="100%">
+    <img alt="acey" src="https://i.postimg.cc/TYtnLDh2/acey.jpg" width="100%">
   </a>
 + Control. | - Code. | + Scalability. | - Debugging. | + Productivity.
 </p>
