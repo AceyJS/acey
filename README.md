@@ -15,11 +15,11 @@
 
 <br />
 
-## Quick implementation
+## Quick implementation - 2 steps
 
 <img src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
 
-**State** | *`./counter-model.ts`* 
+**1/2 - State** | *`./counter-model.ts`* 
 ```ts
 import { Model } from 'acey'
 
@@ -44,7 +44,7 @@ export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
 <br />
 
-**Component** | *`./app.tsx`* 
+**2/2 - Component** | *`./app.tsx`* 
 ```jsx
 import React from 'react'
 import { useAcey } from 'acey'
@@ -127,11 +127,14 @@ Refer to the doc ⬇️
 ## A few examples
 
 <details><summary>Connect Model to Class Component</summary>
+
+<br />
   
+**Counter Component** | *`./counter.js`*
 ```js
 import React from 'react'
 import { connect } from 'acey'
-import { Counter } from '../acey/models'
+import Counter from './counter-model'
 
 class CounterApp extends React.Component {
   
@@ -139,7 +142,7 @@ class CounterApp extends React.Component {
     return (
       <>
         <button onClick={Counter.decrement}>decrement</button>
-        <span>{Counter.get()}</span>
+          <span>{Counter.get()}</span>
         <button onClick={Counter.increment}>increment</button>
       </>
     )
@@ -151,23 +154,13 @@ export default connect([ Counter ])(CounterApp)
 </details>
 
 <details><summary>Nesting Models in Model</summary>
-  
+
+<br />
+
+**1/2 - Device Model** | *`./device-model.js`*
 ```js
 import { Model } from 'acey'
-import TweetCollection from '../collections/tweetlist'
-
-const DEFAULT_STATE = {
-  id: '',
-  username: '',
-  device: {
-    brand: '',
-    model: '',
-    version: 0
-  },
-  tweet_list: []
-}
-
-class Device extends Model {
+export default class Device extends Model {
 
   constructor(initialState, options){
     super(initialState, options)
@@ -178,29 +171,37 @@ class Device extends Model {
   model = () => this.state.model
   version = () => this.state.version  
 }
+```
+
+<br />
+
+**2/2 - User Model** | *`./user-model.js`*
+```js
+import { Model } from 'acey'
+import Device from './device-model'
+
+const DEFAULT_STATE = {
+  id: '',
+  username: '',
+  device: { brand: '', model: '', version: 0 }
+}
 
 class User extends Model {
 
   constructor(initialState = DEFAULT_STATE, options){
-    super(initialState, options)
-    const { device, tweet_list } = initialState
-    this.setState({
-      device: new Device(device, this.option().kids() ),
-      tweet_list: new TweetCollection(tweet_list, this.option().kids())    
-    })
-    /* 
-      `kids()` allow you to connect Device and TweetCollection to the store, 
-      while binding them to User. 
-    */
+    super(initialState, options);
+    this.setState({ 
+        device: new Device(initialState.device, this.option().kids()) 
+    });
+    /* `kids()` makes Device inherits of connected User's methods. */
   }
   
   //getters
   device = () => this.state.device //return the instanced Device Model
-  tweetList = () => this.state.tweet_list //return the instanced Tweet Collection
   ID = () => this.state.id
   username = () => this.state.username
   
-  //actions
+  //action
   updateUsername = (username) => this.setState({ username }).save()
 }
 
@@ -209,16 +210,16 @@ export default User
 </details>
 
 <details><summary>Sort and Filter a TweetList</summary>
-  
+
+<br />
+
+**1/3 - Tweet Model** | *`./tweet-model.js`*
 ```js
-import React from 'react'
-import TweetCase from './components/tweet
+import { Model } from 'acey'
 
-import { Model, Collection, useAcey } from 'acey'
+export default class Tweet extends Model {
 
-const Tweet extends Model {
-  
-  constructor(initialState = { content: '' , id: '' } , options){
+  constructor(initialState = { content: '' , id: '' }, options){
     super(initialState, options)
   }
   
@@ -226,44 +227,54 @@ const Tweet extends Model {
   content = () => this.state.content
   ID = () => this.state.id
 }
+```
 
-class TweetList extends Collection {
+**2/3 - Tweet Collection** | *`./tweet-collection.js`*
+
+```js
+import { Collection } from 'acey'
+import Tweet from './tweet-model'
+
+class TweetCollection extends Collection {
   
   constructor(initialState = [], options){
-    super(initialState, [Tweet, TweetList], options)
+    super(initialState, [Tweet, TweetCollection], options)
   }
   
   filterByWorld = (word) => this.filter(o => o.content.indexOf(word) != -1)
   sortByContentLength = () => this.orderBy([(o) => o.content.length], ['asc'])
 }
 
-const DEFAULT_TWEET_LIST = [
-  {
-    content: 'this is a casual tweet',
-    id: 'ID_1'
-  },
-  {
-    content: 'This is a frequent tweet,
-    id: 'ID_2'
-  }
-]
+export default new TweetCollection([], {connected: true, key: 'todolist'})
+```
 
-const TweetList = new TodoCollection(DEFAULT_TWEET_LIST, {connected: true, key: 'todolist'})
+**3/3 - Tweets Component** | *`./tweets.js`*
+```js
+import React from 'react'
+import { useAcey } from 'acey'
 
-const Tweets = () => {
+import TweetCase from './components/tweet'
+import TweetList from './tweet-collection'
 
-  useAcey([ TweetList ])
+export default = () => {
+   useAcey([ TweetList ])
+
+  const fetchTweetList = () => {
+    TweetList.setState([
+      { content: 'this is a casual tweet', id: 'ID_1' },
+      { content: 'This is a frequent tweet', id: 'ID_2' }
+    ]).save()
+  }  
   
   return (
     <>
       {Tweetlist.filterByWorld('casual').sortByContentLength().map((tweet, index) => {
         return <TweetCase tweet={tweet} key={index} />
       })}
+      <button onClick={fetchTweetList}>Fetch list</button>
     </>
   )
 }
-
-export default Tweets
 ```
 </details>
 
@@ -273,7 +284,7 @@ export default Tweets
 
 📺&nbsp;[Here is a YouTube Channel](https://www.youtube.com/watch?v=dFCCcDKUi80) with Acey's implementations with React, React Native, and NextJS.
 
-The videos have been recorded with **version 1.2** (**currently 1.3**. If some parts of the library changed, don't worry; refer to the documentation. Every change has been made to make your experience of coding with Acey better.
+The videos have been recorded with **version 1.2** (**currently 1.3)**. If some parts of the library changed, don't worry; refer to the documentation. Every change has been made to make your experience of coding with Acey better.
 
 <br />
 
