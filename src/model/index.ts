@@ -33,15 +33,12 @@ export default class Model {
 
     constructor(state: any, ...props: any){
         this._is = new IsManager(this)
-        this._option = new OptionManager(this).init(Object.assign({}, props[0], props[1]))
+        this._option = new OptionManager(this, Object.assign({}, props[0], props[1]))
         this._cookie = new CookieManager(this)
         this._localStore = new LocalStoreManager(this)
         this._watch = new WatchManager(this)
         this._set(state)
-
         this._setDefaultState(this.toPlain())
-
-
         this.is().connected() && Manager.prepareModel(this)
     }
 
@@ -50,13 +47,17 @@ export default class Model {
             this._prevState = this.state
             this._state = this.is().collection() ? this.toListClass(state) : state
         } else {
-            if (!this.is().connected())
+            if (!this.is().collection())
                 throw Errors.onlyObjectOnModelState()
             else 
                 throw Errors.onlyArrayOnCollectionState()
         }
         return this.action()
     }
+
+    private _watchManager = () => this._watch
+
+    protected _setDefaultState = (state: any) => this._defaultState = state
 
     public get state(){
         return this._state
@@ -65,9 +66,6 @@ export default class Model {
     public get prevState(){
         return this._prevState
     }
-
-    protected _setDefaultState = (state: any) => this._defaultState = state
-    private _watchManager = () => this._watch
 
     public get defaultState(){
         return this._defaultState
@@ -100,7 +98,7 @@ export default class Model {
         return this.action()
     }
 
-    //Only usable in a Model/State
+    //Only usable in 
     public setState = (o = this.state): IAction => {
         if (this.is().collection()){
             const action = this._set(o)
@@ -111,12 +109,11 @@ export default class Model {
 
         this._set(Object.assign({}, this.state, o))
         this._watchManager().onStateChanged()
-
         verifyAllModel(this)
         return this.action()
     }
 
-    //Only usable in a Model/State
+    //Only usable in a Model
     public deleteKey = (key: string): IAction => {
         if (this.is().collection())
             throw new Error(`deleteKey can't be used in a Collection`)
@@ -126,6 +123,7 @@ export default class Model {
         return isIn ? this.setState() : this.action()
     }
 
+    //Only usable in a Model
     public deleteMultiKey = (...keys: string[]): IAction => {
         if (this.is().collection())
             throw new Error(`deleteMultiKey can't be used in a Collection`)
@@ -139,8 +137,7 @@ export default class Model {
         return isIn ? this.setState() : this.action()
     }
 
-    //Return the state to JSONified object.
-    //It implies that the state is an array, an object or a Model typed class (model or extended from Model)
+    //Return the state to a JSONified object.
     public toPlain = (...args: any): any => toPlain(this, args[0])
     
     public hydrate = (state: any): IAction => {
@@ -156,7 +153,7 @@ export default class Model {
         [{content: '123', id: 'abc'}, {content: '456', id: 'def'}]
         to
         [new Model(content: '123', id: 'abc'}), new Model({content: '456', id: 'def'})]
-        the class used to instance the objects is the one passed in parameters as nodeModel in the constructor.
+        the class used to instance the objects is the one passed in parameters in the constructor.
 
     */
     public toListClass = (elem: any[] = []): Model[] => {

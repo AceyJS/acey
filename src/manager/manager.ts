@@ -33,7 +33,7 @@ export default class Manager {
         this.models().reset()
         this.transitions().reset()
         this.store().reset()
-        this.pendingHydrationStore().reset
+        this.pendingHydrationStore().reset()
 
         this._hasBeenInitialized = false
     }

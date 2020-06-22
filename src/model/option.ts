@@ -31,12 +31,13 @@ export default class OptionManager {
         collectionModel: null
     }
 
-    constructor(m: Model){
+    constructor(m: Model, option: any){
         this._m = m
+        this._init(option)
     }
 
-    public init = (options: any) => {
-        this.set(options)
+    private _init = (options: any) => {
+        this._set(options)
         const key = this.key()
 
         if (this.isConnected()){
@@ -45,23 +46,22 @@ export default class OptionManager {
             if (key && Manager.models().exist(key) && !Config.isNextJSServer())
                 throw Errors.keyAlreadyExist(key)
             if (!key){
-                this.setKey(generateUniqModelKey(this._model()))
-                this.setKeyAsGenerated()
+                this._setKey(generateUniqModelKey(this._model()))
+                this._setKeyAsGenerated()
             }
         }
         return this
     }
 
+    private _setKey = (key: string) => this._set({ key })
+    private _setKeyAsGenerated = () => this._isKeyGenerated = true
     private _model = (): Model => this._m
-
-    public set = (o: Object) => this._options = Object.assign({}, this._options, o)
-    public setKey = (key: string) => this.set({ key })
-    public setKeyAsGenerated = () => this._isKeyGenerated = true
-
-    public get = () => this._options
+    private _set = (o: Object) => this._options = Object.assign({}, this._options, o)
+    
+    public isKeyGenerated = (): boolean => this._isKeyGenerated  
+    public get = (): IOptions => this._options
     public key = (): string => this.get().key
     public isConnected = (): boolean => this.get().connected  
-    public isKeyGenerated = (): boolean => this._isKeyGenerated  
     public nodeModel = () => this.get().nodeModel
     public collectionModel = () => this.get().collectionModel
 
