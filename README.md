@@ -7,9 +7,9 @@
 
 <br />
 
-## Acey - Model oriented State Manager for React, Next and React-Native. 📱⚡
+## Acey - A Developer Experience oriented State Manager, for React, Next, and React-Native. 📱⚡
 
-Encapsulate your states inside Model and Collection to treat, access, format and organize your data in the most efficient way. 
+Encapsulate your states inside Models and Collections to treat, access, format and organize your data in a one and same place. 🏛️
 
 <br />
 
@@ -79,7 +79,7 @@ yarn add acey
 To start the Acey engine **you need to declare the configuration as done** at the **root** of your application.
 Here's how according to your environment: 
 
-## On ReactJS
+### ReactJS
 ```js
 import { config } from 'acey' //HERE
 config.done() //HERE
@@ -94,9 +94,9 @@ ReactDOM.render(
 
 <br />
 
-## On React-Native
+### React-Native
 
-React-native is not using the same local store engine as web does, so you need to set it up manually at the root of your application:
+At the root of your app, bind the React Native Store Engine (AsyncStorage) with Acey to benefit Acey's key features.
 ```js
 import AsyncStorage from '@react-native-community/async-storage'
 import { config } from 'acey'
@@ -111,7 +111,7 @@ yarn add @react-native-community/async-storage
 
 <br />
 
-## On NextJS
+### NextJS
 
 Refer to the Wrapper doc ⬇️
 
@@ -122,7 +122,7 @@ Refer to the Wrapper doc ⬇️
 <br />
 
 
-# Examples
+## A few examples
 
 <details><summary>Connect Model to Class Component</summary>
   
@@ -267,9 +267,9 @@ export default Tweets
 
 <br />
 
-# Tutorials
+## Tutorials
 
-## ReactJS
+### ReactJS
 
 <details><summary>Counter App (Single file)</summary>
   
@@ -343,7 +343,7 @@ export default App;
 
 <br />
 
-## NextJS 
+### NextJS 
 
 <details><summary>Counter App (Single file)</summary>
 
@@ -418,7 +418,7 @@ Home.getInitialProps = ({ query }) => {
 
 <br />
 
-## React Native
+### React Native
 
 <details><summary>Counter App (Single file)</summary>
   
