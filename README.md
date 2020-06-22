@@ -286,7 +286,7 @@ export default = () => {
 
 ## Tutorials
 
-📺&nbsp;[Here is a YouTube Channel](https://www.youtube.com/watch?v=dFCCcDKUi80) with Acey's implementations with React, React Native, and NextJS.
+📺&nbsp;[Here is a YouTube Channel](https://www.youtube.com/channel/UCKF2P3aEIn8A0Y2CNniGelw/videos) with Acey's implementations with React, React Native, and NextJS.
 
 The videos have been recorded with **version 1.2** (**currently 1.3)**. If some parts of the library changed, don't worry; refer to the documentation. Every change has been made to make your experience of coding with Acey better.
 
