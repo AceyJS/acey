@@ -67,6 +67,10 @@ const App = () => {
 export default App;
 ```
 
+<p align="right" font-style="bold">
+  <a target="_blank" href="https://github.com/Fantasim/acey/blob/master/README.md#a-few-examples">More examples</a>
+</p>
+
 <br />
 
 ## Usage
