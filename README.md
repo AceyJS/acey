@@ -8,11 +8,9 @@
 
 <br />
 
-# Acey, for React, Next, and React-Native.
+# Developer experience oriented State Manager for React. 📱💻⚡
 
-<br />
-
-## A Developer Experience oriented State Manager.
+#### In one sentence ?
 Encapsulate your states inside Models and Collections to treat, access, format and organize your data in a one and same place. 🏛️
 
 <br />
