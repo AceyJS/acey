@@ -1,3 +1,4 @@
+
 <p align="center" font-style="italic" >
   <a>
     <img alt="acey" src="https://i.postimg.cc/TYtnLDh2/acey.jpg" width="100%">
@@ -7,8 +8,11 @@
 
 <br />
 
-## Acey - A Developer Experience oriented State Manager, for React, Next, and React-Native. 📱⚡
+# Acey, for React, Next, and React-Native.
 
+<br />
+
+## A Developer Experience oriented State Manager.
 Encapsulate your states inside Models and Collections to treat, access, format and organize your data in a one and same place. 🏛️
 
 <br />
