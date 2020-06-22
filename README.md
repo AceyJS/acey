@@ -1,5 +1,3 @@
-### 🌱 *Version 1.3 released on 06/15/2020. [Click here](https://github.com/Fantasim/acey/releases/tag/1.3.0) to check out the news.*
-
 <p align="center" font-style="italic" >
   <a>
     <img alt="acey" src="https://i.postimg.cc/TYtnLDh2/acey.jpg" width="100%">
