@@ -44,7 +44,6 @@ export default class Model {
 
     private _set = (state: any = this.state): IAction => {
         if (Model._isObject(state) || Model._isArray(state)){
-            this._prevState = this.state
             this._state = this.is().collection() ? this.toListClass(state) : state
         } else {
             if (!this.is().collection())
@@ -57,7 +56,20 @@ export default class Model {
 
     private _watchManager = () => this._watch
 
+
+    private _handleStateChanger = (prevStatePlain: any) => {
+        if (JSON.stringify(prevStatePlain) === this.toString())
+            return
+        this._watchManager().onStateChanged()
+        this._prevState = prevStatePlain
+        if (!this.is().collection()){
+            verifyAllModel(this)
+        }
+    }
+
     protected _setDefaultState = (state: any) => this._defaultState = state
+    protected _setPrevState = (state: any) => this._prevState = state
+
 
     public get state(){
         return this._state
@@ -100,16 +112,17 @@ export default class Model {
 
     //Only usable in 
     public setState = (o = this.state): IAction => {
+        const prevStatePlain = this.toPlain()
+        
         if (this.is().collection()){
-            const action = this._set(o)
-            this._watchManager().onStateChanged()
+            let action = this._set(o)
+            this._handleStateChanger(prevStatePlain)
             return action
         } else if (!Model._isObject(o))
             throw new Error("You can only set an object to setState on a Model")
 
         this._set(Object.assign({}, this.state, o))
-        this._watchManager().onStateChanged()
-        verifyAllModel(this)
+        this._handleStateChanger(prevStatePlain)
         return this.action()
     }
 
@@ -118,23 +131,21 @@ export default class Model {
         if (this.is().collection())
             throw new Error(`deleteKey can't be used in a Collection`)
 
-        const isIn = key in this.state
-        isIn && delete this.state[key]
-        return isIn ? this.setState() : this.action()
+        const prevStatePlain = this.toPlain()
+        key in this.state && delete this.state[key] && this._handleStateChanger(prevStatePlain)
+        return this.action()
     }
 
     //Only usable in a Model
     public deleteMultiKey = (...keys: string[]): IAction => {
         if (this.is().collection())
             throw new Error(`deleteMultiKey can't be used in a Collection`)
-        let isIn = false
-        for (let i = 0; i < keys.length; i++){
-            if (!isIn){
-                isIn = keys[i] in this.state
-            }
-            delete this.state[keys[i]]
-        }
-        return isIn ? this.setState() : this.action()
+        const prevStatePlain = this.toPlain()
+        let inCount = 0
+        for (let i = 0; i < keys.length; i++)
+            delete this.state[keys[i]] && inCount++
+        !!inCount && this._handleStateChanger(prevStatePlain)
+        return this.action()
     }
 
     //Return the state to a JSONified object.

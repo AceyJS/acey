@@ -39,11 +39,13 @@ export default class Collection extends Model  {
     //delete a node if it exists in the list.
     public delete = (v: any): IAction => {
         const index = this.indexOf(this.newNode(v))
+        const list = this.state.slice()
         if (index > -1){
-            const v = this.state.splice(index, 1)
-            this.setState()
-            if (v)
+            const v = list.splice(index, 1)
+            if (!!v.length){
+                this.setState(list)
                 return this.action(v[0])
+            }
         }
         return this.action()
     }
@@ -56,7 +58,10 @@ export default class Collection extends Model  {
         return this.action()
     }
 
-    public deleteIndex = (index: number): IAction => this.action(this.splice(index, 1).value)
+    public deleteIndex = (index: number): IAction => {
+        const { value } = this.splice(index, 1)
+        return this.action(!!value.length ? value[0] : undefined)
+    }
 
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
     public find = (predicate: any) => {
@@ -116,14 +121,16 @@ export default class Collection extends Model  {
     }
 
     public pop = (): IAction => {
-        const poped = this.state.pop()
-        poped && this.setState()
+        const list = this.state.slice()
+        const poped = list.pop()
+        poped && this.setState(list)
         return this.action(poped)
     }
     //add an element to the list
     public push = (v: any): IAction => {
-        const n = this.state.push(this.newNode(v))
-        n && this.setState()
+        const list = this.state.slice()
+        const n = list.push(this.newNode(v))
+        n && this.setState(list)
         return this.action(n)
     }
 
@@ -140,8 +147,9 @@ export default class Collection extends Model  {
     }
 
     public shift = (): IAction => {
-        const shifted = this.state.shift()
-        !!shifted && this.setState()
+        const list = this.state.slice()
+        const shifted = list.shift()
+        shifted && this.setState(list)
         return this.action(shifted)
     }
 
@@ -151,24 +159,25 @@ export default class Collection extends Model  {
         const start = args[0]
         const deleteCount = args[1]
         const items = args.slice(2, args.length)
-        
+
+        const internalSplice = (...args: any) => {
+            const list = this.state.slice()
+            const value = list.splice(...args)
+            this.setState(list)
+            return this.action(value)
+        }
+
         if (typeof start !== 'number')
             throw new Error("splice start parameter must be a number")
 
-        if (!deleteCount){
-            const value = this.state.splice(start)
-            !!value.length && this.setState()
-            return this.action(value)
-        }
+        if (!deleteCount)
+            return internalSplice(start)
 
         if (typeof deleteCount !== 'number')
             throw new Error("splice deleteCount parameter must be a number")
 
-        if (items.length == 0){
-            const value = this.state.splice(start, deleteCount)
-            !!value.length && this.setState()
-            return this.action(value)
-        }
+        if (items.length == 0)
+            return internalSplice(start, deleteCount)
 
         for (let i = 0; i < items.length; i++){
             if (!this._isNodeModel(items[i]) && !Model._isObject(items[i]))
@@ -177,22 +186,19 @@ export default class Collection extends Model  {
                 items[i] = this.newNode(items[i])
         }
 
-        const value = this.state.splice(start, deleteCount, ...items)
-        !!value.length && this.setState()
-        return this.action(value)
+        return internalSplice(start, deleteCount, ...items)
     }
 
     // Update the element at index or post it.
     public update = (v: any, index: number): IAction => {
         const vCopy = this.newNode(v)
-        
-        if (this.state[index])
-           this.state[index] = vCopy
-        else 
-           this.push(vCopy)
-       
-        this.setState()
-        return this.action(vCopy)
+        const list = this.state.slice()
+        if (list[index]){
+            list[index] = vCopy
+            this.setState(list)
+            return this.action(vCopy)
+        }
+        return this.push(vCopy)
     }
 
     private _getCollectionModel = (): any => this.option().collectionModel() as Collection
