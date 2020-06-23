@@ -154,10 +154,12 @@ const main = async () => {
         it('store', () => {
             let i = 0;
             let j = 0;
-            const watch1 = PostList.watch().store(() => {
+            const watch1 = PostList.watch().store((prevStateStore, newStateStore) => {
+                expect(JSON.stringify(prevStateStore)).to.not.eq(JSON.stringify(newStateStore))
                 i++
             })
-            const watch2 = PostList.watch().store(() => {
+            const watch2 = PostList.watch().store((prevStateStore, newStateStore) => {
+                expect(JSON.stringify(prevStateStore)).to.not.eq(JSON.stringify(newStateStore))
                 j++
             })
             PostList.push(post2).save()
@@ -181,7 +183,8 @@ const main = async () => {
         it('state', () => {
             let i = 0;
             let j = 0;
-            const watcher1 = PostList.watch().state(() => {
+            const watcher1 = PostList.watch().state((prevState, newState) => {
+                expect(JSON.stringify(prevState)).to.not.eq(JSON.stringify(newState))
                 i++
             })
             PostList.push(post2) //1
@@ -218,7 +221,8 @@ const main = async () => {
             const newCount = PostList.count()
             expect(count - 1).to.eq(newCount)
             expect(i).to.eq(18)
-            const watcher2 = PostList.watch().state(() => {
+            const watcher2 = PostList.watch().state((prevState, newState) => {
+                expect(JSON.stringify(prevState)).to.not.eq(JSON.stringify(newState))
                 j++
             })
             PostList.push(post)
@@ -247,7 +251,8 @@ const main = async () => {
             PostList.deleteIndex(0).save()
             expect(j).to.eq(6)
             let h = 0;
-            const watcher3 = Post.watch().state(() => {
+            const watcher3 = Post.watch().state((prevState, newState) => {
+                expect(JSON.stringify(prevState)).to.not.eq(JSON.stringify(newState))
                 h++
             })
             Post.deleteKey('random')
@@ -260,7 +265,8 @@ const main = async () => {
 
         it('all', () => {
             let i = 0;
-            const watch = PostList.watch().all(() => {
+            const watch = PostList.watch().all((prevState, newState) => {
+                expect(JSON.stringify(prevState)).to.not.eq(JSON.stringify(newState))
                 i++
             })
             PostList.push(post2).save()

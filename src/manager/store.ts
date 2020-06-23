@@ -1,5 +1,5 @@
 import Manager from './manager'
-
+import _ from 'lodash'
 import { IAction } from './transitions'
 
 export default class StoreManager {
@@ -11,7 +11,7 @@ export default class StoreManager {
         this._m = m
     }
 
-    public get = (): any => this._store
+    public get = (): any => _.cloneDeep(this._store)
     public manager = () => this._m
     public reset = () => this._store = {}
     public set = (o: Object) => this._store = Object.assign({}, this.get(), o)

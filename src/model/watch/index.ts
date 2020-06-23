@@ -26,8 +26,8 @@ export default class Watch {
     private _stateSubscriber = (): SubscriberManager => this._stateSubscriberManager
     private _storeSubscriber = (): SubscriberManager => this._storeSubscriberManager
     
-    public onStateChanged = (): number => this._stateSubscriber().notify()
-    public onStoreChanged = () => this._storeSubscriber().notify()
+    public onStateChanged = (...props: any): number => this._stateSubscriber().notify(...props)
+    public onStoreChanged = (...props: any) => this._storeSubscriber().notify(...props)
 
     public state = (callback: TCallback): SubscribeAction => this._stateSubscriber().add(callback)
     public store = (callback: TCallback): SubscribeAction => this._storeSubscriber().add(callback)

@@ -21,6 +21,7 @@ export interface IAction {
 
 export default class Model {
 
+    private _prevStateStore: any = null
     private _state: any = null
     private _prevState: any = null
     private _defaultState: any = null
@@ -58,18 +59,27 @@ export default class Model {
 
 
     private _handleStateChanger = (prevStatePlain: any) => {
-        if (JSON.stringify(prevStatePlain) === this.toString())
+        const newStatePlain = this.toPlain()
+        if (JSON.stringify(prevStatePlain) === JSON.stringify(newStatePlain))
             return
-        this._watchManager().onStateChanged()
-        this._prevState = prevStatePlain
+        this._setPrevState(prevStatePlain)
+        this._watchManager().onStateChanged(this.prevState, newStatePlain)
         if (!this.is().collection()){
             verifyAllModel(this)
         }
     }
 
-    protected _setDefaultState = (state: any) => this._defaultState = state
-    protected _setPrevState = (state: any) => this._prevState = state
+    private _handleStoreChanger = (prevStorePlain: any) => {
+        const newStorePlain = Manager.store().node(this.option().key())
+        if (JSON.stringify(prevStorePlain) === JSON.stringify(newStorePlain))
+            return
+        this._setPrevStateStore(prevStorePlain)
+        this._watchManager().onStoreChanged(prevStorePlain, newStorePlain)
+    }
 
+    protected _setDefaultState = (state: any) => this._defaultState = state
+    private _setPrevState = (state: any) => this._prevState = state
+    private _setPrevStateStore = (state: any) => this._prevStateStore = state
 
     public get state(){
         return this._state
@@ -102,8 +112,9 @@ export default class Model {
     
     public save = () => {
         if (this.is().connected()){
+            const prevStateStore = Manager.store().node(this.option().key())
             Manager.store().dispatch({ payload: this.toPlain(), type: this.option().key() })
-            this._watchManager().onStoreChanged()
+            this._handleStoreChanger(prevStateStore)
         }
         else 
             throw Errors.unauthorizedSave(this)

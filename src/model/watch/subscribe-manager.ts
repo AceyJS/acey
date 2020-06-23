@@ -56,9 +56,8 @@ export default class SubscriberManager {
         return this.count()
     }
 
-    notify = (): number => {
-        const newState = this._model().toPlain()
-        this.forEach((f) => f(this._model().prevState, newState))
+    notify = (...props: any): number => {
+        this.forEach((f) => f(...props))
         this._isKidsActionsEnabled() && this._refreshKidsSubscriberActions()
         return this.count()
     }
