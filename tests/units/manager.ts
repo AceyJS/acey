@@ -196,7 +196,6 @@ const main = async () => {
             expect(i).to.eq(8)
             PostList.deleteBy({id: '8934rnefwe'}) 
             PostList.deleteIndex(PostList.findIndex(post2)) // 9
-            PostList.deleteIndex(30)
             expect(i).to.eq(9)
             PostList.shift()
             expect(i).to.eq(9)
