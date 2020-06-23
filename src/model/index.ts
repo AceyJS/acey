@@ -57,7 +57,6 @@ export default class Model {
 
     private _watchManager = () => this._watch
 
-
     private _handleStateChanger = (prevStatePlain: any) => {
         const newStatePlain = this.toPlain()
         if (JSON.stringify(prevStatePlain) === JSON.stringify(newStatePlain))
@@ -69,17 +68,13 @@ export default class Model {
         }
     }
 
-    private _handleStoreChanger = (prevStorePlain: any) => {
-        const newStorePlain = Manager.store().node(this.option().key())
-        if (JSON.stringify(prevStorePlain) === JSON.stringify(newStorePlain))
-            return
-        this._setPrevStateStore(prevStorePlain)
-        this._watchManager().onStoreChanged(prevStorePlain, newStorePlain)
-    }
-
     protected _setDefaultState = (state: any) => this._defaultState = state
     private _setPrevState = (state: any) => this._prevState = state
     private _setPrevStateStore = (state: any) => this._prevStateStore = state
+
+    public get prevStateStore(){
+        return this._prevStateStore
+    }
 
     public get state(){
         return this._state
@@ -113,8 +108,13 @@ export default class Model {
     public save = () => {
         if (this.is().connected()){
             const prevStateStore = Manager.store().node(this.option().key())
-            Manager.store().dispatch({ payload: this.toPlain(), type: this.option().key() })
-            this._handleStoreChanger(prevStateStore)
+            const newStorePlain = this.toPlain()
+
+            if (JSON.stringify(prevStateStore) !== JSON.stringify(newStorePlain)){
+                Manager.store().dispatch({ payload: newStorePlain, type: this.option().key() })
+                this._setPrevStateStore(prevStateStore)
+                this._watchManager().onStoreChanged(prevStateStore, newStorePlain)
+            }
         }
         else 
             throw Errors.unauthorizedSave(this)
