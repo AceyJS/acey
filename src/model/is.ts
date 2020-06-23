@@ -12,7 +12,14 @@ export default class IsManager {
     private _model = (): Model => this._m
 
     public connected = (): boolean => this._model().option().isConnected() 
-    public equal = (m: Model): boolean => this._model().toString() === m.toString()
+    public equal = (m: any): boolean => {
+        const modelStringified = this._model().toString()
+        if (m instanceof Model){
+            return m.toString() === modelStringified
+        }
+        return JSON.stringify(m) === modelStringified
+    }
+    
     public empty = (): boolean => _.isEmpty(this._model().state)
     public collection = (): boolean => Model._isArray(this._model().state)
     public keyGenerated = (): boolean => this._model().option().isKeyGenerated()
