@@ -13,12 +13,3 @@ export {
     manager,
     config,
 }
-
-const Ob: any = {
-    Model,
-    Collection,
-    manager,
-    config,
-}
-
-export default Ob
