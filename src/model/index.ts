@@ -5,19 +5,22 @@ import Errors from '../errors'
 import { hydrate, toPlain, ParseJSONLocallyStored } from './utils'
 import {  verifyAllModel } from '../verify'
 
-import CookieManager from './cookie'
+/* COOKIE ENABLE */
+// import CookieManager from './cookie'
 import LocalStoreManager from './local-store'
 import IsManager from './is'
 import OptionManager from './option'
 import WatchManager, {IWatchAction} from './watch'
 
-
 export interface IAction {
     save(): IAction
-    cookie(): IAction,
-    localStore(): IAction,
+    /* COOKIE ENABLE */
+    //cookie(): IAction
+    store(): IAction
     value: any
 }
+
+
 
 export default class Model {
 
@@ -26,7 +29,8 @@ export default class Model {
     private _prevState: any = null
     private _defaultState: any = null
 
-    private _cookie: CookieManager
+    /* COOKIE ENABLE */
+    // private _cookie: CookieManager
     private _localStore: LocalStoreManager
     private _is: IsManager
     private _option: OptionManager
@@ -35,17 +39,25 @@ export default class Model {
     constructor(state: any, ...props: any){
         this._is = new IsManager(this)
         this._option = new OptionManager(this, Object.assign({}, props[0], props[1]))
-        this._cookie = new CookieManager(this)
+        /* COOKIE ENABLE */
+        // this._cookie = new CookieManager(this)
         this._localStore = new LocalStoreManager(this)
         this._watch = new WatchManager(this)
         this._set(state)
-        this._setDefaultState(this.toPlain())
+        this._setDefaultState(this.to().plain())
         this.is().connected() && Manager.prepareModel(this)
     }
 
+    // private _switchStatesToCollection = () => {
+    //     this._prevStateStore = []
+    //     this._state = []
+    //     this._prevState = []
+    //     this._defaultState = []
+    // }
+
     private _set = (state: any = this.state): IAction => {
         if (Model._isObject(state) || Model._isArray(state)){
-            this._state = this.is().collection() ? this.toListClass(state) : state
+            this._state = this.is().collection() ? this.to().listClass(state) : state
         } else {
             if (!this.is().collection())
                 throw Errors.onlyObjectOnModelState()
@@ -58,7 +70,7 @@ export default class Model {
     private _watchManager = () => this._watch
 
     private _handleStateChanger = (prevStatePlain: any) => {
-        const newStatePlain = this.toPlain()
+        const newStatePlain = this.to().plain()
         if (JSON.stringify(prevStatePlain) === JSON.stringify(newStatePlain))
             return
         this._setPrevState(prevStatePlain)
@@ -88,19 +100,22 @@ export default class Model {
         return this._defaultState
     }
 
-    public cookie = (): CookieManager => this._cookie
+    /* COOKIE ENABLE */
+    // public cookie = (): CookieManager => this._cookie
     public localStore = (): LocalStoreManager => this._localStore
     public is = (): IsManager => this._is
     public option = (): OptionManager => this._option
     public watch = (): IWatchAction => this._watchManager().action()
     
     public action = (value: any = undefined): IAction => {
-        const { save, cookie, localStore } = this.option().get()
+        /* COOKIE ENABLE */
+        const { save, /* cookie, */ store } = this.option().get()
 
         return { 
-            cookie: !cookie ? this.cookie().set : cookie,
+            /* COOKIE ENABLE */
+            // cookie: !cookie ? this.cookie().set : cookie,
             save: !save ? this.save : save,
-            localStore: !localStore ? this.localStore().set : localStore,
+            store: !store ? this.localStore().set : store,
             value
         }
     }
@@ -108,7 +123,7 @@ export default class Model {
     public save = () => {
         if (this.is().connected()){
             const prevStateStore = Manager.store().node(this.option().key())
-            const newStorePlain = this.toPlain()
+            const newStorePlain = this.to().plain()
 
             if (JSON.stringify(prevStateStore) !== JSON.stringify(newStorePlain)){
                 Manager.store().dispatch({ payload: newStorePlain, type: this.option().key() })
@@ -123,7 +138,7 @@ export default class Model {
 
     //Only usable in 
     public setState = (o = this.state): IAction => {
-        const prevStatePlain = this.toPlain()
+        const prevStatePlain = this.to().plain()
         
         if (this.is().collection()){
             let action = this._set(o)
@@ -142,7 +157,7 @@ export default class Model {
         if (this.is().collection())
             throw new Error(`deleteKey can't be used in a Collection`)
 
-        const prevStatePlain = this.toPlain()
+        const prevStatePlain = this.to().plain()
         key in this.state && delete this.state[key] && this._handleStateChanger(prevStatePlain)
         return this.action()
     }
@@ -151,16 +166,13 @@ export default class Model {
     public deleteMultiKey = (...keys: string[]): IAction => {
         if (this.is().collection())
             throw new Error(`deleteMultiKey can't be used in a Collection`)
-        const prevStatePlain = this.toPlain()
+        const prevStatePlain = this.to().plain()
         let inCount = 0
         for (let i = 0; i < keys.length; i++)
             delete this.state[keys[i]] && inCount++
         !!inCount && this._handleStateChanger(prevStatePlain)
         return this.action()
     }
-
-    //Return the state to a JSONified object.
-    public toPlain = (...args: any): any => toPlain(this, args[0])
     
     public hydrate = (state: any): IAction => {
         hydrate(state, this)
@@ -169,32 +181,45 @@ export default class Model {
         return this.setState()
     }
 
-    /*
-        Transform an array of object into an array of instancied Model
-        Exemple => 
-        [{content: '123', id: 'abc'}, {content: '456', id: 'def'}]
-        to
-        [new Model(content: '123', id: 'abc'}), new Model({content: '456', id: 'def'})]
-        the class used to instance the objects is the one passed in parameters in the constructor.
+    public to = () => {
 
-    */
-    public toListClass = (elem: any[] = []): Model[] => {
-        const nodeModel = this.option().nodeModel()
-        if (!this.is().collection() || nodeModel == null)
-            throw new Error("toListClass can only be called from a Collection")
+        /*
+            Transform an array of object into an array of instancied Model
+            Exemple => 
+            [{content: '123', id: 'abc'}, {content: '456', id: 'def'}]
+            to
+            [new Model(content: '123', id: 'abc'}), new Model({content: '456', id: 'def'})]
+            the class used to instance the objects is the one passed in parameters in the constructor.
 
-        let ret: Model[] = []
-        for (let i = 0; i < elem.length; i++){
-            if (!(elem[i] instanceof Model))
-                ret.push(new (<any>nodeModel)(elem[i], this.option().kids()))
-            else 
-                ret.push(elem[i])
+        */
+        const listClass = (elem: any[] = []): Model[] => {
+            const nodeModel = this.option().nodeModel()
+            if (!this.is().collection() || nodeModel == null)
+                throw new Error("toListClass can only be called from a Collection")
+    
+            let ret: Model[] = []
+            for (let i = 0; i < elem.length; i++){
+                if (!(elem[i] instanceof Model))
+                    ret.push(new (<any>nodeModel)(elem[i], this.option().kids()))
+                else 
+                    ret.push(elem[i])
+            }
+            return ret
         }
-        return ret
-    }
 
-    public toLocallyStorableString = (): string => JSON.stringify(this.toPlain('store'))
-    public toString = (): string => JSON.stringify(this.toPlain())
+        const locallyStorableString = (): string => JSON.stringify(plain('store'))
+        const string = (): string => JSON.stringify(plain())
+
+        //Return the state to a JSONified object.
+        const plain = (...args: any): any => toPlain(this, args[0])
+
+        return {
+            listClass,
+            locallyStorableString,
+            string,
+            plain
+        }
+    }
 
     static ParseStoredJSON = (data: string) => ParseJSONLocallyStored(data)
 

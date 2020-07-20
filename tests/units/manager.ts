@@ -73,31 +73,30 @@ const main = async () => {
             })
             Post2.setState({content: 'bipbip'}).save()
             expect(i).to.equal(2)
-            PostList.push(Post2.toPlain()).save()
+            PostList.push(Post2.to().plain()).save()
             expect(i).to.equal(3)
             manager.subscribers().reset()
             expect(manager.subscribers().count()).to.equal(0)
         })
 
         it('store manager', () => {
-            expect(JSON.stringify(manager.store().node('post2'))).to.eq(Post2.toString())
+            expect(JSON.stringify(manager.store().node('post2'))).to.eq(Post2.to().string())
             manager.store().set({post2: post})
-            expect(JSON.stringify(manager.store().node('post2'))).to.not.eq(Post2.toString())
+            expect(JSON.stringify(manager.store().node('post2'))).to.not.eq(Post2.to().string())
             expect(JSON.stringify(manager.store().node('post2'))).to.eq(JSON.stringify(post))
         })
 
         it('pending hydration', () => {
             manager.pendingHydrationStore().set({'post2': post})
             Post2.setState({content: 'wijfeofwefweofwe'})
-            expect(Post2.toString()).to.eq(JSON.stringify(post2))
+            expect(Post2.to().string()).to.eq(JSON.stringify(post2))
             expect(manager.pendingHydrationStore().count()).to.eq(1)
             manager.pendingHydrationStore().reset()
             expect(manager.pendingHydrationStore().count()).to.eq(0)
             manager.pendingHydrationStore().set({'post2': post})
             manager.pendingHydrationStore().execute()
-            expect(Post2.toString()).to.eq(JSON.stringify(post))
+            expect(Post2.to().string()).to.eq(JSON.stringify(post))
         })
-
     })
 
     describe('Connected Model: is', () => {
@@ -136,16 +135,17 @@ const main = async () => {
             const node2 = PostList.nodeAt(1)
 
             expect(node.action().save).to.equal(PostList.option().kids().save)
-            expect(node.action().cookie).to.equal(PostList.option().kids().cookie)
-            expect(node.action().localStore).to.equal(PostList.option().kids().localStore)
+            /* COOKIE ENABLE */
+            //expect(node.action().cookie).to.equal(PostList.option().kids().cookie)
+            expect(node.action().store).to.equal(PostList.option().kids().store)
 
             expect(node.action().save).to.equal(node2.action().save)
             expect(node.action().cookie).to.equal(node2.action().cookie)
-            expect(node.action().localStore).to.equal(node2.action().localStore)
+            expect(node.action().store).to.equal(node2.action().store)
 
             expect(node.action().save).to.equal(node2.option().kids().save)
             expect(node.action().cookie).to.equal(node2.option().kids().cookie)
-            expect(node.action().localStore).to.equal(node2.option().kids().localStore)
+            expect(node.action().store).to.equal(node2.option().kids().store)
         })
     })
 

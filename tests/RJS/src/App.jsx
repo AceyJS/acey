@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAcey } from 'acey'
+import { useAcey } from 'react-acey'
 import { Counter, Todolist, User } from '../src/models'
 
 const STORE_TYPE = 'cookie'

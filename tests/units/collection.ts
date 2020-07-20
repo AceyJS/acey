@@ -123,13 +123,13 @@ describe('Collection: methods', () => {
 
     it('newCollection', () => {
         const a = PostList.newCollection(PostList)
-        const b = PostList.newCollection(PostList.toPlain())
+        const b = PostList.newCollection(PostList.to().plain())
         expect(a.toString()).to.eq(b.toString())
     })
 
     it('newNode', () => {
         const a = PostList.newNode(PostList.state[0])
-        const b = PostList.newNode(PostList.state[0].toPlain())
+        const b = PostList.newNode(PostList.state[0].to().plain())
         expect(a.toString()).to.eq(b.toString())
     })
 
@@ -220,7 +220,7 @@ describe('Collection: methods', () => {
         PostList.update(Object.assign({}, post, {id: '57849', content: 'gij43g34', random: 342}), 10)
         expect(PostList.count()).to.eq(4)
         expect(PostList.nodeAt(3).ID()).to.eq('57849')
-        const node2 = new PostModel(PostList.nodeAt(2).toPlain(), undefined)
+        const node2 = new PostModel(PostList.nodeAt(2).to().plain(), undefined)
         node2.setState({'id': 'HELLO_GUYS'})
         PostList.update(node2, 2)
         expect(PostList.nodeAt(2).ID()).to.eq('HELLO_GUYS')

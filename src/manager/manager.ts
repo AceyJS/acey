@@ -4,7 +4,8 @@ import TransitionsManager from './transitions'
 import StoreManager from './store'
 import PendingHydrationManager from './pending-hydration'
 import LocalStoreManager from './local-store'
-import CookieManager from './cookie'
+/* COOKIE ENABLE */
+//import CookieManager from './cookie'
 
 import Model from '../model'
 
@@ -17,7 +18,8 @@ export default class Manager {
 
     private _pendingHydrationStore: PendingHydrationManager;
     private _localStoreManager: any = null
-    private _cookieManager: any = null;
+    /* COOKIE ENABLE */
+    // private _cookieManager: any = null;
     private _hasBeenInitialized: boolean = false
 
     constructor(){
@@ -43,7 +45,8 @@ export default class Manager {
             this.setInitialized()
             if (instruction !== 'test'){
                 this._localStoreManager = new LocalStoreManager()
-                this._cookieManager = new CookieManager(this.localStoreManager())
+                /* COOKIE ENABLE */
+                // this._cookieManager = new CookieManager(this.localStoreManager())
             }
             await this.models().connectAll()
             this.pendingHydrationStore().execute()
@@ -51,7 +54,8 @@ export default class Manager {
     }
 
     public localStoreManager = (): LocalStoreManager => this._localStoreManager
-    public cookie = (): CookieManager => this._cookieManager
+    /* COOKIE ENABLE */
+    // public cookie = (): CookieManager => this._cookieManager
     public models = (): ModelsManager => this._modelsManager
     public transitions = (): TransitionsManager => this._transitionsManager
     public subscribers = (): SubscribersManager => this._subscribersManager
@@ -72,8 +76,9 @@ export default class Manager {
         this.store().set({[key]: m.defaultState})
 
         let storedData;
-        if (m.cookie().isActive())
-            storedData = m.cookie().get()
+        /* COOKIE ENABLE */
+        // if (m.cookie().isActive())
+        //     storedData = m.cookie().get()
         if (!storedData && m.localStore().isActive())
             storedData = await m.localStore().get()
 

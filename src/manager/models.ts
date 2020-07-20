@@ -1,6 +1,7 @@
 import Manager from './manager'
-import config from '../config'
-import Errors from '../errors'
+/* COOKIE ENABLE */
+// import config from '../config'
+// import Errors from '../errors'
 import Model from '../model'
 import _ from 'lodash'
 
@@ -28,7 +29,9 @@ export default class ModelsManager {
         for (let key in this.get())
             await this.manager().connectModel(this.node(key))
     }
-
+    
+    /* COOKIE ENABLE */
+    /*
     public hydrateWithCookies = (cookies: any) => {
         if (config.isReactNative())
             throw Errors.cookieDisabledOnRN()
@@ -36,6 +39,7 @@ export default class ModelsManager {
             key in cookies && m.cookie().isActive() && m.hydrate(cookies[key]).save()
         })
     }
+    */
 
     public forEach = (callback: (m: Model, key: string) => any) => {
         for (let key in this.get())

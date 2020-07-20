@@ -22,7 +22,7 @@ describe('Model: setState', () => {
         expect(() => User.setState(PostList)).to.throw(Error)
     });
     it('setting an Array', () => {
-        expect(() => User.setState(PostList.toPlain())).to.throw(Error)
+        expect(() => User.setState(PostList.to().plain())).to.throw(Error)
     });
     it('setting a Bool', () => {
         expect(() => User.setState(true)).to.throw(Error)
@@ -81,10 +81,10 @@ describe('Model: deleteKey', () => {
     it('deleting a key on a Model : testing result', () => {
         const key = 'first_name'
         const User = new UserModel(USER_DATA, undefined)
-        const data = User.toPlain()
+        const data = User.to().plain()
         User.deleteKey(key)
         delete data[key]
-        expect(User.toString()).to.equal(JSON.stringify(data))
+        expect(User.to().string()).to.equal(JSON.stringify(data))
     });
 });
 
@@ -106,7 +106,7 @@ describe('Model: toListClass', () => {
     }
 
     it('call it from a Model', () => {
-        expect(() => User.toListClass([])).to.throw(Error)
+        expect(() => User.to().listClass([])).to.throw(Error)
     });
 });
 
@@ -116,20 +116,20 @@ describe('Model: Local Storage and Date', () => {
     const PostList = new PostCollection(USER_DATA.post_list, undefined)
 
     it('from a Model', () => {
-        const uStr = User.toString()
-        const uLocalStr = User.toLocallyStorableString()
+        const uStr = User.to().string()
+        const uLocalStr = User.to().locallyStorableString()
 
         const parsedLocalStr = Model.ParseStoredJSON(uLocalStr)
         User.hydrate(parsedLocalStr)
-        expect(User.toString()).to.equal(uStr)
+        expect(User.to().string()).to.equal(uStr)
     });
 
     it('from a Collection', () => {
-        const plStr = PostList.toString()
-        const uLocalStr = PostList.toLocallyStorableString()
+        const plStr = PostList.to().string()
+        const uLocalStr = PostList.to().locallyStorableString()
         const parsedLocalStr = Model.ParseStoredJSON(uLocalStr)
         PostList.hydrate(parsedLocalStr)
-        expect(PostList.toString()).to.equal(plStr)
+        expect(PostList.to().string()).to.equal(plStr)
     });
 
 });

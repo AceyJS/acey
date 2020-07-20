@@ -1,5 +1,4 @@
 import Model from './model'
-import { TConnected } from './connect'
 import Errors from './errors'
 
 export const verifyIfContainAConnectedModel = (m: Model) => {
@@ -82,22 +81,6 @@ export const verifyIfContainArrayOfModel = (v: Model) => {
 
     recur(v)
     return doesContain
-}
-export const verifyIfOnlyModelsAndFunction = (v: TConnected[], origin: string) => {
-    const defaultError = `${origin}'s first parameter must be an Array of Model, Collection, or unexecuted getters.`
-
-    if (!Array.isArray(v)){
-        throw new Error(defaultError)
-    }
-
-    for (let i = 0; i < v.length; i++){
-        const e = v[i]
-        if (!(e instanceof Model) && !(typeof e === 'function'))
-            throw new Error(`
-                ${defaultError}
-                Please check the ${i+1}${i == 0 ? 'st' : (i == 1) ? 'nd' : 'st'} element of the Array. Currently typed as a : ${typeof e}.
-            `)
-    }
 }
 
 export const verifyAllModel = (m: Model) => {

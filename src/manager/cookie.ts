@@ -1,3 +1,4 @@
+/*
 import * as Cookies from 'es-cookie';
 import config from '../config'
 import LocalStoreManager from './local-store'
@@ -56,3 +57,5 @@ class CookieManager {
 }
 
 export default CookieManager
+
+*/

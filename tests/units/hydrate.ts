@@ -26,7 +26,7 @@ describe('Testing hydrate (Model/Collection)', () => {
     })
     
     it('Test 1 hydration on Collection', () => {
-        PostList2.hydrate(PostList.toPlain())
+        PostList2.hydrate(PostList.to().plain())
         expect(PostList2.toString()).to.equal(PostList.toString());
     });
     it('Test 2 hydration on Collection', () => {
@@ -34,7 +34,7 @@ describe('Testing hydrate (Model/Collection)', () => {
         expect(PostList3.toString()).to.equal(PostList2.toString());
     });
     it('Test 3 hydration on Collection', () => {
-        PostList3.hydrate(PostList.toPlain())
+        PostList3.hydrate(PostList.to().plain())
         expect(PostList3.toString()).to.equal(PostList.toString());
     });
 });

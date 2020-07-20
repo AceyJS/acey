@@ -1,5 +1,6 @@
-import Model from './'
 import _ from 'lodash'
+import Model from './'
+import Collection from '../collection'
 
 export const STORE_OPTION = 'store'
 const isStoreOption = (option: any) => option === STORE_OPTION
@@ -29,12 +30,12 @@ const updateInState = (value: any, path: string, to: Model) => {
 
     const v: any = getValueAtPath(pathSplited.join('.'), to)
     if (v instanceof Model && v.is().collection()){
-        v.setState(v.toListClass(value))
+        v.setState(v.to().listClass(value))
     } else if (v instanceof Model && !Model._isCollection(v.state[lastKey])){
         v.setState({[lastKey]: value})
     } else if (Model._isCollection(v.state[lastKey])){
-        const collec = v.state[lastKey]
-        collec.setState(collec.toListClass(value))
+        const collec = v.state[lastKey] as Collection
+        collec.setState(collec.to().listClass(value))
     } else {
         if (lastKey)
             v[lastKey] = value

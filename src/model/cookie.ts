@@ -1,3 +1,4 @@
+/*
 import Config from '../config'
 import Errors from '../errors'
 import Model from './'
@@ -41,7 +42,7 @@ export default class CookieManager {
         const key = this._model().option().key()
         try {
             this._prevState = this.getByKey(key)
-            Manager.cookie().addElement(key, this._model().toLocallyStorableString(), expires)
+            Manager.cookie().addElement(key, this._model().to().locallyStorableString(), expires)
         } catch (e) {
             console.log(`error from cookie set with ${this._model().is().collection() ? 'Collection' : 'Model'}: ${key}, ${e}`)
         }
@@ -64,3 +65,5 @@ export default class CookieManager {
         }
     }
 }
+
+*/

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import Model, {IAction}  from './model'
 import Errors from './errors'
 
-
 type Constructor<T> = new(...args: any[]) => T;
 
 //  i) this class can be improved by adding more than you can usually find in lists.
@@ -21,15 +20,18 @@ export default class Collection extends Model  {
             throw Errors.forbiddenMultiDimCollection()
         
         const assignWithStorage = async () => {
-            if (!this.is().connected() || (!this.cookie().get() && !(await this.localStore().get()))){
-                this.setState(this.toListClass(list))
+
+            /* COOKIE ENABLE */
+            //if (!this.is().connected() || (!this.cookie().get() && !(await this.localStore().get()))){
+            if (!this.is().connected() || !(await this.localStore().get())){
+                this.setState(this.to().listClass(list))
             }
         }
 
         assignWithStorage()
     }
     
-    public concat = (list: any[] = []) => this._newCollectionModelInstance(this.state.slice().concat(this.toListClass(list)))
+    public concat = (list: any[] = []) => this._newCollectionModelInstance(this.state.slice().concat(this.to().listClass(list)))
     
     //Return the number of element in the array
     public count = (): number => this.state.length
@@ -52,9 +54,9 @@ export default class Collection extends Model  {
 
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
     public deleteBy = (predicate: any): IAction => {
-        const statePlain = this.toPlain()
+        const statePlain = this.to().plain()
         const e = _.remove(statePlain, predicate)
-        !!e.length && this.setState(this.toListClass(statePlain))
+        !!e.length && this.setState(this.to().listClass(statePlain))
         return this.action()
     }
 
@@ -65,7 +67,7 @@ export default class Collection extends Model  {
 
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
     public find = (predicate: any) => {
-        const o = _.find(this.toPlain(), predicate)
+        const o = _.find(this.to().plain(), predicate)
         if (o){
             const index = this.findIndex(o)
             return index < 0 ? undefined : this.state[index]
@@ -74,11 +76,11 @@ export default class Collection extends Model  {
     }
 
     //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
-    public findIndex = (predicate: any): number => _.findIndex(this.toPlain(), predicate)
+    public findIndex = (predicate: any): number => _.findIndex(this.to().plain(), predicate)
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
     public filter = (predicate: any) => {
-        const list = _.filter(this.toPlain(), predicate)
+        const list = _.filter(this.to().plain(), predicate)
         const ret = []
         for (let elem of list){
             const m = this.find(elem)
@@ -88,7 +90,7 @@ export default class Collection extends Model  {
     }
 
     //return the index of the element passed in parameters if it exists in the list.
-    public indexOf = (v: any): number => _.findIndex(this.toPlain(), this.newNode(v).toPlain())
+    public indexOf = (v: any): number => _.findIndex(this.to().plain(), this.newNode(v).to().plain())
 
     public limit = (limit: number) => this.slice(0, limit)
 
@@ -111,7 +113,7 @@ export default class Collection extends Model  {
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
     public orderBy = (iteratees: any[] = [], orders: any[] = []): any[] => {
-        const list = _.orderBy(this.toPlain(), iteratees, orders)
+        const list = _.orderBy(this.to().plain(), iteratees, orders)
         const ret = []
         for (let elem of list){
             const m = this.find(elem)
