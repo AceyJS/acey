@@ -1,1 +1,0 @@
-{"ast":null,"code":"import { Collection } from 'acey';\nimport Todo from './todo';\n\nclass Todolist extends Collection {\n  constructor(data = [], options) {\n    super(data, Todo, options);\n  }\n\n}\n\nexport default Todolist;","map":null,"metadata":{},"sourceType":"module"}
