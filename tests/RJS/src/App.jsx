@@ -2,7 +2,7 @@ import React from 'react';
 import { useAcey } from 'react-acey'
 import { Counter, Todolist, User } from '../src/models'
 
-const STORE_TYPE = 'cookie'
+const STORE_TYPE = 'store'
 
 Todolist.watch().store(() => {
   console.log('changed??')

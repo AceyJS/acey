@@ -122,30 +122,30 @@ const main = async () => {
     describe('Connected Model: option', () => {
    
         it('nodeModel', () => {
-            expect(PostList.option().nodeModel()).to.equal(PostModel)
-            expect(PostList.option().nodeModel()).to.not.equal(PostCollection)
+            expect(PostList.super().option().nodeModel()).to.equal(PostModel)
+            expect(PostList.super().option().nodeModel()).to.not.equal(PostCollection)
         })
         it('nodeCollection', () => {
-            expect(PostList.option().collectionModel()).to.equal(PostCollection)
-            expect(PostList.option().collectionModel()).to.not.equal(PostModel)
+            expect(PostList.super().option().collectionModel()).to.equal(PostCollection)
+            expect(PostList.super().option().collectionModel()).to.not.equal(PostModel)
         })
         it('kids', () => {
             const node = PostList.nodeAt(0)
             PostList.push(post2)
             const node2 = PostList.nodeAt(1)
 
-            expect(node.action().save).to.equal(PostList.option().kids().save)
+            expect(node.action().save).to.equal(PostList.kids().save)
             /* COOKIE ENABLE */
-            //expect(node.action().cookie).to.equal(PostList.option().kids().cookie)
-            expect(node.action().store).to.equal(PostList.option().kids().store)
+            //expect(node.action().cookie).to.equal(PostList.super().kids().cookie)
+            expect(node.action().store).to.equal(PostList.kids().store)
 
             expect(node.action().save).to.equal(node2.action().save)
             expect(node.action().cookie).to.equal(node2.action().cookie)
             expect(node.action().store).to.equal(node2.action().store)
 
-            expect(node.action().save).to.equal(node2.option().kids().save)
-            expect(node.action().cookie).to.equal(node2.option().kids().cookie)
-            expect(node.action().store).to.equal(node2.option().kids().store)
+            expect(node.action().save).to.equal(node2.kids().save)
+            expect(node.action().cookie).to.equal(node2.kids().cookie)
+            expect(node.action().store).to.equal(node2.kids().store)
         })
     })
 

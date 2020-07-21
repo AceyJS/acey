@@ -9,9 +9,10 @@ class LocalStoreManager {
     private _keys: any = {};
 
     constructor(){
-        if (config.isNextJS())
+        if (config.isNextJSServer()){
             return
-        else if (config.isReactNative() && !this.engine())
+        }
+        if (config.isReactNative() && !this.engine())
             throw Errors.unsetLocalStore()
         
         this._fetchKeys()
@@ -23,7 +24,7 @@ class LocalStoreManager {
     public toString = () => JSON.stringify(this._keys)
     public toJSON = (keys: string) => this._keys = JSON.parse(keys)
 
-    public isEnabled = (): boolean => !config.isNextJS() && !!this.engine()
+    public isEnabled = (): boolean => !!this.engine()
 
     public addElement = (key: string, data: string, expires: number = 7) => {
         if (!this.engine()){

@@ -71,9 +71,9 @@ export default class Manager {
     }
 
     public connectModel = async (m: Model) => {
-        const key = m.option().key()
+        const key = m.super().option().key()
         this.transitions().add(m)
-        this.store().set({[key]: m.defaultState})
+        this.store().set({[key]: m.to().plain()})
 
         let storedData;
         /* COOKIE ENABLE */
@@ -81,7 +81,7 @@ export default class Manager {
         //     storedData = m.cookie().get()
         if (!storedData && m.localStore().isActive())
             storedData = await m.localStore().get()
-
-        storedData && this.pendingHydrationStore().set({ [key]: storedData })
+    
+        !this.pendingHydrationStore().node(key) && storedData && this.pendingHydrationStore().set({ [key]: storedData })
     }
 }

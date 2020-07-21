@@ -27,7 +27,6 @@ export default class Model {
     private _prevStateStore: any = null
     private _state: any = null
     private _prevState: any = null
-    private _defaultState: any = null
 
     /* COOKIE ENABLE */
     // private _cookie: CookieManager
@@ -35,6 +34,16 @@ export default class Model {
     private _is: IsManager
     private _option: OptionManager
     private _watch: WatchManager
+
+    super = () => {
+        const option = (): OptionManager => this._option
+
+        return {
+            option,
+            prevState: this._prevState,
+            prevStateStore: this._prevStateStore,
+        }
+    }
 
     constructor(state: any, ...props: any){
         this._is = new IsManager(this)
@@ -44,16 +53,8 @@ export default class Model {
         this._localStore = new LocalStoreManager(this)
         this._watch = new WatchManager(this)
         this._set(state)
-        this._setDefaultState(this.to().plain())
         this.is().connected() && Manager.prepareModel(this)
     }
-
-    // private _switchStatesToCollection = () => {
-    //     this._prevStateStore = []
-    //     this._state = []
-    //     this._prevState = []
-    //     this._defaultState = []
-    // }
 
     private _set = (state: any = this.state): IAction => {
         if (Model._isObject(state) || Model._isArray(state)){
@@ -74,42 +75,28 @@ export default class Model {
         if (JSON.stringify(prevStatePlain) === JSON.stringify(newStatePlain))
             return
         this._setPrevState(prevStatePlain)
-        this._watchManager().onStateChanged(this.prevState, newStatePlain)
+        this._watchManager().onStateChanged(this.super().prevState, newStatePlain)
         if (!this.is().collection()){
             verifyAllModel(this)
         }
     }
 
-    protected _setDefaultState = (state: any) => this._defaultState = state
     private _setPrevState = (state: any) => this._prevState = state
     private _setPrevStateStore = (state: any) => this._prevStateStore = state
 
-    public get prevStateStore(){
-        return this._prevStateStore
-    }
-
     public get state(){
         return this._state
-    }
-
-    public get prevState(){
-        return this._prevState
-    }
-
-    public get defaultState(){
-        return this._defaultState
     }
 
     /* COOKIE ENABLE */
     // public cookie = (): CookieManager => this._cookie
     public localStore = (): LocalStoreManager => this._localStore
     public is = (): IsManager => this._is
-    public option = (): OptionManager => this._option
     public watch = (): IWatchAction => this._watchManager().action()
     
     public action = (value: any = undefined): IAction => {
         /* COOKIE ENABLE */
-        const { save, /* cookie, */ store } = this.option().get()
+        const { save, /* cookie, */ store } = this.super().option().get()
 
         return { 
             /* COOKIE ENABLE */
@@ -122,11 +109,11 @@ export default class Model {
     
     public save = () => {
         if (this.is().connected()){
-            const prevStateStore = Manager.store().node(this.option().key())
+            const prevStateStore = Manager.store().node(this.super().option().key())
             const newStorePlain = this.to().plain()
 
             if (JSON.stringify(prevStateStore) !== JSON.stringify(newStorePlain)){
-                Manager.store().dispatch({ payload: newStorePlain, type: this.option().key() })
+                Manager.store().dispatch({ payload: newStorePlain, type: this.super().option().key() })
                 this._setPrevStateStore(prevStateStore)
                 this._watchManager().onStoreChanged(prevStateStore, newStorePlain)
             }
@@ -181,8 +168,9 @@ export default class Model {
         return this.setState()
     }
 
-    public to = () => {
+    kids = () => this.super().option().kids()
 
+    public to = () => {
         /*
             Transform an array of object into an array of instancied Model
             Exemple => 
@@ -193,14 +181,14 @@ export default class Model {
 
         */
         const listClass = (elem: any[] = []): Model[] => {
-            const nodeModel = this.option().nodeModel()
+            const nodeModel = this.super().option().nodeModel()
             if (!this.is().collection() || nodeModel == null)
                 throw new Error("toListClass can only be called from a Collection")
     
             let ret: Model[] = []
             for (let i = 0; i < elem.length; i++){
                 if (!(elem[i] instanceof Model))
-                    ret.push(new (<any>nodeModel)(elem[i], this.option().kids()))
+                    ret.push(new (<any>nodeModel)(elem[i], this.super().option().kids()))
                 else 
                     ret.push(elem[i])
             }

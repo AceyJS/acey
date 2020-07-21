@@ -97,28 +97,107 @@ module.exports =
 /*!***********************!*\
   !*** ./pages/_app.js ***!
   \***********************/
-/*! exports provided: default */
+/*! exports provided: withAcey, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "withAcey", function() { return withAcey; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var acey__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! acey */ "acey");
 /* harmony import */ var acey__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(acey__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var next_acey_wrapper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! next-acey-wrapper */ "next-acey-wrapper");
-/* harmony import */ var next_acey_wrapper__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_acey_wrapper__WEBPACK_IMPORTED_MODULE_3__);
 var _jsxFileName = "/Users/louis/Acey/tests/NJS/pages/_app.js";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 
 
+const withAcey = (App, Acey) => {
+  var _class, _temp;
+
+  const {
+    manager,
+    config
+  } = Acey;
+  config.setEnvAsNextJS();
+  config.done();
+  const STORE_KEY = '_aceyStore';
+  return _temp = _class = class Wrap extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
+    constructor(props) {
+      super(props);
+
+      _defineProperty(this, "isServer", () => true);
+
+      _defineProperty(this, "getClearedProps", () => {
+        let newProps = {};
+
+        for (let key in this.props) {
+          if (key === 'pageProps') {
+            const copy = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.cloneDeep(this.props[key]);
+
+            delete copy[STORE_KEY];
+            copy['isServer'] = this.isServer();
+            newProps[key] = copy;
+          } else {
+            newProps[key] = this.props[key];
+          }
+        }
+
+        return newProps;
+      });
+
+      _defineProperty(this, "render", () => __jsx(App, _extends({}, this.getClearedProps(), {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 61,
+          columnNumber: 26
+        }
+      })));
+
+      if (!this.isServer()) {
+        const store = props.pageProps[STORE_KEY];
+
+        for (const key in store) {
+          console.log(manager.models().node(key).to().plain(), store[key]);
+          lodash__WEBPACK_IMPORTED_MODULE_1___default.a.isEqual(manager.models().node(key).to().plain(), store[key]) && delete store[key];
+        }
+
+        manager.pendingHydrationStore().set(store);
+      }
+    }
+
+  }, _defineProperty(_class, "getInitialProps", async ({
+    Component,
+    router,
+    ctx
+  }) => {
+    let pageProps = {};
+    if (!ctx) throw new Error('No page context');
+    const prevInitialPropsFunction = Component.getInitialProps;
+    if (Component.getInitialProps) pageProps = await Component.getInitialProps(ctx);
+
+    Component.getInitialProps = ctx => pageProps;
+
+    Component.getInitialProps = prevInitialPropsFunction;
+    const ret = {
+      pageProps: _objectSpread({}, pageProps)
+    };
+    ret.pageProps[STORE_KEY] = manager.store().get();
+    return ret;
+  }), _temp;
+};
 
 const MyApp = props => {
   const {
@@ -129,13 +208,16 @@ const MyApp = props => {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 9,
+      lineNumber: 69,
       columnNumber: 5
     }
   }));
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(next_acey_wrapper__WEBPACK_IMPORTED_MODULE_3__["withAcey"])(MyApp, acey__WEBPACK_IMPORTED_MODULE_2___default.a));
+/* harmony default export */ __webpack_exports__["default"] = (withAcey(MyApp, {
+  manager: acey__WEBPACK_IMPORTED_MODULE_2__["manager"],
+  config: acey__WEBPACK_IMPORTED_MODULE_2__["config"]
+}));
 
 /***/ }),
 
@@ -170,17 +252,6 @@ module.exports = require("acey");
 /***/ (function(module, exports) {
 
 module.exports = require("lodash");
-
-/***/ }),
-
-/***/ "next-acey-wrapper":
-/*!************************************!*\
-  !*** external "next-acey-wrapper" ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require("next-acey-wrapper");
 
 /***/ }),
 

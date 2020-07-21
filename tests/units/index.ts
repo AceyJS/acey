@@ -1,5 +1,5 @@
-import './toPlain'
-import './hydrate'
-import './model'
-import './collection'
-import './manager'
+require('./toPlain')
+require('./hydrate')
+require('./model')
+require('./collection')
+require('./manager')

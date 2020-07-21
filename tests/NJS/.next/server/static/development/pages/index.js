@@ -97,15 +97,16 @@ module.exports =
 /*!************************!*\
   !*** ./pages/index.js ***!
   \************************/
-/*! exports provided: default */
+/*! exports provided: getServerSideProps, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getServerSideProps", function() { return getServerSideProps; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var acey__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! acey */ "acey");
-/* harmony import */ var acey__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(acey__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_acey__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-acey */ "react-acey");
+/* harmony import */ var react_acey__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_acey__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _src_models__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../src/models */ "./src/models/index.ts");
 var _jsxFileName = "/Users/louis/Acey/tests/NJS/pages/index.js";
 
@@ -115,7 +116,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-const STORE_TYPE = 'cookie';
+const STORE_TYPE = 'store';
 
 class PCounter extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
   constructor(...args) {
@@ -126,7 +127,7 @@ class PCounter extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 10,
+          lineNumber: 9,
           columnNumber: 12
         }
       }, " connected class: ", _src_models__WEBPACK_IMPORTED_MODULE_2__["User"].counter().get(), " ");
@@ -135,121 +136,106 @@ class PCounter extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
 
 }
 
-const PrintCounter = Object(acey__WEBPACK_IMPORTED_MODULE_1__["connect"])([_src_models__WEBPACK_IMPORTED_MODULE_2__["User"]])(PCounter);
+const PrintCounter = Object(react_acey__WEBPACK_IMPORTED_MODULE_1__["connect"])([_src_models__WEBPACK_IMPORTED_MODULE_2__["User"]])(PCounter);
 
-const Home = props => {
+function Home(props) {
   const todolists = [_src_models__WEBPACK_IMPORTED_MODULE_2__["Todolist"], _src_models__WEBPACK_IMPORTED_MODULE_2__["User"].todolist()];
   const counters = [_src_models__WEBPACK_IMPORTED_MODULE_2__["Counter"], _src_models__WEBPACK_IMPORTED_MODULE_2__["User"].counter()];
-  Object(acey__WEBPACK_IMPORTED_MODULE_1__["useAcey"])([_src_models__WEBPACK_IMPORTED_MODULE_2__["Counter"], _src_models__WEBPACK_IMPORTED_MODULE_2__["Todolist"], _src_models__WEBPACK_IMPORTED_MODULE_2__["User"]]);
+  Object(react_acey__WEBPACK_IMPORTED_MODULE_1__["useAcey"])([_src_models__WEBPACK_IMPORTED_MODULE_2__["Counter"], _src_models__WEBPACK_IMPORTED_MODULE_2__["Todolist"], _src_models__WEBPACK_IMPORTED_MODULE_2__["User"]]);
 
-  const method = (list = [], method = '', then = '' | 'coookie' | 'localStore') => {
+  const method = (list = [], method = '', then = '' | 'store') => {
     list.forEach(v => {
       const ret = v[method]();
       then && ret[then]();
     });
   };
 
-  const increment = (then = '' | 'coookie' | 'localStore') => {
+  const increment = (then = '' | 'localStore') => {
     method(counters, 'increment', then);
     const list = [];
     todolists.map(l => l.map(t => list.push(t.counter())));
     method(list, 'increment', then);
   };
 
-  const decrement = (then = '' | 'coookie' | 'localStore') => {
+  const decrement = (then = '' | 'localStore') => {
     method(counters, 'decrement', then);
     const list = [];
     todolists.map(l => l.map(t => list.push(t.counter())));
     method(list, 'decrement', then);
   };
 
-  const addTodo = (then = '' | 'coookie' | 'localStore') => method(todolists, 'add', then);
+  const addTodo = (then = '' | 'localStore') => method(todolists, 'add', then);
 
-  const deleteFirst = (then = '' | 'coookie' | 'localStore') => method(todolists, 'deleteFirst', then);
+  const deleteFirst = (then = '' | 'localStore') => method(todolists, 'deleteFirst', then);
 
-  const deleteLast = (then = '' | 'coookie' | 'localStore') => method(todolists, 'deleteLast', then);
+  const deleteLast = (then = '' | 'localStore') => method(todolists, 'deleteLast', then);
 
-  const toZZZLast = (then = '' | 'coookie' | 'localStore') => method(todolists, 'toZZZLast', then);
-
-  const clearAllCookie = () => {
-    _src_models__WEBPACK_IMPORTED_MODULE_2__["Todolist"].removeCookies();
-    _src_models__WEBPACK_IMPORTED_MODULE_2__["Counter"].removeCookies();
-    _src_models__WEBPACK_IMPORTED_MODULE_2__["User"].removeCookies();
-    location.reload();
-  };
+  const toZZZLast = (then = '' | 'localStore') => method(todolists, 'toZZZLast', then);
 
   const clearLocalStore = () => {
-    _src_models__WEBPACK_IMPORTED_MODULE_2__["Todolist"].removeLocalStore();
-    _src_models__WEBPACK_IMPORTED_MODULE_2__["Counter"].removeLocalStore();
-    _src_models__WEBPACK_IMPORTED_MODULE_2__["User"].removeLocalStore();
+    _src_models__WEBPACK_IMPORTED_MODULE_2__["Todolist"].localStore().remove();
+    _src_models__WEBPACK_IMPORTED_MODULE_2__["Counter"].localStore().remove();
+    _src_models__WEBPACK_IMPORTED_MODULE_2__["User"].localStore().remove();
     location.reload();
   };
 
   return __jsx("div", {
     className: "container",
-    __self: undefined,
+    __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 66,
+      lineNumber: 59,
       columnNumber: 5
     }
   }, __jsx("h1", {
-    __self: undefined,
+    __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 67,
+      lineNumber: 60,
       columnNumber: 7
     }
   }, props.id), __jsx("button", {
-    onClick: clearAllCookie,
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 68,
-      columnNumber: 7
-    }
-  }, "clear cookies"), __jsx("button", {
     onClick: clearLocalStore,
-    __self: undefined,
+    __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 69,
+      lineNumber: 61,
       columnNumber: 7
     }
   }, "clear local stores"), __jsx("br", {
-    __self: undefined,
+    __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 70,
+      lineNumber: 62,
       columnNumber: 7
     }
   }), __jsx("br", {
-    __self: undefined,
+    __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 71,
+      lineNumber: 63,
       columnNumber: 7
     }
   }), __jsx(PrintCounter, {
-    __self: undefined,
+    __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 72,
+      lineNumber: 64,
       columnNumber: 7
     }
   }), __jsx("br", {
-    __self: undefined,
+    __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 73,
+      lineNumber: 65,
       columnNumber: 7
     }
   }), __jsx("button", {
     onClick: () => decrement(STORE_TYPE),
-    __self: undefined,
+    __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 75,
+      lineNumber: 67,
       columnNumber: 7
     }
   }, "decrement"), counters.map((v, index) => __jsx("span", {
@@ -258,143 +244,143 @@ const Home = props => {
       marginRight: 10
     },
     key: index,
-    __self: undefined,
+    __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 76,
+      lineNumber: 68,
       columnNumber: 35
     }
   }, v.get())), __jsx("button", {
     onClick: () => increment(STORE_TYPE),
-    __self: undefined,
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 69,
+      columnNumber: 7
+    }
+  }, "increment"), __jsx("br", {
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 70,
+      columnNumber: 7
+    }
+  }), __jsx("button", {
+    onClick: () => addTodo(STORE_TYPE),
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 72,
+      columnNumber: 7
+    }
+  }, "Add element"), __jsx("button", {
+    onClick: () => deleteFirst(STORE_TYPE),
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 73,
+      columnNumber: 7
+    }
+  }, "Del 1st element"), __jsx("button", {
+    onClick: () => deleteLast(STORE_TYPE),
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 74,
+      columnNumber: 7
+    }
+  }, "Del last element"), __jsx("button", {
+    onClick: () => toZZZLast(STORE_TYPE),
+    __self: this,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 75,
+      columnNumber: 7
+    }
+  }, "ToZZ last"), __jsx("div", {
+    __self: this,
     __source: {
       fileName: _jsxFileName,
       lineNumber: 77,
       columnNumber: 7
     }
-  }, "increment"), __jsx("br", {
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 78,
-      columnNumber: 7
-    }
-  }), __jsx("button", {
-    onClick: () => addTodo(STORE_TYPE),
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 80,
-      columnNumber: 7
-    }
-  }, "Add element"), __jsx("button", {
-    onClick: () => deleteFirst(STORE_TYPE),
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 81,
-      columnNumber: 7
-    }
-  }, "Del 1st element"), __jsx("button", {
-    onClick: () => deleteLast(STORE_TYPE),
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 82,
-      columnNumber: 7
-    }
-  }, "Del last element"), __jsx("button", {
-    onClick: () => toZZZLast(STORE_TYPE),
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 83,
-      columnNumber: 7
-    }
-  }, "ToZZ last"), __jsx("div", {
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 85,
-      columnNumber: 7
-    }
   }, todolists.map((list, index) => {
     return __jsx("div", {
       key: index,
-      __self: undefined,
+      __self: this,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 87,
+        lineNumber: 79,
         columnNumber: 20
       }
     }, __jsx("h1", {
-      __self: undefined,
+      __self: this,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 88,
+        lineNumber: 80,
         columnNumber: 15
       }
     }, "Todolist ", index), list.map((todo, index) => {
       return __jsx("div", {
         key: index,
-        __self: undefined,
+        __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 90,
+          lineNumber: 82,
           columnNumber: 24
         }
       }, __jsx("span", {
-        __self: undefined,
+        __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 91,
+          lineNumber: 83,
           columnNumber: 19
         }
       }, todo.content()), __jsx("span", {
-        __self: undefined,
+        __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 92,
+          lineNumber: 84,
           columnNumber: 19
         }
       }, " : "), __jsx("span", {
-        __self: undefined,
+        __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 93,
+          lineNumber: 85,
           columnNumber: 19
         }
       }, todo.ID()), __jsx("span", {
-        __self: undefined,
+        __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 94,
+          lineNumber: 86,
           columnNumber: 19
         }
       }, " = "), __jsx("span", {
         style: {
           color: 'red'
         },
-        __self: undefined,
+        __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 95,
+          lineNumber: 87,
           columnNumber: 19
         }
       }, todo.counter().get()));
     }));
   })));
-};
+}
 
-Home.getInitialProps = ({
-  query
-}) => {
+async function getServerSideProps(context) {
   _src_models__WEBPACK_IMPORTED_MODULE_2__["Counter"].increment();
   return {
-    id: 10
-  };
-};
+    props: {
+      id: 10
+    } // will be passed to the page component as props
 
+  };
+}
 /* harmony default export */ __webpack_exports__["default"] = (Home);
 
 /***/ }),
@@ -505,7 +491,7 @@ class Todo extends acey__WEBPACK_IMPORTED_MODULE_0__["Model"] {
     _defineProperty(this, "ID", () => this.state.id);
 
     this.setState({
-      counter: new _counter__WEBPACK_IMPORTED_MODULE_1__["default"](data.counter, this.option().kids())
+      counter: new _counter__WEBPACK_IMPORTED_MODULE_1__["default"](data.counter, this.kids())
     });
   }
 
@@ -593,8 +579,8 @@ class User extends acey__WEBPACK_IMPORTED_MODULE_0__["Model"] {
     this.setState({
       counter: new _counter__WEBPACK_IMPORTED_MODULE_1__["default"]({
         counter: data.counter
-      }, this.option().kids()),
-      todolist: new _todolist__WEBPACK_IMPORTED_MODULE_2__["default"]([], this.option().kids())
+      }, this.kids()),
+      todolist: new _todolist__WEBPACK_IMPORTED_MODULE_2__["default"]([], this.kids())
     }).save();
   }
 
@@ -635,6 +621,17 @@ module.exports = require("acey");
 /***/ (function(module, exports) {
 
 module.exports = require("react");
+
+/***/ }),
+
+/***/ "react-acey":
+/*!*****************************!*\
+  !*** external "react-acey" ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("react-acey");
 
 /***/ })
 

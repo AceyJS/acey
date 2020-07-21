@@ -1,8 +1,7 @@
-import { useAcey, connect } from 'acey'
+import { useAcey, connect } from 'react-acey'
 import { Counter, Todolist, User } from '../src/models'
 
-const STORE_TYPE = 'cookie'
-
+const STORE_TYPE = 'store'
 
 class PCounter extends React.Component {
 
@@ -13,7 +12,7 @@ class PCounter extends React.Component {
 
 const PrintCounter = connect([User])(PCounter)
 
-const Home = (props) => {
+function Home(props){
   
   const todolists = [Todolist, User.todolist()]
   const counters = [Counter, User.counter()]
@@ -24,48 +23,41 @@ const Home = (props) => {
     User
   ])
 
-  const method = (list = [], method = '', then = '' | 'coookie' | 'localStore') => {
+  const method = (list = [], method = '', then = '' | 'store') => {
     list.forEach((v) => {
       const ret = v[method]()
       then && ret[then]()
     })
   }
   
-  const increment = (then = '' | 'coookie' | 'localStore') => {
+  const increment = (then = '' |  'localStore') => {
     method(counters, 'increment', then)
     const list = []
     todolists.map((l) => l.map((t) => list.push(t.counter())))
     method(list, 'increment', then)
   }
-  const decrement = (then = '' | 'coookie' | 'localStore') => {
+  const decrement = (then = '' |  'localStore') => {
     method(counters, 'decrement', then)
     const list = []
     todolists.map((l) => l.map((t) => list.push(t.counter())))
     method(list, 'decrement', then)
   }
-  const addTodo = (then = '' | 'coookie' | 'localStore') => method(todolists, 'add', then)
-  const deleteFirst = (then = '' | 'coookie' | 'localStore') => method(todolists, 'deleteFirst', then)
-  const deleteLast = (then = '' | 'coookie' | 'localStore') => method(todolists, 'deleteLast', then)
-  const toZZZLast = (then = '' | 'coookie' | 'localStore') => method(todolists, 'toZZZLast', then)
-
-  const clearAllCookie = () => {
-    Todolist.removeCookies()
-    Counter.removeCookies()
-    User.removeCookies()
-    location.reload();
-  }
+  const addTodo = (then = '' |  'localStore') => method(todolists, 'add', then)
+  const deleteFirst = (then = '' |  'localStore') => method(todolists, 'deleteFirst', then)
+  const deleteLast = (then = '' |  'localStore') => method(todolists, 'deleteLast', then)
+  const toZZZLast = (then = '' |  'localStore') => method(todolists, 'toZZZLast', then)
 
   const clearLocalStore = () => {
-    Todolist.removeLocalStore()
-    Counter.removeLocalStore()
-    User.removeLocalStore()
+    Todolist.localStore().remove()
+    Counter.localStore().remove()
+    User.localStore().remove()
     location.reload();
   }
+
 
   return (
     <div className="container">
       <h1>{props.id}</h1>
-      <button onClick={clearAllCookie}>clear cookies</button>
       <button onClick={clearLocalStore}>clear local stores</button>
       <br />
       <br />
@@ -103,10 +95,12 @@ const Home = (props) => {
   )
 }
 
-Home.getInitialProps = ({ query }) => {
+export async function getServerSideProps(context) {
   Counter.increment()
   return {
-    id: 10
+    props: {
+      id: 10
+    }, // will be passed to the page component as props
   }
 }
 

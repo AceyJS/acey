@@ -55,10 +55,10 @@ describe('Collection: methods', () => {
         expect(PostList.concat([post, postModel]).toString()).to.eq(new PostCollection([post, postModel, post], undefined).toString())
     })
 
-    it('defaultNodeState', () => {
-        const defaultState = new PostModel(undefined, undefined).defaultState
-        expect(JSON.stringify(defaultState)).to.eq(JSON.stringify(PostList.defaultNodeState()))
-    })
+    // it('defaultNodeState', () => {
+    //     const defaultState = new PostModel(undefined, undefined).defaultState
+    //     expect(JSON.stringify(defaultState)).to.eq(JSON.stringify(PostList.defaultNodeState()))
+    // })
 
     it('delete', () => {
         PostList.push(postModel)

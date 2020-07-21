@@ -30,8 +30,8 @@ export default class TransitionsManager {
     }
 
     public add = (m: Model) => {
-        const key = m.option().key()
-        this.get()[key] = this._newTransition(m.defaultState, key)
+        const key = m.super().option().key()
+        this.get()[key] = this._newTransition(m.to().plain(), key)
     }
 
     public forEach = (callback: (transition: Function, key: string) => any) => {

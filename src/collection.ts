@@ -13,7 +13,6 @@ export default class Collection extends Model  {
     
     constructor(list: any[] = [], models: [Constructor<Model>, Constructor<Collection>], ...props: any){
         super([], Object.assign({}, ...props, { nodeModel: models[0], collectionModel: models[1] }))
-        this._setDefaultState(list)
 
         //check if nodeModel is not a Collection
         if (this._newNodeModelInstance(undefined) instanceof Collection)
@@ -145,7 +144,7 @@ export default class Collection extends Model  {
 
     public reverse = () => {
         const state = this.state.slice().reverse()
-        return new (this._getCollectionModel())(state, this.option().kids())
+        return new (this._getCollectionModel())(state, this.super().option().kids())
     }
 
     public shift = (): IAction => {
@@ -155,7 +154,7 @@ export default class Collection extends Model  {
         return this.action(shifted)
     }
 
-    public slice = (...indexes: any) => new (this._getCollectionModel())(this.state.slice(...indexes), this.option().kids())
+    public slice = (...indexes: any) => new (this._getCollectionModel())(this.state.slice(...indexes), this.super().option().kids())
 
     public splice = (...args: any) => {
         const start = args[0]
@@ -203,14 +202,14 @@ export default class Collection extends Model  {
         return this.push(vCopy)
     }
 
-    private _getCollectionModel = (): any => this.option().collectionModel() as Collection
-    private _getNodeModel = (): any => this.option().nodeModel() as Model
+    private _getCollectionModel = (): any => this.super().option().collectionModel() as Collection
+    private _getNodeModel = (): any => this.super().option().nodeModel() as Model
 
     private _isCollectionModel = (value: any): boolean => value instanceof this._getCollectionModel()
     private _isNodeModel = (value: any): boolean => value instanceof this._getNodeModel()
 
-    private _newCollectionModelInstance = (defaultState: any) => new (this._getCollectionModel())(defaultState, this.option().kids())  
-    private _newNodeModelInstance = (defaultState: any) => new (this._getNodeModel())(defaultState, this.option().kids())  
+    private _newCollectionModelInstance = (defaultState: any) => new (this._getCollectionModel())(defaultState, this.super().option().kids())  
+    private _newNodeModelInstance = (defaultState: any) => new (this._getNodeModel())(defaultState, this.super().option().kids())  
 
 
 }

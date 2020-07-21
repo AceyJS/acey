@@ -4,7 +4,7 @@ import Todolist from './todolist'
 
 const DEFAULT_DATA = {
     first_name: '',
-    counter: 0
+    counter: 0,
 }
 
 class User extends Model {
@@ -12,8 +12,8 @@ class User extends Model {
     constructor(data = DEFAULT_DATA, options: any){
         super(data, options)
         this.setState({
-            counter: new Counter({counter: data.counter}, this.option().kids()),
-            todolist: new Todolist([], this.option().kids()), 
+            counter: new Counter({counter: data.counter}, this.kids()),
+            todolist: new Todolist([], this.kids()), 
         }).save()
     }
 

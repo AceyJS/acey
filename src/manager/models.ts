@@ -21,7 +21,7 @@ export default class ModelsManager {
     public reset = () => this._models = {}
     public node = (key: string) => this.get()[key]
 
-    public add = (m: Model) => this._models[m.option().key()] = m
+    public add = (m: Model) => this._models[m.super().option().key()] = m
     public exist = (key: string) => this.get()[key]
     public hydrate = (store: any) => this.forEach((m, key) => m.hydrate(store[key]).save())
 

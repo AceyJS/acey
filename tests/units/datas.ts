@@ -132,7 +132,7 @@ export class PostModel extends Model {
     constructor(initialState: any = DEFAULT_POST_STATE, options: any){
         super(initialState, options)
         this.setState({
-            device_origin: new DeviceModel(initialState.device_origin, this.option().kids())
+            device_origin: new DeviceModel(initialState.device_origin, this.kids())
         })
     }
 
@@ -164,8 +164,8 @@ export class UserModel extends Model {
     constructor(initialState: any = DEFAULT_USER_STATE, options: any){
         super(initialState, options)
         this.setState({
-            device: new DeviceModel(initialState.device, this.option().kids()),
-            post_list: new PostCollection(initialState.post_list, this.option().kids()),
+            device: new DeviceModel(initialState.device, this.kids()),
+            post_list: new PostCollection(initialState.post_list, this.kids()),
         })
     }
 
