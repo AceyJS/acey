@@ -29,13 +29,15 @@ export default class Collection extends Model  {
 
         assignWithStorage()
     }
+
+    public append = (values: any[]): Collection => this._newCollectionModelInstance(values).concat(this.state.slice())
     
-    public concat = (list: any[] = []) => this._newCollectionModelInstance(this.state.slice().concat(this.to().listClass(list)))
+    public concat = (...list: any): Collection => this._newCollectionModelInstance(this.state.slice().concat(this.to().listClass(...list)))
     
     //Return the number of element in the array
     public count = (): number => this.state.length
 
-    public defaultNodeState = () => this._newNodeModelInstance(undefined).defaultState
+    public copy = (): Collection => this._newCollectionModelInstance(this.state.slice())
 
     //delete a node if it exists in the list.
     public delete = (v: any): IAction => {
@@ -65,7 +67,7 @@ export default class Collection extends Model  {
     }
 
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
-    public find = (predicate: any) => {
+    public find = (predicate: any): Model | undefined => {
         const o = _.find(this.to().plain(), predicate)
         if (o){
             const index = this.findIndex(o)
@@ -78,7 +80,7 @@ export default class Collection extends Model  {
     public findIndex = (predicate: any): number => _.findIndex(this.to().plain(), predicate)
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
-    public filter = (predicate: any) => {
+    public filter = (predicate: any): Collection => {
         const list = _.filter(this.to().plain(), predicate)
         const ret = []
         for (let elem of list){
@@ -91,9 +93,9 @@ export default class Collection extends Model  {
     //return the index of the element passed in parameters if it exists in the list.
     public indexOf = (v: any): number => _.findIndex(this.to().plain(), this.newNode(v).to().plain())
 
-    public limit = (limit: number) => this.slice(0, limit)
+    public limit = (limit: number): Collection => this.slice(0, limit)
 
-    public map = (callback: (v: any, index: number) => any) => { 
+    public map = (callback: (v: any, index: number) => any): any[] => { 
         const array = this.state
         let ret = []
         for (let i = 0; i < array.length; i++){
@@ -106,12 +108,12 @@ export default class Collection extends Model  {
     public newCollection = (v: any): Collection => this._isCollectionModel(v) ? v : this._newCollectionModelInstance(v)
     public newNode = (v: any): Model => this._isNodeModel(v) ? v : this._newNodeModelInstance(v)
     
-    public nodeAt = (index: number) => this.state[index] && this._isNodeModel(this.state[index]) ? this.state[index] : undefined
+    public nodeAt = (index: number): Model => this.state[index] && this._isNodeModel(this.state[index]) ? this.state[index] : undefined
 
-    public offset = (offset: number) => this.slice(offset)
+    public offset = (offset: number): Collection => this.slice(offset)
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
-    public orderBy = (iteratees: any[] = [], orders: any[] = []): any[] => {
+    public orderBy = (iteratees: any[] = [], orders: any[] = []): Collection => {
         const list = _.orderBy(this.to().plain(), iteratees, orders)
         const ret = []
         for (let elem of list){
@@ -127,6 +129,9 @@ export default class Collection extends Model  {
         poped && this.setState(list)
         return this.action(poped)
     }
+
+    public prepend = (...list: any): Collection => this.concat(...list)
+    
     //add an element to the list
     public push = (v: any): IAction => {
         const list = this.state.slice()
@@ -142,9 +147,9 @@ export default class Collection extends Model  {
         return initialAccumulator
     }
 
-    public reverse = () => {
+    public reverse = (): Collection => {
         const state = this.state.slice().reverse()
-        return new (this._getCollectionModel())(state, this.super().option().kids())
+        return this._newCollectionModelInstance(state)
     }
 
     public shift = (): IAction => {
@@ -154,9 +159,9 @@ export default class Collection extends Model  {
         return this.action(shifted)
     }
 
-    public slice = (...indexes: any) => new (this._getCollectionModel())(this.state.slice(...indexes), this.super().option().kids())
+    public slice = (...indexes: any): Collection => this._newCollectionModelInstance(this.state.slice(...indexes))
 
-    public splice = (...args: any) => {
+    public splice = (...args: any): IAction => {
         const start = args[0]
         const deleteCount = args[1]
         const items = args.slice(2, args.length)
@@ -191,15 +196,22 @@ export default class Collection extends Model  {
     }
 
     // Update the element at index or post it.
-    public update = (v: any, index: number): IAction => {
+    public updateAt = (v: any, index: number): IAction => {
         const vCopy = this.newNode(v)
         const list = this.state.slice()
         if (list[index]){
             list[index] = vCopy
-            this.setState(list)
-            return this.action(vCopy)
+            return this.setState(list)
         }
         return this.push(vCopy)
+    }
+
+    // Update the element at index or post it.
+    public updateWhere = (predicate: any, toSet: Object) => {
+        let count = 0;
+        for (let m of this.state)
+            _.find([m.to().plain()], predicate) && m.setState(toSet) && count++
+        return this.action(count)
     }
 
     private _getCollectionModel = (): any => this.super().option().collectionModel() as Collection
@@ -208,8 +220,8 @@ export default class Collection extends Model  {
     private _isCollectionModel = (value: any): boolean => value instanceof this._getCollectionModel()
     private _isNodeModel = (value: any): boolean => value instanceof this._getNodeModel()
 
-    private _newCollectionModelInstance = (defaultState: any) => new (this._getCollectionModel())(defaultState, this.super().option().kids())  
-    private _newNodeModelInstance = (defaultState: any) => new (this._getNodeModel())(defaultState, this.super().option().kids())  
+    private _newCollectionModelInstance = (defaultState: any) => new (this._getCollectionModel())(defaultState, this.kids())
+    private _newNodeModelInstance = (defaultState: any) => new (this._getNodeModel())(defaultState, this.kids())  
 
 
 }

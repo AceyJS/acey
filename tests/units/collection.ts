@@ -40,11 +40,11 @@ describe('Collection: methods', () => {
     it('push', () => {
         PostList.push(post)
         expect(PostList.count()).to.eq(1)  
-        expect(PostList.state[0].toString()).to.eq(postModel.toString())  
+        expect(PostList.state[0].to().string()).to.eq(postModel.to().string())  
 
         PostList.hydrate([])
         PostList.push(postModel)
-        expect(PostList.state[0].toString()).to.eq(postModel.toString())  
+        expect(PostList.state[0].to().string()).to.eq(postModel.to().string())  
     })
 
     it('count', () => {
@@ -52,13 +52,8 @@ describe('Collection: methods', () => {
     })
 
     it('concat', () => {
-        expect(PostList.concat([post, postModel]).toString()).to.eq(new PostCollection([post, postModel, post], undefined).toString())
+        expect(PostList.concat([post, postModel]).to().string()).to.eq(new PostCollection([post, postModel, post], undefined).to().string())
     })
-
-    // it('defaultNodeState', () => {
-    //     const defaultState = new PostModel(undefined, undefined).defaultState
-    //     expect(JSON.stringify(defaultState)).to.eq(JSON.stringify(PostList.defaultNodeState()))
-    // })
 
     it('delete', () => {
         PostList.push(postModel)
@@ -88,7 +83,7 @@ describe('Collection: methods', () => {
 
     it('find', () => {
         PostList.push(postModel)
-        expect(PostList.find({'id': postModel.ID()}).toString()).to.eq(postModel.toString())
+        expect((PostList.find({'id': postModel.ID()}) as PostModel).to().string()).to.eq(postModel.to().string())
     })
 
     it('findIndex', () => {
@@ -117,26 +112,26 @@ describe('Collection: methods', () => {
         PostList.map((node: PostModel, index: number) => {
             expect(index).to.be.gt(prevIndex)
             prevIndex = index
-            expect(PostList.nodeAt(index).toString()).to.eq(node.toString())
+            expect(PostList.nodeAt(index).to().string()).to.eq(node.to().string())
         })
     })
 
     it('newCollection', () => {
         const a = PostList.newCollection(PostList)
         const b = PostList.newCollection(PostList.to().plain())
-        expect(a.toString()).to.eq(b.toString())
+        expect(a.to().string()).to.eq(b.to().string())
     })
 
     it('newNode', () => {
         const a = PostList.newNode(PostList.state[0])
         const b = PostList.newNode(PostList.state[0].to().plain())
-        expect(a.toString()).to.eq(b.toString())
+        expect(a.to().string()).to.eq(b.to().string())
     })
 
     it('nodeAt', () => {
         const a = PostList.nodeAt(2)
         const b = PostList.state[2]
-        expect(a.toString()).to.eq(b.toString())
+        expect(a.to().string()).to.eq(b.to().string())
     })
 
     it('offset', () => {
@@ -160,7 +155,7 @@ describe('Collection: methods', () => {
     it('pop', () => {
         PostList.pop()
         expect(PostList.count()).to.eq(4)
-        expect(PostList.nodeAt(PostList.count() - 1).ID()).to.eq('9143289')
+        expect((PostList.nodeAt(PostList.count() - 1) as PostModel).ID()).to.eq('9143289')
     })
 
     it('reduce', () => {
@@ -176,8 +171,8 @@ describe('Collection: methods', () => {
         const newHead = newList.nodeAt(0)
         const newTail = newList.nodeAt(newList.count() -1)
 
-        expect(head.toString()).to.eq(newTail.toString())
-        expect(newHead.toString()).to.eq(tail.toString())
+        expect(head.to().string()).to.eq(newTail.to().string())
+        expect(newHead.to().string()).to.eq(tail.to().string())
     })
 
     it('shift', () => {
@@ -185,7 +180,7 @@ describe('Collection: methods', () => {
         PostList.shift()
         PostList.shift()
         PostList.shift()
-        expect(PostList.nodeAt(0).toString()).to.eq(last.toString())
+        expect(PostList.nodeAt(0).to().string()).to.eq(last.to().string())
     })
 
     it('slice', () => {
@@ -210,19 +205,51 @@ describe('Collection: methods', () => {
         PostList.splice(4)
         expect(PostList.count()).to.eq(4)
         PostList.splice(0, -1, Object.assign({}, post, {id: '57849', content: 'gij43g34', random: 342}), Object.assign({}, post, {id: '13912111c', content: 'fewnew few fwefw', random: 12}))
-        expect(PostList.nodeAt(1).ID()).to.eq('13912111c')
+        expect((PostList.nodeAt(1) as PostModel).ID()).to.eq('13912111c')
         expect(PostList.count()).to.eq(6)
         PostList.splice(2, 3)
         expect(PostList.count()).to.eq(3)
     })
 
-    it('update', () => {
-        PostList.update(Object.assign({}, post, {id: '57849', content: 'gij43g34', random: 342}), 10)
+    it('updateAt', () => {
+        PostList.updateAt(Object.assign({}, post, {id: '57849', content: 'gij43g34', random: 342}), 10)
         expect(PostList.count()).to.eq(4)
-        expect(PostList.nodeAt(3).ID()).to.eq('57849')
+        expect((PostList.nodeAt(3) as PostModel).ID()).to.eq('57849')
         const node2 = new PostModel(PostList.nodeAt(2).to().plain(), undefined)
         node2.setState({'id': 'HELLO_GUYS'})
-        PostList.update(node2, 2)
-        expect(PostList.nodeAt(2).ID()).to.eq('HELLO_GUYS')
+        PostList.updateAt(node2, 2)
+        expect((PostList.nodeAt(2) as PostModel).ID()).to.eq('HELLO_GUYS')
+    })
+
+    it('updateWhere', () => {
+        expect(PostList.filter({'id': 'HELLO_GUYS'}).count()).to.eq(1)
+        expect(PostList.updateWhere({'id': 'HELLO_GUYS'}, {'id': 'HELLO_GIRLS'}).value).to.eq(1)
+        expect(PostList.filter({'id': 'HELLO_GIRLS'}).count()).to.eq(1)
+    })
+
+    it('copy', () => {
+        expect(PostList.copy().is().equal(PostList))
+    })
+
+    it('append', () => {
+        let list = PostList.append([PostList.nodeAt(0).to().plain()])
+        expect(list.count()).to.eq(5)
+        
+        expect((list.nodeAt(0) as PostModel).to().string()).to.eq((list.nodeAt(1) as PostModel).to().string())
+        const newList = list.append([list.nodeAt(list.count() - 1), list.nodeAt(list.count() - 2)])
+        expect(newList.count()).to.eq(7)
+        expect(newList.nodeAt(newList.count() - 1).is().equal(newList.count() - 3))
+        expect(newList.nodeAt(newList.count() - 2).is().equal(newList.count() - 4))
+    })
+
+    it('prepend', () => {
+        let list = PostList.prepend([PostList.nodeAt(0).to().plain()])
+        expect(list.count()).to.eq(5)
+        expect(list.nodeAt(0).is().equal(list.nodeAt(1)))
+        // expect((list.nodeAt(0) as PostModel).to().string()).to.eq((list.nodeAt(1) as PostModel).to().string())
+        // const newList = list.append([list.nodeAt(list.count() - 1), list.nodeAt(list.count() - 2)])
+        // expect(newList.count()).to.eq(7)
+        // expect(newList.nodeAt(newList.count() - 1).is().equal(newList.count() - 3))
+        // expect(newList.nodeAt(newList.count() - 2).is().equal(newList.count() - 4))
     })
 })

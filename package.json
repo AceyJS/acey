@@ -1,6 +1,6 @@
 {
   "name": "acey",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,14 +9,15 @@
     "node_modules"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "NODE_ENV=production rollup -c",
     "clean": "rm -rf dist",
+    "cleanf": "yarn clean && rm -rf node_modules",
     "test": "mocha -r ts-node/register tests/units/index.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lodash": "^4.14.150"
+    "lodash": "^4.14.15"
   },
   "peerDependencies": {},
   "devDependencies": {

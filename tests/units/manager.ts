@@ -140,11 +140,11 @@ const main = async () => {
             expect(node.action().store).to.equal(PostList.kids().store)
 
             expect(node.action().save).to.equal(node2.action().save)
-            expect(node.action().cookie).to.equal(node2.action().cookie)
+            // expect(node.action().cookie).to.equal(node2.action().cookie)
             expect(node.action().store).to.equal(node2.action().store)
 
             expect(node.action().save).to.equal(node2.kids().save)
-            expect(node.action().cookie).to.equal(node2.kids().cookie)
+            // expect(node.action().cookie).to.equal(node2.kids().cookie)
             expect(node.action().store).to.equal(node2.kids().store)
         })
     })
@@ -208,7 +208,7 @@ const main = async () => {
             PostList.splice(PostList.count() - 1, 1) //12
             PostList.push(post2) //13
             expect(i).to.eq(13)
-            PostList.update(post, PostList.findIndex(post2)) //14
+            PostList.updateAt(post, PostList.findIndex(post2)) //14
             expect(i).to.eq(14)
             const head = PostList.nodeAt(0)
             head.setState({content: 'Miky :)'}) //15

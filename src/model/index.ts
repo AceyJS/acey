@@ -20,8 +20,6 @@ export interface IAction {
     value: any
 }
 
-
-
 export default class Model {
 
     private _prevStateStore: any = null
@@ -183,7 +181,7 @@ export default class Model {
         const listClass = (elem: any[] = []): Model[] => {
             const nodeModel = this.super().option().nodeModel()
             if (!this.is().collection() || nodeModel == null)
-                throw new Error("toListClass can only be called from a Collection")
+                throw new Error("listClass can only be called from a Collection")
     
             let ret: Model[] = []
             for (let i = 0; i < elem.length; i++){
