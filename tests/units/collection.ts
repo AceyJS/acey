@@ -243,13 +243,35 @@ describe('Collection: methods', () => {
     })
 
     it('prepend', () => {
+        expect(PostList.nodeAt(0).is().equal(PostList.nodeAt(1))).to.eq(false)
         let list = PostList.prepend([PostList.nodeAt(0).to().plain()])
         expect(list.count()).to.eq(5)
         expect(list.nodeAt(0).is().equal(list.nodeAt(1)))
-        // expect((list.nodeAt(0) as PostModel).to().string()).to.eq((list.nodeAt(1) as PostModel).to().string())
-        // const newList = list.append([list.nodeAt(list.count() - 1), list.nodeAt(list.count() - 2)])
-        // expect(newList.count()).to.eq(7)
-        // expect(newList.nodeAt(newList.count() - 1).is().equal(newList.count() - 3))
-        // expect(newList.nodeAt(newList.count() - 2).is().equal(newList.count() - 4))
+    })
+
+    it('chunk', () => {
+        const list = PostList.chunk(2)
+        expect(list.length).to.eq(2)
+        expect((list[0] as PostCollection).nodeAt(1).is().equal(PostList.nodeAt(1)))
+        expect((list[1] as PostCollection).nodeAt(1).is().equal(PostList.nodeAt(3)))
+        expect(list[0].count()).to.equal(2)
+        expect(list[1].count()).to.equal(2)
+    })
+
+    it('nth', () => {
+        PostList.nth(-1).is().equal(PostList.nodeAt(3))
+        PostList.nth(0).is().equal(PostList.nodeAt(0))
+        PostList.nth(-2).is().equal(PostList.nodeAt(2))
+        PostList.nth(-3).is().equal(PostList.nodeAt(1))
+    })
+
+    it('uniq', () => {
+        expect(PostList.count()).to.eq(4)
+        expect(PostList.uniq().count()).to.eq(3)
+    })
+
+    it('uniqBy', () => {
+        expect(PostList.uniqBy((o: any) => o.device_origin.n_connexion).count()).to.eq(1)
+        expect(PostList.uniqBy('id').count()).to.eq(3)
     })
 })

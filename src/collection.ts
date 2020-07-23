@@ -32,6 +32,14 @@ export default class Collection extends Model  {
 
     public append = (values: any[]): Collection => this._newCollectionModelInstance(values).concat(this.state.slice())
     
+    public chunk = (nChunk: number): Collection[] => {
+        const list: any[] = _.chunk(this.state, nChunk)
+        for (let i = 0; i < list.length; i++){
+            list[i] = this._newCollectionModelInstance(list[i]) as Collection
+        }
+        return list
+    }
+
     public concat = (...list: any): Collection => this._newCollectionModelInstance(this.state.slice().concat(this.to().listClass(...list)))
     
     //Return the number of element in the array
@@ -109,6 +117,8 @@ export default class Collection extends Model  {
     public newNode = (v: any): Model => this._isNodeModel(v) ? v : this._newNodeModelInstance(v)
     
     public nodeAt = (index: number): Model => this.state[index] && this._isNodeModel(this.state[index]) ? this.state[index] : undefined
+
+    public nth = (index: number): Model => _.nth(this.state, index) as Model
 
     public offset = (offset: number): Collection => this.slice(offset)
 
@@ -213,6 +223,17 @@ export default class Collection extends Model  {
             _.find([m.to().plain()], predicate) && m.setState(toSet) && count++
         return this.action(count)
     }
+
+    public uniq = (): Collection => {
+        let ret: any[] = []
+        for (let elem of this.state){
+            const elemJSON = elem.to().plain()
+            !_.find(ret, elemJSON) && ret.push(elemJSON)
+        }
+        return this._newCollectionModelInstance(ret)
+    }
+
+    public uniqBy = (predicate: any): Collection => this._newCollectionModelInstance(_.uniqBy(this.to().plain(), predicate))
 
     private _getCollectionModel = (): any => this.super().option().collectionModel() as Collection
     private _getNodeModel = (): any => this.super().option().nodeModel() as Model
