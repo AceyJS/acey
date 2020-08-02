@@ -8,10 +8,10 @@
 
 <br />
 
-# Dev Experience oriented State Manager for React. 🛋️
+# State Manager built with Lodash for Javascript Apps. ⚡
 
-#### In one sentence ?
-> **Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a one and same place. 🏛️⚡**
+#### What super power it gives me ?
+> **To Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a one and same place. 🏛️⚡**
 
 <br />
 
