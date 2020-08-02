@@ -1,7 +1,7 @@
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="acey" src="https://i.postimg.cc/TYtnLDh2/acey.jpg" width="100%">
+    <img alt="acey" src="https://siasky.net/jACsWS_RnAZq-tZ5Uj4bz9AjVIfDVcxLcb3kYXhkNKAJdg" width="100%">
   </a>
 + Control. | - Code. | + Scalability. | - Debugging. | + Productivity.
 </p>
