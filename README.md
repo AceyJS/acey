@@ -202,7 +202,7 @@ initServer().then((server) => {
 <br />
 
 
-### 3. A microblogging app in 3 steps.
+### 3. A React-Native micro-blogging app in 3 steps.
 
 <img height="667px" src="https://siasky.net/_AQ7OxKUidVsPZ6Ems-6GMmSVNBT5XaJEKbkJTGuGirGDg" />
 
@@ -226,6 +226,7 @@ export class PostModel extends Model {
     createdAt = () => this.state.created_at
     formatedCreationDate = () => moment(this.createdAt()).format("MMM Do");
 
+    /* `save()` save the Model's state in the Acey Store */
     updateContent = (content) => this.setState({content}).save().store()
 }
 
@@ -234,6 +235,8 @@ export class PostCollection extends Collection {
         super(initialState, [PostModel, PostCollection], options)
     }
 
+    sortByCreationDate = () => this.orderBy(['created_at'], ['desc'])
+    
     create = (content) => {
         PostList.push({
           id: Math.random().toString(), 
@@ -241,8 +244,13 @@ export class PostCollection extends Collection {
           created_at: new Date()
         }).save().store()
     }
-
-    sortByCreationDate = () => this.orderBy(['created_at'], ['desc'])
+    
+    /* 
+      `store()` store the state in the Local Store
+      
+      (i) Acey auto-sync the local store's data with 
+          their Model/Collection when the app reload.
+    */
 }
 ```
 
