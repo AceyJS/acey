@@ -8,7 +8,7 @@
 
 <br />
 
-# State Manager built with Lodash for Javascript Apps. ⚡
+# OOP State Manager built with Lodash. ⚡
 
 #### What super power it gives me ?
 > **To Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a one and same place. 🔌**
@@ -17,12 +17,12 @@
 > **Yes, Acey works smoothly with React environment, its dev experience is the logical evolution of Redux.<br />On Acey there is:<br />- No action types. ✅<br />- No reducers. ✅<br />- No selectors. ✅<br />- No context. ✅<br />AND you can trigger your actions from wherever you want without any binding. 💥<br />Nice no ? 😉**
 
 #### Seems great! 🤑 And I saw it works as well in NodeJS, how?
-> **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON database 🗄️. When your program run, all your DB is pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚). So it works great ONLY for embedded systems, prototypes or any other program that is plan to contain a DB with less than 1.2GB of data.**
+> **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON database 🗄️.<br />When your program run, all your DB is pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚).<br />So it works amazing ONLY for embedded systems, prototypes, MVP, or any other program that is plan to contain a DB with less than 1.2GB of data. 💨**
 
 
 <br />
 
-## Quick implementation - 2 steps
+## Quick implementation - A React Counter in 2 steps
 
 <img src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
 
@@ -37,13 +37,14 @@ class CounterModel extends Model {
   }
   
   get = () => this.state.counter
+  
   increment = () => this.setState({counter: this.get() + 1}).save()
   decrement = () => this.setState({counter: this.get() - 1}).save()
   
-  /* `save()` re-render the components bound with the Model (if a change occured) */
+  /* `save()` save the Model's state in the Acey Store */
 }
 
-/* A `connected` Model enable the feature `save` that re-render the components they are bound with */
+/* A `connected` Model has its state connected with the Acey store */
 export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 ```
 
@@ -52,7 +53,7 @@ export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 **2/2 - Component** | *`./app.tsx`* 
 ```jsx
 import React from 'react'
-import { useAcey } from 'acey'
+import { useAcey } from 'react-acey'
 import Counter from './counter-model'
 
 const App = () => {
