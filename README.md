@@ -147,6 +147,35 @@ Refer to the doc ⬇️
 
 <br />
 
+### NodeJS
+
+After all your collections have been instanced:
+<br />
+1. bind the Acey Store Engine for Node (`acey-node-store` package)
+2. And set the config as done.
+
+```js
+import NodeStorage from 'acey-node-store'
+import { config } from 'acey'
+import MyCollection1 from './my-collection-1'
+import MyCollection2 from './my-collection-2'
+...
+
+const myCollect1 = new MyCollection1([], {connected: true, key: 'collection-1'})
+const myCollect2 = new MyCollection2([], {connected: true, key: 'collection-2'})
+...
+
+config.setStoreEngine(NodeStorage)
+config.done()
+```
+
+*make sure you already installed `acey-node-store`*
+```
+yarn add acey-node-store
+```
+
+<br />
+
 <br />
 
 
