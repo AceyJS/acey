@@ -13,11 +13,27 @@
 #### What super power it gives me ?
 > **To Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a one and same place. 🔌**
 
+<br />
+
+<p align="center">
+  <a>
+    <img src="https://siasky.net/FADRz00WBZi1aOgtoycI6mgLVSOZTbWEDD6ZUSoj7P20eQ" width="100%">
+  </a>
+</p>
+
 #### I work on React {Native}, can I use it ?
 > **Yes, Acey works smoothly with React environment, its dev experience is the logical evolution of Redux.<br />On Acey there is:<br />- No action types. ✅<br />- No reducers. ✅<br />- No selectors. ✅<br />- No context. ✅<br />AND you can trigger your actions from wherever you want without any binding. 💥<br />Nice no ? 😉**
 
+<br />
+
+<p align="center">
+  <a>
+    <img src="https://siasky.net/bABDwDjCoepBX2CMpLWRT05SF9iO2B2PrCft2ENf-ClTew" width="100%">
+  </a>
+</p>
+
 #### Seems great! 🤑 And I saw it works as well in NodeJS, how?
-> **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON database 🗄️.<br />When your program run, all your DB is pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚).<br />So it works amazing ONLY for embedded systems, prototypes, MVP, or any other program that is plan to contain a DB with less than 1.2GB of data. 💨**
+> **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚).<br /><br />So yeah, it works amazing for embedded systems, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
 
 
 <br />
