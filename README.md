@@ -288,33 +288,6 @@ yarn add acey-node-store
 
 ## Examples
 
-<details><summary>Connect Model to Class Component</summary>
-
-<br />
-  
-**Counter Component** | *`./counter.js`*
-```js
-import React from 'react'
-import { connect } from 'acey'
-import Counter from './counter-model'
-
-class CounterApp extends React.Component {
-  
-  render = () => {
-    return (
-      <>
-        <button onClick={Counter.decrement}>decrement</button>
-          <span>{Counter.get()}</span>
-        <button onClick={Counter.increment}>increment</button>
-      </>
-    )
-  }
-}
-
-export default connect([ Counter ])(CounterApp)
-```
-</details>
-
 <details><summary>Nesting Models in Model</summary>
 
 <br />
