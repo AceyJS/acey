@@ -22,7 +22,7 @@
 </p>
 
 #### I work on React {Native}, can I use it ?
-> **Yes, Acey works smoothly with React environment, its dev experience is the logical evolution of Redux.<br />On Acey there is:<br />- No action types. ✅<br />- No reducers. ✅<br />- No selectors. ✅<br />- No context. ✅<br />AND you can trigger your actions from wherever you want without any binding. 💥<br />Nice no ? 😉**
+> **Yes, Acey works smoothly with React environment, its dev experience is the logical evolution of Redux.<br />On Acey there is:<br />- No action types. ✅<br />- No reducers. ✅<br />- No selectors. ✅<br />- No context. ✅<br />AND you can trigger your actions from wherever you want without any binding. 💥<br />Nice hmm? 😉**
 
 <br />
 
