@@ -38,12 +38,20 @@
 
 <br />
 
-# Quick implementations
+<br />
 
-## 1. A React Counter in 2 steps
+<br />
+
+
+## Quick implementations
+
+### 1. A React Counter in 2 steps
 
 <img src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
 
+<details><summary>See code</summary>
+  <br />
+ 
 **1/2 - State** | *`./counter-model.ts`* 
 ```ts
 import { Model } from 'acey'
@@ -90,18 +98,23 @@ const App = () => {
 
 export default App;
 ```
-
+ 
 <p align="right" font-style="bold">
   <a target="_blank" href="https://github.com/Fantasim/acey/blob/master/README.md#a-few-examples">More examples</a>
 </p>
 
+</details>
+
+
 <br />
 
 
-## 2. A RESTful NodeJS API.
+### 2. A RESTful NodeJS API in 2 steps.
 
 <img src="https://siasky.net/_AQX4h4T-QWhT3lqM7gcPmuzPKm0tyhZk_zvEF9PBLdYiQ" />
 
+
+<details><summary>See code</summary>
 <br />
 
 **1/2 - State** | *`./todos.ts`* 
@@ -184,6 +197,9 @@ initServer().then((server) => {
     })
 })
 ```
+</details>
+
+<br />
 
 # Get Started
 ## Usage
@@ -270,7 +286,7 @@ yarn add acey-node-store
 <br />
 
 
-## A few examples
+## Examples
 
 <details><summary>Connect Model to Class Component</summary>
 
