@@ -11,7 +11,14 @@
 # State Manager built with Lodash for Javascript Apps. ⚡
 
 #### What super power it gives me ?
-> **To Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a one and same place. 🏛️⚡**
+> **To Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a one and same place. 🔌**
+
+#### I work on React {Native}, can I use it ?
+> **Yes, Acey works smoothly with React environment, its dev experience is the logical evolution of Redux.<br />On Acey there is:<br />- No action types. ✅<br />- No reducers. ✅<br />- No selectors. ✅<br />- No context. ✅<br />AND you can trigger your actions from wherever you want without any binding. 💥<br />Nice no ? 😉**
+
+#### Seems great! 🤑 And I saw it works as well in NodeJS, how?
+> **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON database 🗄️. When your program run, all your DB is pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚). So it works great ONLY for embedded systems, prototypes or any other program that is plan to contain a DB with less than 1.2GB of data.**
+
 
 <br />
 
@@ -30,12 +37,10 @@ class CounterModel extends Model {
   }
   
   get = () => this.state.counter
-  increment = () => this.setState({counter: this.get() + 1}).save().cookie()
-  decrement = () => this.setState({counter: this.get() - 1}).save().cookie()
+  increment = () => this.setState({counter: this.get() + 1}).save()
+  decrement = () => this.setState({counter: this.get() - 1}).save()
   
-  /* 1) `save()` re-render the components bound with the Model (if a change occured) */
-  /* 2) `cookie()` store the Model's state into the cookies and automatically hydrate the
-  Model when the page is refreshed */
+  /* `save()` re-render the components bound with the Model (if a change occured) */
 }
 
 /* A `connected` Model enable the feature `save` that re-render the components they are bound with */
