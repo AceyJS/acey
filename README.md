@@ -52,7 +52,7 @@
 <details><summary>See code</summary>
   <br />
  
-**1/2 - State** | *`./counter-model.ts`* 
+**1/2 - State** | `./counter-model.ts`
 ```ts
 import { Model } from 'acey'
 
@@ -76,7 +76,7 @@ export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
 <br />
 
-**2/2 - Component** | *`./app.tsx`* 
+**2/2 - Component** | `./app.tsx`
 ```jsx
 import React from 'react'
 import { useAcey } from 'react-acey'
@@ -117,7 +117,7 @@ export default App;
 <details><summary>See code</summary>
 <br />
 
-**1/2 - State** | *`./todos.ts`* 
+**1/2 - State** | `./todos.ts`
 ```ts
 import { Model, Collection } from 'acey'
 import { v4 as uuid } from 'uuid'
@@ -150,7 +150,7 @@ export default new TodoCollection([], {connected: true, key: 'todolist'})
 
 <br />
 
-**2/2 - Server** | *`./index.ts`* 
+**2/2 - Server** | `./index.ts`
 ```ts
 import { config } from 'acey'
 import express from 'express' 
@@ -200,6 +200,232 @@ initServer().then((server) => {
 </details>
 
 <br />
+
+
+### 3. A microblogging app in 3 steps.
+
+<img height="667px" src="https://siasky.net/_AQ7OxKUidVsPZ6Ems-6GMmSVNBT5XaJEKbkJTGuGirGDg" />
+
+
+<details><summary>See code</summary>
+<br />
+
+**1/3 - State** | `./post.ts`
+```ts
+import { Model, Collection } from 'acey'
+import moment from 'moment'
+
+export class PostModel extends Model {
+
+    constructor(initialState = {}, options){
+        super(initialState, options)
+    }
+
+    ID = () => this.state.id
+    content = () => this.state.content
+    createdAt = () => this.state.created_at
+    formatedCreationDate = () => moment(this.createdAt()).format("MMM Do");
+
+    updateContent = (content) => this.setState({content}).save().store()
+}
+
+export class PostCollection extends Collection {
+    constructor(initialState = [], options){
+        super(initialState, [PostModel, PostCollection], options)
+    }
+
+    create = (content) => {
+        PostList.push({
+          id: Math.random().toString(), 
+          content, 
+          created_at: new Date()
+        }).save().store()
+    }
+
+    sortByCreationDate = () => this.orderBy(['created_at'], ['desc'])
+}
+```
+
+<br />
+
+**2/3 - Components**
+
+*Styles are not present to purposely make the code shorter and more readable.*
+
+`./components/add-post-input.js`
+
+```js
+import React, {useState} from 'react';
+import { 
+    View,
+    TextInput,
+    TouchableOpacity,
+    Text,
+    Dimensions
+ } from 'react-native';
+
+const AddPostInput = (props) => {
+
+    const { onSubmit } = props
+
+    const [text, setText] = useState('')
+
+    const onLocalSubmit = () => {
+        onSubmit(text)
+        setText('')
+    }
+
+    const renderSubmitTouchable = () => (
+        <SubmitTouchable onPress={onLocalSubmit}>
+            <SubmitText>CREATE</SubmitText>
+        </SubmitTouchable>
+    )
+
+    return (
+        <Container>
+            <Input
+                value={text}
+                onChangeText={(text) => setText(text)}
+                multiline
+            />
+            {renderSubmitTouchable()}
+        </Container>        
+    )
+}
+
+export default AddPostInput
+```
+
+*Styles are not present to purposely make the code shorter and more readable.*
+
+`./components/post.js`
+
+```js
+import React, { useState } from 'react'
+import { 
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Dimensions
+} from 'react-native';
+
+const Post = (props) => {
+    const {
+        post,
+        onDelete
+    } = props
+
+    const [updateText, setUpdateText] = useState(post.content())
+    const [isUpdating, setUpdatingStatus] = useState(false)
+
+    onSubmitUpdate = () => {
+        post.updateContent(updateText)
+        setUpdatingStatus(false)
+    }
+
+    const renderUpdateContainer = () => (
+        <UpdateContainer>
+            <UpdateInput multiline={true} value={updateText} onChangeText={(text) => setUpdateText(text)} />
+            <UpdateSubmitTouchable onPress={onSubmitUpdate}>
+                <UpdateSubmitText>
+                    UPDATE
+                </UpdateSubmitText>
+            </UpdateSubmitTouchable>
+        </UpdateContainer>
+    )
+
+    const renderAction = (title = '', color = '', onPress = null) => (
+        <ActionTouchable onPress={onPress} color={color}>
+            <ActionText color={color}>{title}</ActionText>
+        </ActionTouchable>
+    )
+
+    const renderActions = () => (
+        <ActionsWrapper>
+            {renderAction('Update', 'blue', () => setUpdatingStatus(true))}
+            {renderAction('Delete', 'red', () => onDelete(post))}
+        </ActionsWrapper>
+    )
+
+    return (
+        <Container>
+            {!isUpdating && <View>
+                <TopWrapper>
+                    <DateText>{post.formatedCreationDate()}</DateText>
+                </TopWrapper>
+                <ContentText>{post.content()}</ContentText>
+                {renderActions()}
+            </View>}
+            {isUpdating && renderUpdateContainer()}
+        </Container>
+    )
+
+}
+
+export default Post
+```
+
+<br />
+
+**3/3 - Main**
+
+*Styles are not present to purposely make the code shorter and more readable.*
+
+`./App.js`
+
+```js
+import React from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+} from 'react-native';
+
+import { config } from 'acey'
+import { useAcey } from 'react-acey'
+import { PostCollection } from './posts'
+
+import Post from './src/components/post'
+import AddPostInput from './src/components/add-post-input'
+
+const PostList = new PostCollection([], {connected: true, key: 'postlist'})
+config.setStoreEngine(AsyncStorage)
+config.done()
+
+const App = () => {
+
+  useAcey([ PostList ])
+
+  const onSubmit = (content) => PostList.create(content)
+  const onDelete = (post) => PostList.delete(post).save().store()
+
+  return (
+    <>
+      <ScrollView>
+        <AddPostInput onSubmit={onSubmit} />
+        {PostList.sortByCreationDate().map((post, index) => {
+          return (
+            <View key={index}>
+              <Post post={post} onDelete={onDelete} />
+            </View>
+          )
+        })}
+      </ScrollView>
+    </>
+  );
+};
+
+export default App;
+```
+
+
+
+</details>
+
+<br />
+
 
 # Get Started
 ## Usage
