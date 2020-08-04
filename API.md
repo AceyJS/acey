@@ -251,6 +251,10 @@ export default Todolist
     | **prevState** |`Object` | Previous state object |
     | **prevStateStore** |`Object` | Previous Model's store object |
     
+ 
+ <br />
+ 
+ 
 - **ITO**:
 
     | Prototype | Return value | Description |
