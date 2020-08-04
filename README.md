@@ -461,7 +461,10 @@ ReactDOM.render(
 );
 ```
 
-Use **[react-acey](https://github.com/arysociety/react-acey)** to **bind** your **React components** with your **Models and Collections**.
+*make sure to install **[react-acey](https://github.com/arysociety/react-acey)** to **bind** your **React components** with your **Models and Collections**.*
+```sh
+yarn add react-acey
+```
 
 <br />
 
@@ -475,8 +478,9 @@ import { config } from 'acey'
 config.setStoreEngine(AsyncStorage)
 config.done()
 ```
-*make sure you already installed and linked async-storage.*
-```
+
+*make sure to install and link **[async-storage](https://github.com/react-native-community/async-storage)** .*
+```sh
 yarn add @react-native-community/async-storage
 ```
 
@@ -509,6 +513,12 @@ const myCollect2 = new MyCollection2([], {connected: true, key: 'collection-2'})
 config.setStoreEngine(NodeStorage)
 config.done()
 ```
+
+*make sure to install **[acey-node-store](https://github.com/arysociety/acey-node-store)** .*
+```sh
+yarn add acey-node-store
+```
+
 
 <br />
 
