@@ -4,7 +4,7 @@
 ### Table of contents
 * [Model](#model)
 * [Collection](#collection)
-* [General](#general)
+* [Interfaces](#interfaces)
 
 <br />
 
@@ -60,11 +60,11 @@ export default Todo
     | **hydrate**(state: Object) | `IAction` | fill the Model's state with the `Object` passed in parameter. |
     | **is**() |`IsManager` | return methods giving your information about the composition of the Model |
     | **kids**() | `IAction` | return the class actions (use to be passed as options in nested Models.) |
-    | **save**() |`IAction` | Save the Model's state to the Acey Store. |
+    | **save**() |`IAction` | Dispatch the Model's state to Model's store. |
     | **setState**(state: Object) |`IAction` | update the state by merging it with the `Object` parameter. |
     | **super**() | `ISuper` | return methods used by the acey system. |
-    | **store**() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
-    | **to**() | `To` | return methods enabling you to convert your Model's state into different data types |
+    | **store**() |`LocalStoreManager`| **(Only if `connected` option is set to `true`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
+    | **Ito**() | `To` | return methods enabling you to convert your Model's state into different data types |
     | **watch**() |`IWatchAction` | return a class enabling you to watch changes on the Model's state and store |
     
 <br />
@@ -127,11 +127,11 @@ export default Todolist
     | **hydrate**(state: Object) | `IAction` | fill the Collection's state with the `Array` passed in parameter. |
     | **is**() |`IsManager` | return methods giving your information about the composition of the Collection |
     | **kids**() | `IAction` | return the class actions (use to be passed as options in the instanciation of the Collection's Models.) |
-    | **save**() |`IAction` | Save the Collection's state to the Acey Store. |
+    | **save**() |`IAction` | Dispatch the Model's state to Model's store. |
     | **setState**(state: Array) |`IAction` | replace the state by the one passed in parameter. |
     | **super**() | `ISuper` | return methods used by the acey system. |
-    | **store**() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
-    | **to**() | `To` | return methods enabling you to convert your Collection's state into different data types |
+    | **store**() |`LocalStoreManager`| **(Only if `connected` option is set to `true`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
+    | **to**() | `ITo` | return methods enabling you to convert your Collection's state into different data types |
     | **watch**() |`IWatchAction` | return a class enabling you to watch changes on the Collection's state and store |
     | -- | -- | -- |
     | **append**(values: (Collection | Object)[]) |`Collection` | Returns a fresh Collection with the Array passed in parameter added at the end of the current Collection's state. |
@@ -170,16 +170,21 @@ export default Todolist
 
 <br />
 
-## General
+## Interfaces
 
-<br />
+<p align="center">
+  <a>
+    <img src="https://siasky.net/GACKFKVF4znkcrcpSl_oOMESCOPMKYm1qFqLCwTkmIGo1g" width="100%">
+  </a>
+</p>
+
 
 - **IOption (or Model's options)**: 
 
     | Name | Type | Default | Description |
     | -- | -- | -- | -- |
-    | connected | `bool` | false | If set to `true` the Model is connected to the Acey Store, it will also re-render your component connected with it on changes. |
-    | key | `string` | "" | Model's unique key, if `not set` Acey will set it automatically for you. |
+    | connected | `bool` | false | If set to `true` the Model is connected, so it has a Store. |
+    | key | `string` | "" | Model's unique key. (optional for non-connected Models |
     
 <br />
 
@@ -187,9 +192,8 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | cookie(expires = 365) | `IAction` | **(Only on ReactJS and NextJS if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to a string and store it in the cookies. |
-    | localStore(expires = 365) | `IAction` | **(Only on React-Native and ReactJS if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to a string and store it in the localStore. |
-    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to the store and re-render all the components connected with the Model. |
+    | store(expires = 365) | `IAction` | **(Only if `connected` option is set to `true`)**. Transform the current data of the model to a string and store it in the localStore. |
+    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to Model's store. |
     
 <br />
 
@@ -225,21 +229,8 @@ export default Todolist
     | key() | `string` | return the Model's key |
     | kids() | `Object` |  return the connected methods of the current Model (as options). You can then pass this object as options for any instanced Model/Collection inside a connected Model, to make them connected without separating them from each other. |
     
-    
 <br />
     
-- **CookieManager** *(only ReactJS and NextJS)*:
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | get() | `Object` | return the Model's plain state stored in the cookies |
-    | isActive() | `boolean` | return `true` if the cookies are enabled on the Model |
-    | pull() | `undefined` | get the Model's state stored in the cookies and set it has the current state of the Model |
-    | remove() | `undefined` | remove the Model's state stored in the cookies |
-    | set() | `IAction` | set the Model's current state to the cookies |
-    
-<br />
-
 - **LocalStoreManager** *(only ReactJS and React Native)*: 
 
     | Prototype | Return value | Description |
@@ -250,4 +241,23 @@ export default Todolist
     | remove() | `undefined` | remove the Model's state stored in the local store |
     | set() | `IAction` | set the Model's current state to the local store |
 
+<br />
+
+- **ISuper **:
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | option() | `IOptions` | Returns the Model's options |
+    | prevState |`Object` | Previous state object |
+    | prevStateStore |`Object` | Previous Model's store object |
+    
+- **ITO **:
+
+    | Prototype | Return value | Description |
+    | -- | -- | -- |
+    | listClass(elems: any[]) | `Model[]` | (**Only if Collection**) Returns a list of instanced Models with the list of objects passed in parameter |
+    | string() |`string` | Returns the state to a JSON string |
+    | plain() |`string` | Returns the state to a JS plain object/array |
+    
+    
 <br />
