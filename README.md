@@ -35,24 +35,44 @@
 #### Seems great! 🤑 And I saw it works as well in NodeJS, how?
 > **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚).<br /><br />So yeah, it works amazing for embedded systems, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
 
+<br />
+
+<br />
+
+<p align="center">
+  <a target="_blank" href="https://github.com/arysociety/acey/blob/master/API.md">
+    <img width="20%" src="https://siasky.net/EADIPI4TRMqOIkn4MQ2PvE6GrzboqEunw7ZzUn0jTKPe9Q"/>
+  </a>
+
+  <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+  
+  <a target="_blank" href="https://github.com/arysociety/acey/blob/master/API.md">
+    <img width="20%" src="https://siasky.net/GABp6XHzPEd9p1gEDE19hPXf8tFSTcsrHWv1r_p1GPdniQ"/>
+  </a>
+
+  <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+
+  <a target="_blank" href="https://github.com/arysociety/acey/blob/master/API.md">
+    <img width="20%" src="https://siasky.net/EAB20-ySXyRkMv48hQo9vSEig2dCit13_jt90teSUtQx2w"/>
+  </a>
+
+</p>
 
 <br />
 
 <br />
 
-<br />
 
+# Quick implementations
 
-## Quick implementations
+## 1. A React Counter
 
-### 1. A React Counter in 2 steps
-
-<img src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
+<img width="80%" src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
 
 <details><summary>See code</summary>
   <br />
  
-**1/2 - State** | `./counter-model.ts`
+**Step 1/2 - State** | `./counter-model.ts`
 ```ts
 import { Model } from 'acey'
 
@@ -76,7 +96,7 @@ export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
 <br />
 
-**2/2 - Component** | `./app.tsx`
+**Step 2/2 - Component** | `./app.tsx`
 ```jsx
 import React from 'react'
 import { useAcey } from 'react-acey'
@@ -98,26 +118,21 @@ const App = () => {
 
 export default App;
 ```
- 
-<p align="right" font-style="bold">
-  <a target="_blank" href="https://github.com/Fantasim/acey/blob/master/README.md#a-few-examples">More examples</a>
-</p>
-
 </details>
 
 
 <br />
 
 
-### 2. A RESTful NodeJS API in 2 steps.
+## 2. A RESTful NodeJS API
 
-<img src="https://siasky.net/_AQX4h4T-QWhT3lqM7gcPmuzPKm0tyhZk_zvEF9PBLdYiQ" />
+<img width="80%" src="https://siasky.net/_AQX4h4T-QWhT3lqM7gcPmuzPKm0tyhZk_zvEF9PBLdYiQ" />
 
 
 <details><summary>See code</summary>
 <br />
 
-**1/2 - State** | `./todos.ts`
+**Step 1/2 - State** | `./todos.ts`
 ```ts
 import { Model, Collection } from 'acey'
 import { v4 as uuid } from 'uuid'
@@ -150,7 +165,7 @@ export default new TodoCollection([], {connected: true, key: 'todolist'})
 
 <br />
 
-**2/2 - Server** | `./index.ts`
+**Step 2/2 - Server** | `./index.ts`
 ```ts
 import { config } from 'acey'
 import express from 'express' 
@@ -202,15 +217,15 @@ initServer().then((server) => {
 <br />
 
 
-### 3. A React-Native micro-blogging app in 3 steps.
+## 3. A React-Native micro-blogging app
 
-<img height="667px" src="https://siasky.net/_AQ7OxKUidVsPZ6Ems-6GMmSVNBT5XaJEKbkJTGuGirGDg" />
+<img height="550px" src="https://siasky.net/_AQ7OxKUidVsPZ6Ems-6GMmSVNBT5XaJEKbkJTGuGirGDg" />
 
 
 <details><summary>See code</summary>
 <br />
 
-**1/3 - State** | `./post.ts`
+**Step 1/3 - State** | `./post.ts`
 ```ts
 import { Model, Collection } from 'acey'
 import moment from 'moment'
@@ -256,7 +271,7 @@ export class PostCollection extends Collection {
 
 <br />
 
-**2/3 - Components**
+**Step 2/3 - Components**
 
 *Styles are not present to purposely make the code shorter and more readable.*
 
@@ -376,7 +391,7 @@ export default Post
 
 <br />
 
-**3/3 - Main**
+**Step 3/3 - Main**
 
 *Styles are not present to purposely make the code shorter and more readable.*
 
@@ -427,13 +442,9 @@ const App = () => {
 
 export default App;
 ```
-
-
-
 </details>
 
 <br />
-
 
 # Get Started
 ## Usage
