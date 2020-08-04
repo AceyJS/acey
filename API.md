@@ -192,8 +192,8 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | store(expires = 365) | `IAction` | **(Only if `connected` option is set to `true`)**. Transform the current data of the model to a string and store it in the localStore. |
-    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to Model's store. |
+    | **store**(expires = 365) | `IAction` | **(Only if `connected` option is set to `true`)**. Transform the current data of the model to a string and store it in the localStore. |
+    | **save**() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to Model's store. |
     
 <br />
 
@@ -201,9 +201,9 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | all(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state or store changes. Return a `SubscriberAction` class with a `stop` method. |
-    | state(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state changes. Return a `SubscriberAction` class with a `stop` method. |
-    | store(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's store changes. Return a `SubscriberAction` class with a `stop` method. |
+    | **all**(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state or store changes. Return a `SubscriberAction` class with a `stop` method. |
+    | **state**(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state changes. Return a `SubscriberAction` class with a `stop` method. |
+    | **store**(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's store changes. Return a `SubscriberAction` class with a `stop` method. |
     
  <br />
     
@@ -211,13 +211,13 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | collection() |`boolean` | return `true` if the Model is a collection |
-    | connected() |`boolean` | return `true` if the Model is connected to the store. |
-    | cookiesEnabled() |`boolean` | return `true` if the cookies are enabled with the Model |
-    | empty() |`boolean` | return `true` if the Model's state is empty |
-    | equal(m: Model) |`boolean` | return `true` if the Model's state is equal to the one passed in parameter. |
-    | keyGenerated() |`boolean` | return `true` if the Model's key has been automatically generated (if no key set when the model is connected (only on ReactJS) |
-    | localStoreEnabled() |`boolean` | return `true` if the localStore is enabled with the Model |
+    | **collection**() |`boolean` | return `true` if the Model is a collection |
+    | **connected**() |`boolean` | return `true` if the Model is connected to the store. |
+    | **cookiesEnabled**() |`boolean` | return `true` if the cookies are enabled with the Model |
+    | **empty**() |`boolean` | return `true` if the Model's state is empty |
+    | **equal**(m: Model) |`boolean` | return `true` if the Model's state is equal to the one passed in parameter. |
+    | **keyGenerated**() |`boolean` | return `true` if the Model's key has been automatically generated (if no key set when the model is connected (only on ReactJS) |
+    | **localStoreEnabled**() |`boolean` | return `true` if the localStore is enabled with the Model |
 
 <br />
 
@@ -225,9 +225,9 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | get() | `IOptions` | return the Model's option Object |
-    | key() | `string` | return the Model's key |
-    | kids() | `Object` |  return the connected methods of the current Model (as options). You can then pass this object as options for any instanced Model/Collection inside a connected Model, to make them connected without separating them from each other. |
+    | **get**() | `IOptions` | return the Model's option Object |
+    | **key**() | `string` | return the Model's key |
+    | **kids**() | `Object` |  return the connected methods of the current Model (as options). You can then pass this object as options for any instanced Model/Collection inside a connected Model, to make them connected without separating them from each other. |
     
 <br />
     
@@ -235,29 +235,29 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | get() | `Object` | return the Model's plain state stored in the local store |
-    | isActive() | `boolean` | return `true` if the local store are enabled on the Model |
-    | pull() | `undefined` | get the Model's state stored in the local store and set it has the current state of the Model |
-    | remove() | `undefined` | remove the Model's state stored in the local store |
-    | set() | `IAction` | set the Model's current state to the local store |
+    | **get**() | `Object` | return the Model's plain state stored in the local store |
+    | **isActive**() | `boolean` | return `true` if the local store are enabled on the Model |
+    | **pull**() | `undefined` | get the Model's state stored in the local store and set it has the current state of the Model |
+    | **remove**() | `undefined` | remove the Model's state stored in the local store |
+    | **set**() | `IAction` | set the Model's current state to the local store |
 
 <br />
 
-- **ISuper **:
+- **ISuper**:
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | option() | `IOptions` | Returns the Model's options |
-    | prevState |`Object` | Previous state object |
-    | prevStateStore |`Object` | Previous Model's store object |
+    | **option**() | `IOptions` | Returns the Model's options |
+    | **prevState** |`Object` | Previous state object |
+    | **prevStateStore** |`Object` | Previous Model's store object |
     
-- **ITO **:
+- **ITO**:
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | listClass(elems: any[]) | `Model[]` | (**Only if Collection**) Returns a list of instanced Models with the list of objects passed in parameter |
-    | string() |`string` | Returns the state to a JSON string |
-    | plain() |`string` | Returns the state to a JS plain object/array |
+    | **listClass**(elems: any[]) | `Model[]` | (**Only if Collection**) Returns a list of instanced Models with the list of objects passed in parameter |
+    | **string**() |`string` | Returns the state to a JSON string |
+    | **plain**() |`string` | Returns the state to a JS plain object/array |
     
     
 <br />
