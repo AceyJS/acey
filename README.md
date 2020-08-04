@@ -1,25 +1,58 @@
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="acey" src="https://i.postimg.cc/TYtnLDh2/acey.jpg" width="100%">
+    <img alt="acey" src="https://siasky.net/jACsWS_RnAZq-tZ5Uj4bz9AjVIfDVcxLcb3kYXhkNKAJdg" width="100%">
   </a>
 + Control. | - Code. | + Scalability. | - Debugging. | + Productivity.
 </p>
 
 <br />
 
-# Dev Experience oriented State Manager for React. 🛋️
+# OOP State Manager built with Lodash. ⚡
 
-#### In one sentence ?
-> **Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a one and same place. 🏛️⚡**
+#### What super power it gives me ?
+> **To Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a one and same place. 🔌**
 
 <br />
 
-## Quick implementation - 2 steps
+<p align="center">
+  <a>
+    <img src="https://siasky.net/FADRz00WBZi1aOgtoycI6mgLVSOZTbWEDD6ZUSoj7P20eQ" width="100%">
+  </a>
+</p>
+
+#### I work on React {Native}, can I use it ?
+> **Yes, Acey works smoothly with React environment, its dev experience is the logical evolution of Redux.<br />On Acey there is:<br />- No action types. ✅<br />- No reducers. ✅<br />- No selectors. ✅<br />- No context. ✅<br />AND you can trigger your actions from wherever you want without any binding. 💥<br />Nice hmm? 😉**
+
+<br />
+
+<p align="center">
+  <a>
+    <img src="https://siasky.net/bABDwDjCoepBX2CMpLWRT05SF9iO2B2PrCft2ENf-ClTew" width="100%">
+  </a>
+</p>
+
+#### Seems great! 🤑 And I saw it works as well in NodeJS, how?
+> **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚).<br /><br />So yeah, it works amazing for embedded systems, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
+
+
+<br />
+
+<br />
+
+<br />
+
+
+## Quick implementations
+
+### 1. A React Counter in 2 steps
 
 <img src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
 
-**1/2 - State** | *`./counter-model.ts`* 
+<details><summary>See code</summary>
+  <br />
+ 
+**1/2 - State** | `./counter-model.ts`
 ```ts
 import { Model } from 'acey'
 
@@ -30,24 +63,23 @@ class CounterModel extends Model {
   }
   
   get = () => this.state.counter
-  increment = () => this.setState({counter: this.get() + 1}).save().cookie()
-  decrement = () => this.setState({counter: this.get() - 1}).save().cookie()
   
-  /* 1) `save()` re-render the components bound with the Model (if a change occured) */
-  /* 2) `cookie()` store the Model's state into the cookies and automatically hydrate the
-  Model when the page is refreshed */
+  increment = () => this.setState({counter: this.get() + 1}).save()
+  decrement = () => this.setState({counter: this.get() - 1}).save()
+  
+  /* `save()` save the Model's state in the Acey Store */
 }
 
-/* A `connected` Model enable the feature `save` that re-render the components they are bound with */
+/* A `connected` Model has its state connected with the Acey store */
 export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 ```
 
 <br />
 
-**2/2 - Component** | *`./app.tsx`* 
+**2/2 - Component** | `./app.tsx`
 ```jsx
 import React from 'react'
-import { useAcey } from 'acey'
+import { useAcey } from 'react-acey'
 import Counter from './counter-model'
 
 const App = () => {
@@ -66,13 +98,344 @@ const App = () => {
 
 export default App;
 ```
-
+ 
 <p align="right" font-style="bold">
   <a target="_blank" href="https://github.com/Fantasim/acey/blob/master/README.md#a-few-examples">More examples</a>
 </p>
 
+</details>
+
+
 <br />
 
+
+### 2. A RESTful NodeJS API in 2 steps.
+
+<img src="https://siasky.net/_AQX4h4T-QWhT3lqM7gcPmuzPKm0tyhZk_zvEF9PBLdYiQ" />
+
+
+<details><summary>See code</summary>
+<br />
+
+**1/2 - State** | `./todos.ts`
+```ts
+import { Model, Collection } from 'acey'
+import { v4 as uuid } from 'uuid'
+
+export class TodoModel extends Model {
+    constructor(initialState: any = {}, options: any){
+        super(initialState, options)
+    }
+}
+
+export class TodoCollection extends Collection {
+    constructor(initialState: any, options: any){
+        super(initialState, [TodoModel, TodoCollection], options)
+    }
+
+    create = (content: string) => {
+        todos.push({
+            id: uuid(),
+            created_at: new Date(),
+            content
+        }).store()
+        return todos.last()
+    }
+
+    orderByLastCreation = () => this.orderBy(['created_at'], ['desc'])
+}
+
+export default new TodoCollection([], {connected: true, key: 'todolist'})
+```
+
+<br />
+
+**2/2 - Server** | `./index.ts`
+```ts
+import { config } from 'acey'
+import express from 'express' 
+import morgan from 'morgan' //request logger
+import LocalStorage from 'acey-node-store'
+import todos from './todos'
+
+const initServer = async () => {
+    config.setStoreEngine(new LocalStorage('./db'))
+    await config.done()
+
+    const server = express()
+    server.use(express.json());
+    server.use(morgan('tiny'))
+    return server
+}
+
+initServer().then((server) => {
+    console.log('Server started ')
+
+    server.post('/', (req: express.Request, res: express.Response) => {
+        const t = todos.create(req.body.content)
+        res.json(t.to().plain())
+    })
+    
+    server.delete('/:id', (req: express.Request, res: express.Response) => {
+        todos.deleteBy({'id': req.params.id}).store()
+        res.sendStatus(200)
+    })
+    
+    server.get('/', (req: express.Request, res: express.Response) => {
+        res.json(todos.orderByLastCreation().to().plain())
+    })
+    
+    server.get('/:id', (req: express.Request, res: express.Response) => {
+        const t = todos.find({id: req.params.id})
+        t ? res.json(t.to().plain()) : res.sendStatus(404)
+        
+    })
+    
+    server.listen(PORT, err => {
+        if (err) throw err
+        console.log(`> Ready on http://localhost:${PORT}`)
+    })
+})
+```
+</details>
+
+<br />
+
+
+### 3. A React-Native micro-blogging app in 3 steps.
+
+<img height="667px" src="https://siasky.net/_AQ7OxKUidVsPZ6Ems-6GMmSVNBT5XaJEKbkJTGuGirGDg" />
+
+
+<details><summary>See code</summary>
+<br />
+
+**1/3 - State** | `./post.ts`
+```ts
+import { Model, Collection } from 'acey'
+import moment from 'moment'
+
+export class PostModel extends Model {
+
+    constructor(initialState = {}, options){
+        super(initialState, options)
+    }
+
+    ID = () => this.state.id
+    content = () => this.state.content
+    createdAt = () => this.state.created_at
+    formatedCreationDate = () => moment(this.createdAt()).format("MMM Do");
+
+    /* `save()` save the Model's state in the Acey Store */
+    updateContent = (content) => this.setState({content}).save().store()
+}
+
+export class PostCollection extends Collection {
+    constructor(initialState = [], options){
+        super(initialState, [PostModel, PostCollection], options)
+    }
+
+    sortByCreationDate = () => this.orderBy(['created_at'], ['desc'])
+    
+    create = (content) => {
+        PostList.push({
+          id: Math.random().toString(), 
+          content, 
+          created_at: new Date()
+        }).save().store()
+    }
+    
+    /* 
+      `store()` store the state in the Local Store
+      
+      (i) Acey auto-sync the local store's data with 
+          their Model/Collection when the app reload.
+    */
+}
+```
+
+<br />
+
+**2/3 - Components**
+
+*Styles are not present to purposely make the code shorter and more readable.*
+
+`./components/add-post-input.js`
+
+```js
+import React, {useState} from 'react';
+import { 
+    View,
+    TextInput,
+    TouchableOpacity,
+    Text,
+    Dimensions
+ } from 'react-native';
+
+const AddPostInput = (props) => {
+
+    const { onSubmit } = props
+
+    const [text, setText] = useState('')
+
+    const onLocalSubmit = () => {
+        onSubmit(text)
+        setText('')
+    }
+
+    const renderSubmitTouchable = () => (
+        <SubmitTouchable onPress={onLocalSubmit}>
+            <SubmitText>CREATE</SubmitText>
+        </SubmitTouchable>
+    )
+
+    return (
+        <Container>
+            <Input
+                value={text}
+                onChangeText={(text) => setText(text)}
+                multiline
+            />
+            {renderSubmitTouchable()}
+        </Container>        
+    )
+}
+
+export default AddPostInput
+```
+
+*Styles are not present to purposely make the code shorter and more readable.*
+
+`./components/post.js`
+
+```js
+import React, { useState } from 'react'
+import { 
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Dimensions
+} from 'react-native';
+
+const Post = (props) => {
+    const {
+        post,
+        onDelete
+    } = props
+
+    const [updateText, setUpdateText] = useState(post.content())
+    const [isUpdating, setUpdatingStatus] = useState(false)
+
+    onSubmitUpdate = () => {
+        post.updateContent(updateText)
+        setUpdatingStatus(false)
+    }
+
+    const renderUpdateContainer = () => (
+        <UpdateContainer>
+            <UpdateInput multiline={true} value={updateText} onChangeText={(text) => setUpdateText(text)} />
+            <UpdateSubmitTouchable onPress={onSubmitUpdate}>
+                <UpdateSubmitText>
+                    UPDATE
+                </UpdateSubmitText>
+            </UpdateSubmitTouchable>
+        </UpdateContainer>
+    )
+
+    const renderAction = (title = '', color = '', onPress = null) => (
+        <ActionTouchable onPress={onPress} color={color}>
+            <ActionText color={color}>{title}</ActionText>
+        </ActionTouchable>
+    )
+
+    const renderActions = () => (
+        <ActionsWrapper>
+            {renderAction('Update', 'blue', () => setUpdatingStatus(true))}
+            {renderAction('Delete', 'red', () => onDelete(post))}
+        </ActionsWrapper>
+    )
+
+    return (
+        <Container>
+            {!isUpdating && <View>
+                <TopWrapper>
+                    <DateText>{post.formatedCreationDate()}</DateText>
+                </TopWrapper>
+                <ContentText>{post.content()}</ContentText>
+                {renderActions()}
+            </View>}
+            {isUpdating && renderUpdateContainer()}
+        </Container>
+    )
+
+}
+
+export default Post
+```
+
+<br />
+
+**3/3 - Main**
+
+*Styles are not present to purposely make the code shorter and more readable.*
+
+`./App.js`
+
+```js
+import React from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+} from 'react-native';
+
+import { config } from 'acey'
+import { useAcey } from 'react-acey'
+import { PostCollection } from './posts'
+
+import Post from './src/components/post'
+import AddPostInput from './src/components/add-post-input'
+
+const PostList = new PostCollection([], {connected: true, key: 'postlist'})
+config.setStoreEngine(AsyncStorage)
+config.done()
+
+const App = () => {
+
+  useAcey([ PostList ])
+
+  const onSubmit = (content) => PostList.create(content)
+  const onDelete = (post) => PostList.delete(post).save().store()
+
+  return (
+    <>
+      <ScrollView>
+        <AddPostInput onSubmit={onSubmit} />
+        {PostList.sortByCreationDate().map((post, index) => {
+          return (
+            <View key={index}>
+              <Post post={post} onDelete={onDelete} />
+            </View>
+          )
+        })}
+      </ScrollView>
+    </>
+  );
+};
+
+export default App;
+```
+
+
+
+</details>
+
+<br />
+
+
+# Get Started
 ## Usage
 
 ```
@@ -125,37 +488,39 @@ Refer to the doc ⬇️
 
 <br />
 
+### NodeJS
+
+After all your collections have been instanced:
 <br />
+1. bind the Acey Store Engine for Node (`acey-node-store` package)
+2. And set the config as done.
 
-
-## A few examples
-
-<details><summary>Connect Model to Class Component</summary>
-
-<br />
-  
-**Counter Component** | *`./counter.js`*
 ```js
-import React from 'react'
-import { connect } from 'acey'
-import Counter from './counter-model'
+import NodeStorage from 'acey-node-store'
+import { config } from 'acey'
+import MyCollection1 from './my-collection-1'
+import MyCollection2 from './my-collection-2'
+...
 
-class CounterApp extends React.Component {
-  
-  render = () => {
-    return (
-      <>
-        <button onClick={Counter.decrement}>decrement</button>
-          <span>{Counter.get()}</span>
-        <button onClick={Counter.increment}>increment</button>
-      </>
-    )
-  }
-}
+const myCollect1 = new MyCollection1([], {connected: true, key: 'collection-1'})
+const myCollect2 = new MyCollection2([], {connected: true, key: 'collection-2'})
+...
 
-export default connect([ Counter ])(CounterApp)
+config.setStoreEngine(NodeStorage)
+config.done()
 ```
-</details>
+
+*make sure you already installed `acey-node-store`*
+```
+yarn add acey-node-store
+```
+
+<br />
+
+<br />
+
+
+## Examples
 
 <details><summary>Nesting Models in Model</summary>
 
@@ -281,267 +646,3 @@ export default = () => {
 }
 ```
 </details>
-
-<br />
-
-## Tutorials
-
-📺&nbsp;[Here is a YouTube Channel](https://www.youtube.com/channel/UCKF2P3aEIn8A0Y2CNniGelw/videos) with Acey's implementations with React, React Native, and NextJS.
-
-The videos have been recorded with **version 1.2** (**currently 1.3)**. If some parts of the library changed, don't worry; refer to the documentation. Every change has been made to make your experience of coding with Acey better.
-
-<br />
-
-# API
-
-### Table of contents
-* [Model](#model)
-* [Collection](#collection)
-* [General](#general)
-
-<br />
-
-## Model
-
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/mkXsxsys/model.jpg" width="100%">
-  </a>
-</p>
-
-
-#### prototype: `class Model` 🌿
-
-A Model is a class built with an **object**.
-
-#### Todo Model:
-```js
-import { Model } from 'acey'
-
-class Todo extends Model {
-
-    /* A Model must always have a default state. */
-    constructor(initialState = {id: 0, content: ''}, options){
-        super(initialState, options)
-    }
- 
-    content = () => this.state.content
-    ID = () => this.state.id
-}
-
-export default Todo
-```
-
-<br />
-
-### `super(initialState: Object, options: IOption)`
-
-<br />
-
-- **Model's values**:
-
-    | Name | Type | Description |
-    | -- | -- | -- |
-    | state |`Object` | return the current Model's data state |
-    | prevState |`Object` | return the prev Model's data state |
-
-<br />
-
-- **Model's methods**: 
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | cookie() |`CookieManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's CookieManager to deal with the cookies related with the Model |
-    | is() |`IsManager` | return a class containing boolean functions concerning the Model |
-    | localStore() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
-    | option() |`OptionManager` | return the Model's OptionManager to deal with the Model's options |
-    | watch() |`IWatchAction` | return a class enabling you to watch changes on the Model's state and store |
-    | deleteKey(key: string) | `IAction` | remove a key in the Model's state object |
-    | deleteMultiKey(keys: string[]) | `IAction` | remove many keys in the Model's state object |
-    | hydrate(state: Object) | `IAction` | fill the Model's state with the `Object` passed in parameter. |
-    | setState(state: Object) |`IAction` | update the state by merging it with the `Object` parameteer. |
-    | defaultState() | `Object` | return the Model's state when it instanced. |
-    | toPlain() | `Object` | return the state to a plain javascript object. |
-    | toString() | `string` | return state of your Model as a string |
-    
-<br />
-
-<br />
-
-## Collection
-
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/rpJZZ9J6/collection.jpg" width="100%">
-  </a>
-</p>
-
-#### prototype: `class Collection extends Model` 🌳
-
-A Collection is a Model that has for state an array of Models. (Example: a Todolist is a Collection of Todo Models.)
-
-#### Example of a Collection:
-```ts
-import { Collection } from 'acey'
-import Todo from './todo'
-
-class Todolist extends Collection {
-
-    constructor(initialState = [], options){
-        super(initialState, [Todo, Todolist], options)
-    }
-    
-    sortByContent = (): Todolist => this.orderBy(['content'], ['desc]) as Todolist
-}
-
-export default Todolist
-```
-
-<br />
-
-### `super(initialState: Array, nodeAndCo: [Model, Collection], options: IOption)`
-
-<br />
-
-- **Collection's values**:
-
-    | Name | Type | Description |
-    | -- | -- | -- |
-    | prevState |`Array` | return the previous Collection's data state |
-    | state |`Array` | return the current Collection's data state |
-
-<br />
-
-- **Collection's methods**: 
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | cookie() |`CookieManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Collection's CookieManager to deal with the cookies related with the Collection |
-    | is() |`IsManager` | return a class containing boolean functions concerning the Collection |
-    | localStore() |`LocalStoreManager`| **(Only if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)** return the Collection's LocalStoreManager to deal with the local store related with the Collection |
-    | option() |`OptionManager` | return the Model's OptionManager to deal with the Collection's options |
-    | watch() |`IWatchAction` | return a class enabling you to watch changes on the Collection's state and store |
-    | count() |`number` | Return the length of the Collection |
-    | findIndex(predicate: any) | `number` | Return the index of the first node matching the predicate |
-    | indexOf(v: Object or Model) | `number` | Get the index of a node in the list.
-    | map(callback: (v: Model, index: number) => any) | `any` | creates a new array with the results of calling a function for every array element (same than javascript map on arrays) |
-    | reduce(callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any) | `any` | Reduces Collection to a value which is the accumulated result of running each element in collection, where each successive invocation is supplied the return value of the previous. If initialAccumulator is not given, the first Model of Collection is used as the initial value. |
-    | filter(predicate: any) | `Collection` | Pick up a list of node matching the predicate |
-    | limit(n: number) | `Collection` | Pick up the `n` first element of the list  |
-    | newCollection(v: Array) | `Collection` | Return fresh instanced Collection with the value sent in parameter | 
-    | offset(n: number) | `Collection` | Remove the `n` first element of the list  |
-    | orderBy(iteratees: any[], orders: any[]) | `Collection` | Return a sorted array of instanced Model upon the parameters passed |
-    | slice(begin: number (optional), end: number (optional)) | `Collection` | Same than the slice method for arrays  |
-    | splice(begin: number, nbToDelete[, elem1[, elem2[, ...]]]) | `Collection` | Same than the splice method for arrays  |
-    | toListClass(elem: any[]) |`Collection` | Transform an object array into an instanced Model array |
-    | delete(v: Object or Model) | `IAction` | Delete the model passed in parameter if in the list. |
-    | deleteBy(predicate: any) | `IAction` | Delete all the nodes matching the predicate |
-    | deleteIndex(index: number) | `IAction` | Remove an element at index.
-    | find(predicate: any) | `Model or undefined` | Find the first node matching the predicate |
-    | hydrate(state: Array) | `IAction` | fill the Model's state with the JS `array` passed in parameter. |
-    | newNode(v: Object) | `Model` | Return fresh instanced Model with the value sent in parameter | 
-    | nodeAt(index: number) | `Model` | Get the node at index in the list, undefined it not found. |
-    | pop() | `IAction` | Remove the last state element |
-    | push(v: Object or Model) | `IAction` | Add an element in the state |
-    | shift() | `IAction` | Remove the first state element |
-    | update(v: Object or Model, index: number) | `IAction` | Update the element at index with the Model passed in parameter |
-    | defaultState() | `Object` | return the state of data of the instanciation. |
-    | toPlain() | `Object` | return the state of model as a plain javascript array. |
-    
-<br />
-
-<br />
-
-## General
-
-<br />
-
-- **IOption (or Model's options)**: 
-
-    | Name | Type | Default | Description |
-    | -- | -- | -- | -- |
-    | connected | `bool` | false | If set to `true` the Model is connected to the Acey Store, it will also re-render your component connected with it on changes. |
-    | key | `string` | "" | Model's unique key, if `not set` Acey will set it automatically for you. |
-    
-<br />
-
-- **IAction (or Model's actions)**:
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | cookie(expires = 365) | `IAction` | **(Only on ReactJS and NextJS if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to a string and store it in the cookies. |
-    | localStore(expires = 365) | `IAction` | **(Only on React-Native and ReactJS if `connected` option is set to `true` and `key` option is `manually set` with `an unique string`)**. Transform the current data of the model to a string and store it in the localStore. |
-    | save() |`IAction` | **(Only if `connected` option is set to `true`)**. Dispatch the Model's state to the store and re-render all the components connected with the Model. |
-    
-<br />
-
-- **IWatchAction**:
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | all(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state or store changes. Return a `SubscriberAction` class with a `stop` method. |
-    | state(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state changes. Return a `SubscriberAction` class with a `stop` method. |
-    | store(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's store changes. Return a `SubscriberAction` class with a `stop` method. |
-    
- <br />
-    
-- **IsManager**:
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | collection() |`boolean` | return `true` if the Model is a collection |
-    | connected() |`boolean` | return `true` if the Model is connected to the store. |
-    | cookiesEnabled() |`boolean` | return `true` if the cookies are enabled with the Model |
-    | empty() |`boolean` | return `true` if the Model's state is empty |
-    | equal(m: Model) |`boolean` | return `true` if the Model's state is equal to the one passed in parameter. |
-    | keyGenerated() |`boolean` | return `true` if the Model's key has been automatically generated (if no key set when the model is connected (only on ReactJS) |
-    | localStoreEnabled() |`boolean` | return `true` if the localStore is enabled with the Model |
-
-<br />
-
-- **OptionManager**:
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | get() | `IOptions` | return the Model's option Object |
-    | key() | `string` | return the Model's key |
-    | kids() | `Object` |  return the connected methods of the current Model (as options). You can then pass this object as options for any instanced Model/Collection inside a connected Model, to make them connected without separating them from each other. |
-    
-    
-<br />
-    
-- **CookieManager** *(only ReactJS and NextJS)*:
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | get() | `Object` | return the Model's plain state stored in the cookies |
-    | isActive() | `boolean` | return `true` if the cookies are enabled on the Model |
-    | pull() | `undefined` | get the Model's state stored in the cookies and set it has the current state of the Model |
-    | remove() | `undefined` | remove the Model's state stored in the cookies |
-    | set() | `IAction` | set the Model's current state to the cookies |
-    
-<br />
-
-- **LocalStoreManager** *(only ReactJS and React Native)*: 
-
-    | Prototype | Return value | Description |
-    | -- | -- | -- |
-    | get() | `Object` | return the Model's plain state stored in the local store |
-    | isActive() | `boolean` | return `true` if the local store are enabled on the Model |
-    | pull() | `undefined` | get the Model's state stored in the local store and set it has the current state of the Model |
-    | remove() | `undefined` | remove the Model's state stored in the local store |
-    | set() | `IAction` | set the Model's current state to the local store |
-
-<br />
-
-<br />
-
-# Questions / Answers
-
-<p align="center" font-style="italic" >
-  <a>
-    <img alt="react-ascey" src="https://i.postimg.cc/FsgFwdSL/band.png" width="100%">
-  </a>
-</p>
-
-Ask your questions in issue request...
