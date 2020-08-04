@@ -461,6 +461,8 @@ ReactDOM.render(
 );
 ```
 
+Use **[react-acey](https://github.com/arysociety/react-acey)** to **bind** your **React components** with your **Models and Collections**.
+
 <br />
 
 ### React-Native
@@ -482,9 +484,7 @@ yarn add @react-native-community/async-storage
 
 ### NextJS
 
-Refer to the doc ⬇️
-
-🌯 [Next Acey wrapper documentation](https://github.com/Fantasim/next-acey-wrapper)
+Refer to the [Next Acey wrapper documentation](https://github.com/Fantasim/next-acey-wrapper) 💡
 
 <br />
 
@@ -492,8 +492,8 @@ Refer to the doc ⬇️
 
 After all your collections have been instanced:
 <br />
-1. bind the Acey Store Engine for Node (`acey-node-store` package)
-2. And set the config as done.
+1. bind the **Acey Store Engine** for Node with **[acey-node-store](https://github.com/arysociety/acey-node-store)**
+2. And **set** the **config** as **done**.
 
 ```js
 import NodeStorage from 'acey-node-store'
@@ -508,11 +508,6 @@ const myCollect2 = new MyCollection2([], {connected: true, key: 'collection-2'})
 
 config.setStoreEngine(NodeStorage)
 config.done()
-```
-
-*make sure you already installed `acey-node-store`*
-```
-yarn add acey-node-store
 ```
 
 <br />
