@@ -134,18 +134,18 @@ const main = async () => {
             PostList.push(post2)
             const node2 = PostList.nodeAt(1)
 
-            expect(node.action().save).to.equal(PostList.kids().save)
+            expect(node?.action().save).to.equal(PostList.kids().save)
             /* COOKIE ENABLE */
             //expect(node.action().cookie).to.equal(PostList.super().kids().cookie)
-            expect(node.action().store).to.equal(PostList.kids().store)
+            expect(node?.action().store).to.equal(PostList.kids().store)
 
-            expect(node.action().save).to.equal(node2.action().save)
+            expect(node?.action().save).to.equal(node2?.action().save)
             // expect(node.action().cookie).to.equal(node2.action().cookie)
-            expect(node.action().store).to.equal(node2.action().store)
+            expect(node?.action().store).to.equal(node2?.action().store)
 
-            expect(node.action().save).to.equal(node2.kids().save)
+            expect(node?.action().save).to.equal(node2?.kids().save)
             // expect(node.action().cookie).to.equal(node2.kids().cookie)
-            expect(node.action().store).to.equal(node2.kids().store)
+            expect(node?.action().store).to.equal(node2?.kids().store)
         })
     })
 
@@ -164,18 +164,18 @@ const main = async () => {
             })
             PostList.push(post2).save()
             const node = PostList.nodeAt(1)
-            node.setState({content: 'coco rio'}).save()
-            node.setState({content: 'coco rio2'})
-            node.setState({content: 'coco rio3'})
-            node.action().save()
+            node?.setState({content: 'coco rio'}).save()
+            node?.setState({content: 'coco rio2'})
+            node?.setState({content: 'coco rio3'})
+            node?.action().save()
             expect(i).to.eq(3)
             expect(j).to.eq(3)
             watch1.stop()
-            node.setState({content: 'coco rio4'}).save()
+            node?.setState({content: 'coco rio4'}).save()
             expect(i).to.eq(3)
             expect(j).to.eq(4)
             watch2.stop()
-            node.setState({content: 'coco rio5'}).save()
+            node?.setState({content: 'coco rio5'}).save()
             expect(i).to.eq(3)
             expect(j).to.eq(4)
         });
@@ -211,10 +211,10 @@ const main = async () => {
             PostList.updateAt(post, PostList.findIndex(post2)) //14
             expect(i).to.eq(14)
             const head = PostList.nodeAt(0)
-            head.setState({content: 'Miky :)'}) //15
-            head.deleteKey('content') //16
+            head?.setState({content: 'Miky :)'}) //15
+            head?.deleteKey('content') //16
             expect(i).to.eq(16)
-            head.deleteMultiKey('id', 'random') //17
+            head?.deleteMultiKey('id', 'random') //17
             expect(i).to.eq(17)
             const count = PostList.count()
             PostList.delete(head) //18
@@ -244,10 +244,10 @@ const main = async () => {
             expect(PostList.count()).to.eq(0)
             PostList.push(post2).save()
             const node = PostList.nodeAt(0)
-            node.setState({content: 'hey zin'}).save()
+            node?.setState({content: 'hey zin'}).save()
             expect(j).to.eq(6)
             watcher2.stop()
-            node.setState({content: 'hey zine'}).save()
+            node?.setState({content: 'hey zine'}).save()
             PostList.deleteIndex(0).save()
             expect(j).to.eq(6)
             let h = 0;
@@ -272,20 +272,20 @@ const main = async () => {
             PostList.push(post2).save()
             expect(i).to.eq(2)
             const node = PostList.nodeAt(PostList.count() - 1)
-            const action = node.setState({content: 'YESSSS!'})
+            const action = node?.setState({content: 'YESSSS!'})
             expect(i).to.eq(3)
-            action.save()
+            action?.save()
             expect(i).to.eq(4)
             watch.stop()
-            node.setState({content: 'PO:)'}).save()
+            node?.setState({content: 'PO:)'}).save()
             expect(i).to.eq(4)        
-            node.setState({content: 'PO:('})
-            node.setState({content: 'PO:('})
-            node.setState({content: 'PO:('})
-            node.setState({content: 'PO:('})
-            node.setState({content: 'PO:('})
-            node.setState({content: 'PO:('})
-            node.setState({content: 'PO:('})
+            node?.setState({content: 'PO:('})
+            node?.setState({content: 'PO:('})
+            node?.setState({content: 'PO:('})
+            node?.setState({content: 'PO:('})
+            node?.setState({content: 'PO:('})
+            node?.setState({content: 'PO:('})
+            node?.setState({content: 'PO:('})
             expect(i).to.eq(4)        
         })
     

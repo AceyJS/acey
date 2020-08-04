@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 import Model from './'
 
 export default class IsManager {
@@ -20,7 +20,7 @@ export default class IsManager {
         return JSON.stringify(m) === modelStringified
     }
     
-    public empty = (): boolean => _.isEmpty(this._model().state)
+    public empty = (): boolean => isEmpty(this._model().state)
     public collection = (): boolean => Model._isArray(this._model().state)
     public keyGenerated = (): boolean => this._model().super().option().isKeyGenerated()
     /* COOKIE ENABLE */

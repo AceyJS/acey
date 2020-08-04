@@ -1,6 +1,7 @@
+/* COOKIE ENABLE */ 
 //import * as Cookies from 'es-cookie';
 import config from '../config'
-import _ from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 import Errors from '../errors'
 
 class LocalStoreManager {
@@ -12,7 +13,7 @@ class LocalStoreManager {
         if (config.isNextJSServer()){
             return
         }
-        if (config.isReactNative() && !this.engine())
+        if ((config.isReactNative() || config.isNodeJS()) && !this.engine())
             throw Errors.unsetLocalStore()
         
         this._fetchKeys()
@@ -25,11 +26,11 @@ class LocalStoreManager {
     public toJSON = (keys: string) => this._keys = JSON.parse(keys)
 
     public isEnabled = (): boolean => !!this.engine()
+    public expirationSystemDisabled = (): boolean => config.isNodeJS()
 
     public addElement = (key: string, data: string, expires: number = 7) => {
-        if (!this.engine()){
+        if (!this.engine())
             return
-        }
 
         if (!this.isEnabled())
             throw Errors.localStoreDisabled()
@@ -57,6 +58,8 @@ class LocalStoreManager {
     }
 
     public addKey = (key: string, expires: number = 7) => {
+        if (this.expirationSystemDisabled())
+            return
         if (expires < 0) 
             throw new Error("expire value can't be negative.")
         if (!this.isEnabled())
@@ -69,6 +72,8 @@ class LocalStoreManager {
     }
 
     public removeKey = (key: string) => {
+        if (this.expirationSystemDisabled())
+            return
         if (!this.isEnabled())
             throw Errors.localStoreDisabled()
         if (this.getKeys()[key]){
@@ -78,6 +83,8 @@ class LocalStoreManager {
     }
 
     public getKeyExpiration = (key: string) => {
+        if (this.expirationSystemDisabled())
+            return
         if (!this.isEnabled())
             throw Errors.localStoreDisabled()
         const dateString = this.getKeys()[key]
@@ -94,14 +101,18 @@ class LocalStoreManager {
     }
 
     private _fetchKeys = async () => {
+        if (this.expirationSystemDisabled())
+            return
         if (!this.isEnabled())
             throw Errors.localStoreDisabled()
         const keys = await this.engine().getItem(this.LOCAL_STORAGE_KEYS_ID)
-        !_.isEmpty(keys) && this.toJSON(keys)
+        !isEmpty(keys) && this.toJSON(keys)
         this._analyzeExpired()
     }
 
     private _analyzeExpired = () => {
+        if (this.expirationSystemDisabled())
+            return
         if (!this.isEnabled())
             throw Errors.localStoreDisabled()
         const now = new Date()

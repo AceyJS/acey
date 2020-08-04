@@ -1,8 +1,10 @@
-import _ from 'lodash'
+import set from 'lodash/set'
+
 import Model from './'
 import Collection from '../collection'
 
 export const STORE_OPTION = 'store'
+
 const isStoreOption = (option: any) => option === STORE_OPTION
 const DATE_PATTERN = '____AS-Date____'
 
@@ -89,7 +91,7 @@ export const toPlain = (m: Model, option: any): any => {
             o = `${DATE_PATTERN}${o.getTime().toString()}`
         }
 
-        _.set(ret, path, o)
+        set(ret, path, o)
     }
 
     recur(m.state, '')
@@ -126,7 +128,7 @@ export const ParseJSONLocallyStored = (data: string) => {
             o = new Date(parseInt(o.replace(DATE_PATTERN, '')))
         }
 
-        _.set(ret, path, o)
+        set(ret, path, o)
     }
 
     recur(JSON.parse(data), '')

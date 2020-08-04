@@ -1,5 +1,5 @@
 import Manager from './manager'
-import _ from 'lodash'
+import size from 'lodash/size'
 
 export default class PendingHydrationManager {
     private _m: Manager
@@ -9,7 +9,7 @@ export default class PendingHydrationManager {
         this._m = m
     }
     
-    public count = () => _.size(this.get())
+    public count = () => size(this.get())
 
     public get = (): any => this._pendingHydration
     public manager = () => this._m

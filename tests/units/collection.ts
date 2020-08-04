@@ -112,7 +112,7 @@ describe('Collection: methods', () => {
         PostList.map((node: PostModel, index: number) => {
             expect(index).to.be.gt(prevIndex)
             prevIndex = index
-            expect(PostList.nodeAt(index).to().string()).to.eq(node.to().string())
+            expect(PostList.nodeAt(index)?.to().string()).to.eq(node.to().string())
         })
     })
 
@@ -131,7 +131,7 @@ describe('Collection: methods', () => {
     it('nodeAt', () => {
         const a = PostList.nodeAt(2)
         const b = PostList.state[2]
-        expect(a.to().string()).to.eq(b.to().string())
+        expect(a?.to().string()).to.eq(b.to().string())
     })
 
     it('offset', () => {
@@ -171,8 +171,8 @@ describe('Collection: methods', () => {
         const newHead = newList.nodeAt(0)
         const newTail = newList.nodeAt(newList.count() -1)
 
-        expect(head.to().string()).to.eq(newTail.to().string())
-        expect(newHead.to().string()).to.eq(tail.to().string())
+        expect(head?.to().string()).to.eq(newTail?.to().string())
+        expect(newHead?.to().string()).to.eq(tail?.to().string())
     })
 
     it('shift', () => {
@@ -180,7 +180,7 @@ describe('Collection: methods', () => {
         PostList.shift()
         PostList.shift()
         PostList.shift()
-        expect(PostList.nodeAt(0).to().string()).to.eq(last.to().string())
+        expect(PostList.nodeAt(0)?.to().string()).to.eq(last?.to().string())
     })
 
     it('slice', () => {
@@ -215,7 +215,7 @@ describe('Collection: methods', () => {
         PostList.updateAt(Object.assign({}, post, {id: '57849', content: 'gij43g34', random: 342}), 10)
         expect(PostList.count()).to.eq(4)
         expect((PostList.nodeAt(3) as PostModel).ID()).to.eq('57849')
-        const node2 = new PostModel(PostList.nodeAt(2).to().plain(), undefined)
+        const node2 = new PostModel(PostList.nodeAt(2)?.to().plain(), undefined)
         node2.setState({'id': 'HELLO_GUYS'})
         PostList.updateAt(node2, 2)
         expect((PostList.nodeAt(2) as PostModel).ID()).to.eq('HELLO_GUYS')
@@ -232,37 +232,37 @@ describe('Collection: methods', () => {
     })
 
     it('append', () => {
-        let list = PostList.append([PostList.nodeAt(0).to().plain()])
+        let list = PostList.append([PostList.nodeAt(0)?.to().plain()])
         expect(list.count()).to.eq(5)
         
         expect((list.nodeAt(0) as PostModel).to().string()).to.eq((list.nodeAt(1) as PostModel).to().string())
         const newList = list.append([list.nodeAt(list.count() - 1), list.nodeAt(list.count() - 2)])
         expect(newList.count()).to.eq(7)
-        expect(newList.nodeAt(newList.count() - 1).is().equal(newList.count() - 3))
-        expect(newList.nodeAt(newList.count() - 2).is().equal(newList.count() - 4))
+        expect(newList.nodeAt(newList.count() - 1)?.is().equal(newList.count() - 3))
+        expect(newList.nodeAt(newList.count() - 2)?.is().equal(newList.count() - 4))
     })
 
     it('prepend', () => {
-        expect(PostList.nodeAt(0).is().equal(PostList.nodeAt(1))).to.eq(false)
-        let list = PostList.prepend([PostList.nodeAt(0).to().plain()])
+        expect(PostList.nodeAt(0)?.is().equal(PostList.nodeAt(1))).to.eq(false)
+        let list = PostList.prepend([PostList.nodeAt(0)?.to().plain()])
         expect(list.count()).to.eq(5)
-        expect(list.nodeAt(0).is().equal(list.nodeAt(1)))
+        expect(list.nodeAt(0)?.is().equal(list.nodeAt(1)))
     })
 
     it('chunk', () => {
         const list = PostList.chunk(2)
         expect(list.length).to.eq(2)
-        expect((list[0] as PostCollection).nodeAt(1).is().equal(PostList.nodeAt(1)))
-        expect((list[1] as PostCollection).nodeAt(1).is().equal(PostList.nodeAt(3)))
+        expect((list[0] as PostCollection).nodeAt(1)?.is().equal(PostList.nodeAt(1)))
+        expect((list[1] as PostCollection).nodeAt(1)?.is().equal(PostList.nodeAt(3)))
         expect(list[0].count()).to.equal(2)
         expect(list[1].count()).to.equal(2)
     })
 
     it('nth', () => {
-        PostList.nth(-1).is().equal(PostList.nodeAt(3))
-        PostList.nth(0).is().equal(PostList.nodeAt(0))
-        PostList.nth(-2).is().equal(PostList.nodeAt(2))
-        PostList.nth(-3).is().equal(PostList.nodeAt(1))
+        PostList.nth(-1)?.is().equal(PostList.nodeAt(3))
+        PostList.nth(0)?.is().equal(PostList.nodeAt(0))
+        PostList.nth(-2)?.is().equal(PostList.nodeAt(2))
+        PostList.nth(-3)?.is().equal(PostList.nodeAt(1))
     })
 
     it('uniq', () => {

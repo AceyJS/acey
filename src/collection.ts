@@ -1,7 +1,15 @@
-import _ from 'lodash'
+/* Lodash imports */
+import find from 'lodash/find'
+import chunk from 'lodash/chunk'
+import remove from 'lodash/remove'
+import findIndex from 'lodash/findIndex'
+import filter from 'lodash/filter'
+import orderBy from 'lodash/orderBy'
+import nth from 'lodash/nth'
+import uniqBy from 'lodash/uniqBy'
+
 import Model, {IAction}  from './model'
 import Errors from './errors'
-
 type Constructor<T> = new(...args: any[]) => T;
 
 //  i) this class can be improved by adding more than you can usually find in lists.
@@ -33,7 +41,7 @@ export default class Collection extends Model  {
     public append = (values: any[]): Collection => this._newCollectionModelInstance(values).concat(this.state.slice())
     
     public chunk = (nChunk: number): Collection[] => {
-        const list: any[] = _.chunk(this.state, nChunk)
+        const list: any[] = chunk(this.state, nChunk)
         for (let i = 0; i < list.length; i++){
             list[i] = this._newCollectionModelInstance(list[i]) as Collection
         }
@@ -64,7 +72,7 @@ export default class Collection extends Model  {
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
     public deleteBy = (predicate: any): IAction => {
         const statePlain = this.to().plain()
-        const e = _.remove(statePlain, predicate)
+        const e = remove(statePlain, predicate)
         !!e.length && this.setState(this.to().listClass(statePlain))
         return this.action()
     }
@@ -76,7 +84,7 @@ export default class Collection extends Model  {
 
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
     public find = (predicate: any): Model | undefined => {
-        const o = _.find(this.to().plain(), predicate)
+        const o = find(this.to().plain(), predicate)
         if (o){
             const index = this.findIndex(o)
             return index < 0 ? undefined : this.state[index]
@@ -85,11 +93,11 @@ export default class Collection extends Model  {
     }
 
     //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
-    public findIndex = (predicate: any): number => _.findIndex(this.to().plain(), predicate)
+    public findIndex = (predicate: any): number => findIndex(this.to().plain(), predicate)
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
     public filter = (predicate: any): Collection => {
-        const list = _.filter(this.to().plain(), predicate)
+        const list = filter(this.to().plain(), predicate)
         const ret = []
         for (let elem of list){
             const m = this.find(elem)
@@ -98,8 +106,11 @@ export default class Collection extends Model  {
         return this._newCollectionModelInstance(ret)
     }
 
+    public first = (): Model | undefined => this.nodeAt(0)
+    public last = (): Model | undefined => this.nodeAt(this.count() - 1)
+
     //return the index of the element passed in parameters if it exists in the list.
-    public indexOf = (v: any): number => _.findIndex(this.to().plain(), this.newNode(v).to().plain())
+    public indexOf = (v: any): number => findIndex(this.to().plain(), this.newNode(v).to().plain())
 
     public limit = (limit: number): Collection => this.slice(0, limit)
 
@@ -116,15 +127,15 @@ export default class Collection extends Model  {
     public newCollection = (v: any): Collection => this._isCollectionModel(v) ? v : this._newCollectionModelInstance(v)
     public newNode = (v: any): Model => this._isNodeModel(v) ? v : this._newNodeModelInstance(v)
     
-    public nodeAt = (index: number): Model => this.state[index] && this._isNodeModel(this.state[index]) ? this.state[index] : undefined
+    public nodeAt = (index: number): Model | undefined => this.state[index] ? this.state[index] : undefined
 
-    public nth = (index: number): Model => _.nth(this.state, index) as Model
+    public nth = (index: number): Model | undefined => this.count() == 0 ? undefined : (nth(this.state, index) as Model)
 
     public offset = (offset: number): Collection => this.slice(offset)
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
     public orderBy = (iteratees: any[] = [], orders: any[] = []): Collection => {
-        const list = _.orderBy(this.to().plain(), iteratees, orders)
+        const list = orderBy(this.to().plain(), iteratees, orders)
         const ret = []
         for (let elem of list){
             const m = this.find(elem)
@@ -217,10 +228,10 @@ export default class Collection extends Model  {
     }
 
     // Update the element at index or post it.
-    public updateWhere = (predicate: any, toSet: Object) => {
+    public updateWhere = (predicate: any, toSet: Object): IAction => {
         let count = 0;
         for (let m of this.state)
-            _.find([m.to().plain()], predicate) && m.setState(toSet) && count++
+            find([m.to().plain()], predicate) && m.setState(toSet) && count++
         return this.action(count)
     }
 
@@ -228,12 +239,12 @@ export default class Collection extends Model  {
         let ret: any[] = []
         for (let elem of this.state){
             const elemJSON = elem.to().plain()
-            !_.find(ret, elemJSON) && ret.push(elemJSON)
+            !find(ret, elemJSON) && ret.push(elemJSON)
         }
         return this._newCollectionModelInstance(ret)
     }
 
-    public uniqBy = (predicate: any): Collection => this._newCollectionModelInstance(_.uniqBy(this.to().plain(), predicate))
+    public uniqBy = (predicate: any): Collection => this._newCollectionModelInstance(uniqBy(this.to().plain(), predicate))
 
     private _getCollectionModel = (): any => this.super().option().collectionModel() as Collection
     private _getNodeModel = (): any => this.super().option().nodeModel() as Model
@@ -243,6 +254,4 @@ export default class Collection extends Model  {
 
     private _newCollectionModelInstance = (defaultState: any) => new (this._getCollectionModel())(defaultState, this.kids())
     private _newNodeModelInstance = (defaultState: any) => new (this._getNodeModel())(defaultState, this.kids())  
-
-
 }

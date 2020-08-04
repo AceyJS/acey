@@ -1,5 +1,5 @@
+import size from 'lodash/size'
 import Model from '../'
-import _ from 'lodash'
 import { hash } from '../../lib'
 
 export class SubscribeAction {
@@ -31,7 +31,7 @@ export default class SubscriberManager {
     private _model = () => this._m
     get = () => this._subscribers
 
-    count = (): number => _.size(this.get())
+    count = (): number => size(this.get())
 
     add = (callback: Function): SubscribeAction => {
         const ID = hash(Math.random().toString()).toString()

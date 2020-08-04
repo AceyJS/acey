@@ -3,7 +3,7 @@ import Manager from './manager'
 // import config from '../config'
 // import Errors from '../errors'
 import Model from '../model'
-import _ from 'lodash'
+import size from 'lodash/size'
 
 export default class ModelsManager {
 
@@ -14,7 +14,7 @@ export default class ModelsManager {
         this._m = m
     }
 
-    public count = () => _.size(this.get())
+    public count = () => size(this.get())
 
     public get = () => this._models
     public manager = () => this._m

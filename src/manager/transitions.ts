@@ -1,6 +1,6 @@
 import Manager from './manager'
 import Model from '../model'
-import _ from 'lodash'
+import size from 'lodash/size'
 
 export interface IAction {
     payload: any
@@ -17,7 +17,7 @@ export default class TransitionsManager {
 
     get = () => this._transitions
 
-    count = (): number => _.size(this.get())
+    count = (): number => size(this.get())
 
     private _newTransition = (DEFAULT_DATA: any = {}, STORE_KEY: string = '') => {
         return (state = DEFAULT_DATA, action: IAction) => {

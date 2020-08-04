@@ -7,11 +7,22 @@ import pkg from './package.json'
 
 const config = {
     input: './index.ts',
-    external: ['lodash'],
+    external: ['lodash/uniqBy', 'lodash/nth', 'lodash/orderBy', 'lodash/size', 'lodash/cloneDeep', 'lodash/isEmpty', 'lodash/set', 'lodash/find', 'lodash/chunk', 'lodash/remove', 'lodash/findIndex', 'lodash/filter'],
     output: [
         {
             globals: {
-                'lodash': 'lodash',
+                'lodash/size': 'size',
+                'lodash/uniqBy': 'uniqBy',
+                'lodash/nth': 'nth',
+                'lodash/orderBy': 'orderBy',
+                'lodash/cloneDeep': 'cloneDeep',
+                'lodash/isEmpty': 'isEmpty',
+                'lodash/set': 'set',
+                'lodash/find': 'find',
+                'lodash/chunk': 'chunk',
+                'lodash/remove': 'remove',
+                'lodash/findIndex': 'findIndex',
+                'lodash/filter': 'filter',
             },
             file: pkg.main,
             format: 'umd',
@@ -26,6 +37,10 @@ const config = {
             clean: true
         }),
     ]
+}
+
+if (process.env.NODE_ENV === 'production') {
+    config.plugins.push(uglify());
 }
 
 export default config

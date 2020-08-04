@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import Manager from '../manager'
 
 import Errors from '../errors'
@@ -16,7 +15,7 @@ export interface IAction {
     save(): IAction
     /* COOKIE ENABLE */
     //cookie(): IAction
-    store(): IAction
+    store(expires: number | void): IAction
     value: any
 }
 

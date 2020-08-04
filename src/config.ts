@@ -3,6 +3,7 @@ import Manager from './manager/'
 const REACT = 'react'
 const REACT_NATIVE = 'react-native'
 const NEXT_JS = 'next-js'
+const NODEJS = 'node-js'
 
 class Config {
 
@@ -12,11 +13,10 @@ class Config {
     private _storeEngine: any = typeof document === 'undefined' ? null : localStorage
 
     constructor(){
-        if (typeof window !== 'undefined'){
-            if (navigator && navigator.product == "ReactNative"){
-                this._env = REACT_NATIVE
-            }
-        }
+        if (typeof process !== 'undefined' && !!process.env)
+            this._env = NODEJS  
+        else if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative')
+            this._env = REACT_NATIVE
     }
 
     done = async () => await Manager.init()
@@ -25,6 +25,8 @@ class Config {
     isNextJS = () => this._env === NEXT_JS
     isReactNative = () => this._env === REACT_NATIVE
     isReact = () => this._env === REACT
+    isNodeJS = () => this._env === NODEJS
+
 
     setEnvAsNextJS = () => this._env = NEXT_JS
 
