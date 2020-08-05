@@ -455,6 +455,8 @@ export default App;
 
 <br />
 
+<br />
+
 # Get Started
 ## Usage
 
@@ -551,28 +553,15 @@ yarn add acey-node-store
 
 <br />
 
-**1/2 - Device Model** | *`./device-model.js`*
 ```js
 import { Model } from 'acey'
-export default class Device extends Model {
+
+class Device extends Model {
 
   constructor(initialState, options){
     super(initialState, options)
   }
-  
-  //getters
-  brand = () => this.state.brand
-  model = () => this.state.model
-  version = () => this.state.version  
 }
-```
-
-<br />
-
-**2/2 - User Model** | *`./user-model.js`*
-```js
-import { Model } from 'acey'
-import Device from './device-model'
 
 const DEFAULT_STATE = {
   id: '',
@@ -585,21 +574,14 @@ class User extends Model {
   constructor(initialState = DEFAULT_STATE, options){
     super(initialState, options);
     this.setState({ 
-        device: new Device(initialState.device, this.option().kids()) 
+        device: new Device(initialState.device, this.kids()) 
     });
-    /* `kids()` makes Device inherits of connected User's methods. */
+    /* `kids()` makes Device inherits of connected User's actions: `save` and `store`. */
   }
   
-  //getters
   device = () => this.state.device //return the instanced Device Model
-  ID = () => this.state.id
-  username = () => this.state.username
-  
-  //action
-  updateUsername = (username) => this.setState({ username }).save()
 }
 
-export default User
 ```
 </details>
 
@@ -645,7 +627,7 @@ export default new TweetCollection([], {connected: true, key: 'todolist'})
 **3/3 - Tweets Component** | *`./tweets.js`*
 ```js
 import React from 'react'
-import { useAcey } from 'acey'
+import { useAcey } from 'react-acey'
 
 import TweetCase from './components/tweet'
 import TweetList from './tweet-collection'
