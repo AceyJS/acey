@@ -17,7 +17,7 @@
 
 <p align="center">
   <a>
-    <img src="https://siasky.net/FADRz00WBZi1aOgtoycI6mgLVSOZTbWEDD6ZUSoj7P20eQ" width="100%">
+    <img src="https://cdn4.iconfinder.com/data/icons/logos-3/600/React.js_logo-256.png" width="70px">
   </a>
 </p>
 
@@ -28,7 +28,7 @@
 
 <p align="center">
   <a>
-    <img src="https://siasky.net/bABDwDjCoepBX2CMpLWRT05SF9iO2B2PrCft2ENf-ClTew" width="100%">
+    <img src="https://cdn.freebiesupply.com/logos/thumbs/2x/nodejs-1-logo.png" width="130px">
   </a>
 </p>
 
