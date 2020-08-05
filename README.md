@@ -32,7 +32,7 @@
   </a>
 </p>
 
-#### Seems great! 🤑 And I saw it works as well in NodeJS, how?
+#### Seems great! 🤑 and it works as well with NodeJS, right?
 > **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚).<br /><br />So yeah, it works amazing for embedded systems, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
 
 <br />
@@ -41,19 +41,19 @@
 
 <p align="center">
   <a target="_blank" href="https://github.com/arysociety/acey/blob/master/API.md">
-    <img width="20%" src="https://siasky.net/EADIPI4TRMqOIkn4MQ2PvE6GrzboqEunw7ZzUn0jTKPe9Q"/>
+    <img width="20%" src="https://siasky.net/CAAkpr2DonQI6sv58Q0yYtyLpBOAmSS93vt1cZlQOx4riQ"/>
   </a>
 
   <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
   
-  <a target="_blank" href="https://github.com/arysociety/acey/blob/master/API.md">
-    <img width="20%" src="https://siasky.net/GABp6XHzPEd9p1gEDE19hPXf8tFSTcsrHWv1r_p1GPdniQ"/>
+  <a href="https://github.com/arysociety/acey#get-started">
+    <img width="20%" src="https://siasky.net/IADMNB8ShW03w7rwttWPZqlsbKWWw25v_LSnGLOpUUtjCQ"/>
   </a>
 
   <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
 
-  <a target="_blank" href="https://github.com/arysociety/acey/blob/master/API.md">
-    <img width="20%" src="https://siasky.net/EAB20-ySXyRkMv48hQo9vSEig2dCit13_jt90teSUtQx2w"/>
+  <a target="_blank" href="https://github.com/arysociety/acey-examples">
+    <img width="20%" src="https://siasky.net/EACUxKJWNHB8qNYIYUrCFn3OwQn9vy-Q0HAnOPe2wopurw"/>
   </a>
 
 </p>
