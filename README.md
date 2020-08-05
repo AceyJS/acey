@@ -51,7 +51,7 @@
 
   <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
   
-  <a href="https://github.com/arysociety/acey#get-started">
+  <a href="#get-started">
     <img width="20%" src="https://siasky.net/IADMNB8ShW03w7rwttWPZqlsbKWWw25v_LSnGLOpUUtjCQ"/>
   </a>
 
