@@ -17,7 +17,7 @@
 
 <p align="center">
   <a>
-    <img src="https://siasky.net/FADRz00WBZi1aOgtoycI6mgLVSOZTbWEDD6ZUSoj7P20eQ" width="100%">
+    <img src="https://cdn4.iconfinder.com/data/icons/logos-3/600/React.js_logo-256.png" width="70px">
   </a>
 </p>
 
@@ -28,13 +28,39 @@
 
 <p align="center">
   <a>
-    <img src="https://siasky.net/bABDwDjCoepBX2CMpLWRT05SF9iO2B2PrCft2ENf-ClTew" width="100%">
+    <img src="https://cdn.freebiesupply.com/logos/thumbs/2x/nodejs-1-logo.png" width="130px">
   </a>
 </p>
 
-#### Seems great! 🤑 And I saw it works as well in NodeJS, how?
+#### Seems great! 🤑 and it works as well with NodeJS, right?
 > **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚).<br /><br />So yeah, it works amazing for embedded systems, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
 
+<br />
+
+<br />
+
+<br />
+
+<br />
+
+
+<p align="center">
+  <a target="_blank" href="https://github.com/arysociety/acey/blob/master/API.md">
+    <img width="20%" src="https://siasky.net/CAAkpr2DonQI6sv58Q0yYtyLpBOAmSS93vt1cZlQOx4riQ"/>
+  </a>
+
+  <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+  
+  <a href="#get-started">
+    <img width="20%" src="https://siasky.net/IADMNB8ShW03w7rwttWPZqlsbKWWw25v_LSnGLOpUUtjCQ"/>
+  </a>
+
+  <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+
+  <a target="_blank" href="https://github.com/arysociety/acey-examples">
+    <img width="20%" src="https://siasky.net/EACUxKJWNHB8qNYIYUrCFn3OwQn9vy-Q0HAnOPe2wopurw"/>
+  </a>
+</p>
 
 <br />
 
@@ -42,17 +68,20 @@
 
 <br />
 
+<br />
 
-## Quick implementations
 
-### 1. A React Counter in 2 steps
 
-<img src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
+# Quick implementations
+
+## 1. A React Counter
+
+<img width="80%" src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
 
 <details><summary>See code</summary>
   <br />
  
-**1/2 - State** | `./counter-model.ts`
+**Step 1/2 - State** | `./counter-model.ts`
 ```ts
 import { Model } from 'acey'
 
@@ -76,7 +105,7 @@ export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
 
 <br />
 
-**2/2 - Component** | `./app.tsx`
+**Step 2/2 - Component** | `./app.tsx`
 ```jsx
 import React from 'react'
 import { useAcey } from 'react-acey'
@@ -98,26 +127,21 @@ const App = () => {
 
 export default App;
 ```
- 
-<p align="right" font-style="bold">
-  <a target="_blank" href="https://github.com/Fantasim/acey/blob/master/README.md#a-few-examples">More examples</a>
-</p>
-
 </details>
 
 
 <br />
 
 
-### 2. A RESTful NodeJS API in 2 steps.
+## 2. A RESTful NodeJS API
 
-<img src="https://siasky.net/_AQX4h4T-QWhT3lqM7gcPmuzPKm0tyhZk_zvEF9PBLdYiQ" />
+<img width="80%" src="https://siasky.net/_AQX4h4T-QWhT3lqM7gcPmuzPKm0tyhZk_zvEF9PBLdYiQ" />
 
 
 <details><summary>See code</summary>
 <br />
 
-**1/2 - State** | `./todos.ts`
+**Step 1/2 - State** | `./todos.ts`
 ```ts
 import { Model, Collection } from 'acey'
 import { v4 as uuid } from 'uuid'
@@ -150,7 +174,7 @@ export default new TodoCollection([], {connected: true, key: 'todolist'})
 
 <br />
 
-**2/2 - Server** | `./index.ts`
+**Step 2/2 - Server** | `./index.ts`
 ```ts
 import { config } from 'acey'
 import express from 'express' 
@@ -202,15 +226,15 @@ initServer().then((server) => {
 <br />
 
 
-### 3. A React-Native micro-blogging app in 3 steps.
+## 3. A React-Native micro-blogging app
 
-<img height="667px" src="https://siasky.net/_AQ7OxKUidVsPZ6Ems-6GMmSVNBT5XaJEKbkJTGuGirGDg" />
+<img height="550px" src="https://siasky.net/_AQ7OxKUidVsPZ6Ems-6GMmSVNBT5XaJEKbkJTGuGirGDg" />
 
 
 <details><summary>See code</summary>
 <br />
 
-**1/3 - State** | `./post.ts`
+**Step 1/3 - State** | `./post.ts`
 ```ts
 import { Model, Collection } from 'acey'
 import moment from 'moment'
@@ -256,7 +280,7 @@ export class PostCollection extends Collection {
 
 <br />
 
-**2/3 - Components**
+**Step 2/3 - Components**
 
 *Styles are not present to purposely make the code shorter and more readable.*
 
@@ -376,7 +400,7 @@ export default Post
 
 <br />
 
-**3/3 - Main**
+**Step 3/3 - Main**
 
 *Styles are not present to purposely make the code shorter and more readable.*
 
@@ -427,13 +451,11 @@ const App = () => {
 
 export default App;
 ```
-
-
-
 </details>
 
 <br />
 
+<br />
 
 # Get Started
 ## Usage
@@ -461,6 +483,11 @@ ReactDOM.render(
 );
 ```
 
+*make sure to install **[react-acey](https://github.com/arysociety/react-acey)** to **bind** your **React components** with your **Models and Collections**.*
+```sh
+yarn add react-acey
+```
+
 <br />
 
 ### React-Native
@@ -473,8 +500,9 @@ import { config } from 'acey'
 config.setStoreEngine(AsyncStorage)
 config.done()
 ```
-*make sure you already installed and linked async-storage.*
-```
+
+*make sure to install and link **[async-storage](https://github.com/react-native-community/async-storage)** .*
+```sh
 yarn add @react-native-community/async-storage
 ```
 
@@ -482,9 +510,7 @@ yarn add @react-native-community/async-storage
 
 ### NextJS
 
-Refer to the doc ⬇️
-
-🌯 [Next Acey wrapper documentation](https://github.com/Fantasim/next-acey-wrapper)
+Refer to the [Next Acey wrapper documentation](https://github.com/Fantasim/next-acey-wrapper) 💡
 
 <br />
 
@@ -492,8 +518,8 @@ Refer to the doc ⬇️
 
 After all your collections have been instanced:
 <br />
-1. bind the Acey Store Engine for Node (`acey-node-store` package)
-2. And set the config as done.
+1. bind the **Acey Store Engine** for Node with **[acey-node-store](https://github.com/arysociety/acey-node-store)**
+2. And **set** the **config** as **done**.
 
 ```js
 import NodeStorage from 'acey-node-store'
@@ -510,10 +536,11 @@ config.setStoreEngine(NodeStorage)
 config.done()
 ```
 
-*make sure you already installed `acey-node-store`*
-```
+*make sure to install **[acey-node-store](https://github.com/arysociety/acey-node-store)** .*
+```sh
 yarn add acey-node-store
 ```
+
 
 <br />
 
@@ -526,28 +553,15 @@ yarn add acey-node-store
 
 <br />
 
-**1/2 - Device Model** | *`./device-model.js`*
 ```js
 import { Model } from 'acey'
-export default class Device extends Model {
+
+class Device extends Model {
 
   constructor(initialState, options){
     super(initialState, options)
   }
-  
-  //getters
-  brand = () => this.state.brand
-  model = () => this.state.model
-  version = () => this.state.version  
 }
-```
-
-<br />
-
-**2/2 - User Model** | *`./user-model.js`*
-```js
-import { Model } from 'acey'
-import Device from './device-model'
 
 const DEFAULT_STATE = {
   id: '',
@@ -560,21 +574,14 @@ class User extends Model {
   constructor(initialState = DEFAULT_STATE, options){
     super(initialState, options);
     this.setState({ 
-        device: new Device(initialState.device, this.option().kids()) 
+        device: new Device(initialState.device, this.kids()) 
     });
-    /* `kids()` makes Device inherits of connected User's methods. */
+    /* `kids()` makes Device inherits of connected User's actions: `save` and `store`. */
   }
   
-  //getters
   device = () => this.state.device //return the instanced Device Model
-  ID = () => this.state.id
-  username = () => this.state.username
-  
-  //action
-  updateUsername = (username) => this.setState({ username }).save()
 }
 
-export default User
 ```
 </details>
 
@@ -620,7 +627,7 @@ export default new TweetCollection([], {connected: true, key: 'todolist'})
 **3/3 - Tweets Component** | *`./tweets.js`*
 ```js
 import React from 'react'
-import { useAcey } from 'acey'
+import { useAcey } from 'react-acey'
 
 import TweetCase from './components/tweet'
 import TweetList from './tweet-collection'
