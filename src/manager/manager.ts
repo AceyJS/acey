@@ -83,5 +83,6 @@ export default class Manager {
             storedData = await m.localStore().get()
     
         !this.pendingHydrationStore().node(key) && storedData && this.pendingHydrationStore().set({ [key]: storedData })
+        this.isInitialized() && this.pendingHydrationStore().node(key) && this.pendingHydrationStore().execute()
     }
 }

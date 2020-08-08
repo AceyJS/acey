@@ -4,8 +4,7 @@ import Model from './'
 import Collection from '../collection'
 
 export const STORE_OPTION = 'store'
-
-const isStoreOption = (option: any) => option === STORE_OPTION
+const isStoreOption = (option: string) => option === STORE_OPTION
 const DATE_PATTERN = '____AS-Date____'
 
 const splitPath = (path: string) => {
@@ -62,7 +61,8 @@ export const hydrate = (from: any, to: Model) => {
 
 //Return the state to JSONified object.
 //It implies that the state is an array, an object or a Model typed class (model or extended from Model)
-export const toPlain = (m: Model, option: any): any => {
+export type TObjectStringAny = { [char: string]: any } 
+export const toPlain = (m: TObjectStringAny | Array<any>, option: string | void): any => {
     const ret: any = {}; 
     
     const recur = (o: any, path: string) => {
@@ -87,16 +87,16 @@ export const toPlain = (m: Model, option: any): any => {
             return
         }
 
-        if (isStoreOption(option) && o instanceof Date){
+        if (option && isStoreOption(option) && o instanceof Date){
             o = `${DATE_PATTERN}${o.getTime().toString()}`
         }
 
         set(ret, path, o)
     }
 
-    recur(m.state, '')
+    recur(m, '')
 
-    if (m.is().collection()){
+    if (Model._isArray(m)){
         if (!ret[''])
             return []
         return ret['']

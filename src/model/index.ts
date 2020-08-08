@@ -24,6 +24,7 @@ export default class Model {
     private _prevStateStore: any = null
     private _state: any = null
     private _prevState: any = null
+    private _defaultState: any = null
 
     /* COOKIE ENABLE */
     // private _cookie: CookieManager
@@ -39,10 +40,12 @@ export default class Model {
             option,
             prevState: this._prevState,
             prevStateStore: this._prevStateStore,
+            defaultState: this._defaultState
         }
     }
 
     constructor(state: any, ...props: any){
+        this._defaultState = toPlain(state)
         this._is = new IsManager(this)
         this._option = new OptionManager(this, Object.assign({}, props[0], props[1]))
         /* COOKIE ENABLE */
@@ -196,7 +199,7 @@ export default class Model {
         const string = (): string => JSON.stringify(plain())
 
         //Return the state to a JSONified object.
-        const plain = (...args: any): any => toPlain(this, args[0])
+        const plain = (...args: any): any => toPlain(this.state, args[0])
 
         return {
             listClass,
