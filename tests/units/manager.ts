@@ -263,31 +263,31 @@ const main = async () => {
 
         });
 
-        it('all', () => {
-            let i = 0;
-            const watch = PostList.watch().all((prevState, newState) => {
-                expect(JSON.stringify(prevState)).to.not.eq(JSON.stringify(newState))
-                i++
-            })
-            PostList.push(post2).save()
-            expect(i).to.eq(2)
-            const node = PostList.nodeAt(PostList.count() - 1)
-            const action = node?.setState({content: 'YESSSS!'})
-            expect(i).to.eq(3)
-            action?.save()
-            expect(i).to.eq(4)
-            watch.stop()
-            node?.setState({content: 'PO:)'}).save()
-            expect(i).to.eq(4)        
-            node?.setState({content: 'PO:('})
-            node?.setState({content: 'PO:('})
-            node?.setState({content: 'PO:('})
-            node?.setState({content: 'PO:('})
-            node?.setState({content: 'PO:('})
-            node?.setState({content: 'PO:('})
-            node?.setState({content: 'PO:('})
-            expect(i).to.eq(4)        
-        })
+        // it('all', () => {
+        //     let i = 0;
+        //     const watch = PostList.watch().all((prevState, newState) => {
+        //         expect(JSON.stringify(prevState)).to.not.eq(JSON.stringify(newState))
+        //         i++
+        //     })
+        //     PostList.push(post2).save()
+        //     expect(i).to.eq(2)
+        //     const node = PostList.nodeAt(PostList.count() - 1)
+        //     const action = node?.setState({content: 'YESSSS!'})
+        //     expect(i).to.eq(3)
+        //     action?.save()
+        //     expect(i).to.eq(4)
+        //     watch.stop()
+        //     node?.setState({content: 'PO:)'}).save()
+        //     expect(i).to.eq(4)        
+        //     node?.setState({content: 'PO:('})
+        //     node?.setState({content: 'PO:('})
+        //     node?.setState({content: 'PO:('})
+        //     node?.setState({content: 'PO:('})
+        //     node?.setState({content: 'PO:('})
+        //     node?.setState({content: 'PO:('})
+        //     node?.setState({content: 'PO:('})
+        //     expect(i).to.eq(4)        
+        // })
     
     });
     

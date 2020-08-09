@@ -49,7 +49,6 @@ export default class Manager {
                 // this._cookieManager = new CookieManager(this.localStoreManager())
             }
             await this.models().connectAll()
-            this.pendingHydrationStore().execute()
         }
     }
 
@@ -83,6 +82,7 @@ export default class Manager {
             storedData = await m.localStore().get()
     
         !this.pendingHydrationStore().node(key) && storedData && this.pendingHydrationStore().set({ [key]: storedData })
-        this.isInitialized() && this.pendingHydrationStore().node(key) && this.pendingHydrationStore().execute()
+        this.pendingHydrationStore().execute()
+        m.super().watchManager.onLocalStoreFetched()
     }
 }

@@ -1,5 +1,6 @@
 import Manager from './manager'
 import size from 'lodash/size'
+import Model from '../model'
 
 export default class PendingHydrationManager {
     private _m: Manager
@@ -20,7 +21,7 @@ export default class PendingHydrationManager {
 
     public execute = () => {
         for (let key in this.get()) {
-            const m = this.manager().models().node(key)
+            const m = this.manager().models().node(key) as Model
             if (m){
                 m.hydrate(this.node(key)).save()
                 delete this.get()[key]

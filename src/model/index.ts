@@ -40,7 +40,8 @@ export default class Model {
             option,
             prevState: this._prevState,
             prevStateStore: this._prevStateStore,
-            defaultState: this._defaultState
+            defaultState: this._defaultState,
+            watchManager: this._watch
         }
     }
 
@@ -68,14 +69,12 @@ export default class Model {
         return this.action()
     }
 
-    private _watchManager = () => this._watch
-
     private _handleStateChanger = (prevStatePlain: any) => {
         const newStatePlain = this.to().plain()
         if (JSON.stringify(prevStatePlain) === JSON.stringify(newStatePlain))
             return
         this._setPrevState(prevStatePlain)
-        this._watchManager().onStateChanged(this.super().prevState, newStatePlain)
+        this.super().watchManager.onStateChanged(this.super().prevState, newStatePlain)
         if (!this.is().collection()){
             verifyAllModel(this)
         }
@@ -92,7 +91,7 @@ export default class Model {
     // public cookie = (): CookieManager => this._cookie
     public localStore = (): LocalStoreManager => this._localStore
     public is = (): IsManager => this._is
-    public watch = (): IWatchAction => this._watchManager().action()
+    public watch = (): IWatchAction => this.super().watchManager.action()
     
     public action = (value: any = undefined): IAction => {
         /* COOKIE ENABLE */
@@ -115,7 +114,7 @@ export default class Model {
             if (JSON.stringify(prevStateStore) !== JSON.stringify(newStorePlain)){
                 Manager.store().dispatch({ payload: newStorePlain, type: this.super().option().key() })
                 this._setPrevStateStore(prevStateStore)
-                this._watchManager().onStoreChanged(prevStateStore, newStorePlain)
+                this.super().watchManager.onStoreChanged(prevStateStore, newStorePlain)
             }
         }
         else 
