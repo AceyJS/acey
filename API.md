@@ -65,7 +65,7 @@ export default Todo
     | **super**() | `ISuper` | return methods used by the acey system. |
     | **store**() |`LocalStoreManager`| **(Only if `connected` option is set to `true`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
     | **Ito**() | `To` | return methods enabling you to convert your Model's state into different data types |
-    | **watch**() |`IWatchAction` | return a class enabling you to watch changes on the Model's state and store |
+    | **watch**() |`IWatchAction` | return a class enabling you to watch changes on the Model's **state**, **store** and **local store** |
     
 <br />
 
@@ -132,7 +132,7 @@ export default Todolist
     | **super**() | `ISuper` | return methods used by the acey system. |
     | **store**() |`LocalStoreManager`| **(Only if `connected` option is set to `true`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
     | **to**() | `ITo` | return methods enabling you to convert your Collection's state into different data types |
-    | **watch**() |`IWatchAction` | return a class enabling you to watch changes on the Collection's state and store |
+    | **watch**() |`IWatchAction` | return a class enabling you to watch changes on the Collection's **state**, **store** and **local store** |
     | -- | -- | -- |
     | **append**(values: (Collection | Object)[]) |`Collection` | Returns a fresh Collection with the Array passed in parameter added at the end of the current Collection's state. |
     | **chunk**(nChunk: number) |`Collection[]` | Returns an Array of collections split into groups the length of `nChunk`. |
@@ -201,9 +201,9 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | **all**(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state or store changes. Return a `SubscriberAction` class with a `stop` method. |
-    | **state**(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's state changes. Return a `SubscriberAction` class with a `stop` method. |
-    | **store**(callback: Function) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's store changes. Return a `SubscriberAction` class with a `stop` method. |
+    | **store**(callback: (prevStore, nextStore) => any) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's **store** changes. Return a `SubscriberAction` class with a `stop` method. |
+    | **state**(callback: (prevStore, nextStore) => any) | `SubscribeAction` | Execute the callback function passed in parameter every time the Model's **state** changes. Return a `SubscriberAction` class with a `stop` method. |
+    | **localStoreFetch**(callback: () => any) | `SubscribeAction` | Execute the callback function passed in parameter when the Model **has just pulled its data stored in the local storage**. Return a `SubscriberAction` class with a `stop` method. |
     
  <br />
     
