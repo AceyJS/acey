@@ -44,6 +44,8 @@ export default class Collection extends Model  {
         assignWithStorage()
     }
 
+    public arrayOf = (key: string): any[] => this.map((m: Model) => m.state[key])
+
     public append = (values: any[]): Collection => this.newCollection(values).concat(this.state.slice())
     
     public chunk = (nChunk: number): Collection[] => {
@@ -63,7 +65,7 @@ export default class Collection extends Model  {
 
     //delete a node if it exists in the list.
     public delete = (v: any): IAction => {
-        const index = this.indexOf(this.newNode(v))
+        const index = this.indexOf(v)
         const list = this.state.slice()
         if (index > -1){
             const v = list.splice(index, 1)
@@ -74,6 +76,14 @@ export default class Collection extends Model  {
         }
         return this.action()
     }
+
+    public deleteAll = (list: any[]) => {
+        let count = 0;
+        list.map((e: any) => this.indexOf(e) != -1 && this.delete(e) && count++)
+        return this.action(count)
+    }
+
+    public deleteIn = (key: string, arrayElems: any[]) => this.deleteBy((m: Model) => arrayElems.indexOf(m.state[key]) != -1)
 
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
     public deleteBy = (predicate: any): IAction => {
@@ -89,20 +99,15 @@ export default class Collection extends Model  {
     }
 
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
-    public find = (predicate: any): Model | undefined => {
-        const o = find(this._lodashTargetPredictor(predicate), predicate)
-        if (o){
-            const index = this.findIndex(o)
-            return index < 0 ? undefined : this.state[index]
-        }
-        return undefined
-    }
+    public find = (predicate: any): Model | undefined => this.newNode(find(this._lodashTargetPredictor(predicate), predicate))
 
     //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
     public findIndex = (predicate: any): number => findIndex(this._lodashTargetPredictor(predicate), predicate)
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
     public filter = (predicate: any): Collection => this.newCollection(filter(this._lodashTargetPredictor(predicate), predicate))
+
+    public filterIn = (key: string, arrayElems: any[]): Collection => this.filter((m: Model) => arrayElems.indexOf(m.state[key]) != -1)
 
     public first = (): Model | undefined => this.nodeAt(0)
 
