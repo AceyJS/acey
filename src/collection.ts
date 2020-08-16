@@ -77,13 +77,11 @@ export default class Collection extends Model  {
         return this.action()
     }
 
-    public deleteAll = (list: any[]) => {
+    public deleteAll = (list: any[] = this.state) => {
         let count = 0;
         list.map((e: any) => this.indexOf(e) != -1 && this.delete(e) && count++)
         return this.action(count)
     }
-
-    public deleteIn = (key: string, arrayElems: any[]) => this.deleteBy((m: Model) => arrayElems.indexOf(m.state[key]) != -1)
 
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
     public deleteBy = (predicate: any): IAction => {
@@ -111,7 +109,7 @@ export default class Collection extends Model  {
 
     public first = (): Model | undefined => this.nodeAt(0)
 
-    public forEach = (callback: (m: Model, index: number) => any) => {
+    public forEach = (callback: (m: any, index: number) => any) => {
         for (let i = 0; i < this.count(); i++){
             callback(this.state[i], i)
         }
