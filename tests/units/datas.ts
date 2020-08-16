@@ -140,7 +140,7 @@ export class PostModel extends Model {
     content = () => this.state.content
     createdAt = () => this.state.created_at
     random = () => this.state.random
-    deviceOrigin = () => this.state.device_origin
+    deviceOrigin = (): DeviceModel => this.state.device_origin
 }
 
 export class PostCollection extends Collection {

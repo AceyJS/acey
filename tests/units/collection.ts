@@ -95,7 +95,8 @@ describe('Collection: methods', () => {
         PostList.push(Object.assign({}, post, {id: '3249', content: '90ef', random: 8923}))
         PostList.push(Object.assign({}, post, {id: '9143289', content: 'f23j0f930f2f', random: 12039}))
         PostList.push(Object.assign({}, post, {id: 'fepof', content: '211', random: 8923}))
-        expect(PostList.filter((o: any) => o.random === 8923).count()).to.eq(2)
+
+        expect(PostList.filter((o: PostModel) => o.random() === 8923).count() ).to.eq(2)
         expect(PostList.filter({id: '9143289'}).count()).to.eq(1)
     })
 
@@ -271,7 +272,7 @@ describe('Collection: methods', () => {
     })
 
     it('uniqBy', () => {
-        expect(PostList.uniqBy((o: any) => o.device_origin.n_connexion).count()).to.eq(1)
+        expect(PostList.uniqBy( (o: PostModel) => o.deviceOrigin().nConnexion() ).count()).to.eq(1)
         expect(PostList.uniqBy('id').count()).to.eq(3)
     })
 })

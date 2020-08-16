@@ -111,7 +111,7 @@ export default class Collection extends Model  {
             callback(this.state[i], i)
         }
     }
-    
+
     public groupBy = (predicate: any): IGrouped => {
         const d = groupBy(this._lodashTargetPredictor(predicate), predicate)
         const ret: IGrouped = {}
@@ -129,12 +129,11 @@ export default class Collection extends Model  {
     public limit = (limit: number): Collection => this.slice(0, limit)
 
     public map = (callback: (v: any, index: number) => any): any[] => { 
-        const array = this.state
-        let ret = []
-        for (let i = 0; i < array.length; i++){
-            const v = callback(array[i], i)
+        let ret: any[] = []
+        this.forEach((m: Model, index: number) => {
+            const v = callback(m, index)
             v && ret.push(v)
-        }
+        })
         return ret
     }
 
@@ -168,9 +167,7 @@ export default class Collection extends Model  {
     }
 
     public reduce = (callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any = this.count() ? this.nodeAt(0) : null) => {
-        const array = this.state
-        for (let i = 0; i < array.length; i++)
-            initialAccumulator = callback(initialAccumulator, array[i])
+        this.forEach((m: Model) => initialAccumulator = callback(initialAccumulator, m))
         return initialAccumulator
     }
 
@@ -219,6 +216,11 @@ export default class Collection extends Model  {
         return internalSplice(start, deleteCount, ...items)
     }
 
+    public updateAll = (toSet: Object): IAction => {
+        this.forEach((m: Model) => m.setState(toSet))
+        return this.action(this.count())
+    }
+
     // Update the element at index or post it.
     public updateAt = (v: any, index: number): IAction => {
         const vCopy = this.newNode(v)
@@ -233,17 +235,16 @@ export default class Collection extends Model  {
     // Update the element at index or post it.
     public updateWhere = (predicate: any, toSet: Object): IAction => {
         let count = 0;
-        for (let m of this.state)
-            find([m.to().plain()], predicate) && m.setState(toSet) && count++
+        this.forEach((m: Model) => find([m.to().plain()], predicate) && m.setState(toSet) && count++ )
         return this.action(count)
     }
 
     public uniq = (): Collection => {
         let ret: any[] = []
-        for (let elem of this.state){
-            const elemJSON = elem.to().plain()
-            !find(ret, elemJSON) && ret.push(elemJSON)
-        }
+        this.forEach((m: Model) => {
+            const json = m.to().plain()
+            !find(ret, json) && ret.push(json)
+        })
         return this.newCollection(ret)
     }
 
