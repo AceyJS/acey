@@ -7,6 +7,8 @@ import filter from 'lodash/filter'
 import orderBy from 'lodash/orderBy'
 import nth from 'lodash/nth'
 import uniqBy from 'lodash/uniqBy'
+import groupBy from 'lodash/groupBy'
+import every from 'lodash/every'
 
 import Model, {IAction}  from './model'
 import Errors from './errors'
@@ -17,13 +19,17 @@ type Constructor<T> = new(...args: any[]) => T;
 //for example in a todolist it would be the parent of the TodoList class containing a list of Todos
 //This can be useful to avoid redundant functions like sorting, filtering, pushing, deleting, updating etc...
 
+export interface IGrouped {
+    [propName: string]: Collection
+}
+
 export default class Collection extends Model  {
     
     constructor(list: any[] = [], models: [Constructor<Model>, Constructor<Collection>], ...props: any){
         super([], Object.assign({}, ...props, { nodeModel: models[0], collectionModel: models[1] }))
 
         //check if nodeModel is not a Collection
-        if (this._newNodeModelInstance(undefined) instanceof Collection)
+        if (this.newNode(undefined) instanceof Collection)
             throw Errors.forbiddenMultiDimCollection()
         
         const assignWithStorage = async () => {
@@ -31,29 +37,29 @@ export default class Collection extends Model  {
             /* COOKIE ENABLE */
             //if (!this.is().connected() || (!this.cookie().get() && !(await this.localStore().get()))){
             if (!this.is().connected() || !(await this.localStore().get())){
-                this.setState(this.to().listClass(list))
+                this.setState(list)
             }
         }
 
         assignWithStorage()
     }
 
-    public append = (values: any[]): Collection => this._newCollectionModelInstance(values).concat(this.state.slice())
+    public append = (values: any[]): Collection => this.newCollection(values).concat(this.state.slice())
     
     public chunk = (nChunk: number): Collection[] => {
         const list: any[] = chunk(this.state, nChunk)
         for (let i = 0; i < list.length; i++){
-            list[i] = this._newCollectionModelInstance(list[i]) as Collection
+            list[i] = this.newCollection(list[i]) as Collection
         }
         return list
     }
 
-    public concat = (...list: any): Collection => this._newCollectionModelInstance(this.state.slice().concat(this.to().listClass(...list)))
+    public concat = (...list: any): Collection => this.newCollection(this.state.slice().concat(this.to().listClass(...list)))
     
     //Return the number of element in the array
     public count = (): number => this.state.length
 
-    public copy = (): Collection => this._newCollectionModelInstance(this.state.slice())
+    public copy = (): Collection => this.newCollection(this.state.slice())
 
     //delete a node if it exists in the list.
     public delete = (v: any): IAction => {
@@ -71,9 +77,9 @@ export default class Collection extends Model  {
 
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
     public deleteBy = (predicate: any): IAction => {
-        const statePlain = this.to().plain()
-        const e = remove(statePlain, predicate)
-        !!e.length && this.setState(this.to().listClass(statePlain))
+        const futureState = this._lodashTargetPredictor(predicate)
+        const e = remove(futureState, predicate)
+        !!e.length && this.setState(futureState)
         return this.action()
     }
 
@@ -84,7 +90,7 @@ export default class Collection extends Model  {
 
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
     public find = (predicate: any): Model | undefined => {
-        const o = find(this.to().plain(), predicate)
+        const o = find(this._lodashTargetPredictor(predicate), predicate)
         if (o){
             const index = this.findIndex(o)
             return index < 0 ? undefined : this.state[index]
@@ -93,24 +99,26 @@ export default class Collection extends Model  {
     }
 
     //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
-    public findIndex = (predicate: any): number => findIndex(this.to().plain(), predicate)
+    public findIndex = (predicate: any): number => findIndex(this._lodashTargetPredictor(predicate), predicate)
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
-    public filter = (predicate: any): Collection => {
-        const list = filter(this.to().plain(), predicate)
-        const ret = []
-        for (let elem of list){
-            const m = this.find(elem)
-            m && ret.push(m)
-        }
-        return this._newCollectionModelInstance(ret)
-    }
+    public filter = (predicate: any): Collection => this.newCollection(filter(this._lodashTargetPredictor(predicate), predicate))
 
     public first = (): Model | undefined => this.nodeAt(0)
-    public last = (): Model | undefined => this.nodeAt(this.count() - 1)
+
+    public groupBy = (predicate: any): IGrouped => {
+        const d = groupBy(this._lodashTargetPredictor(predicate), predicate)
+        const ret: IGrouped = {}
+        Object.keys(d).map((key: string) => {
+            ret[key] = this.newCollection(d[key])
+        })
+        return ret
+    }
 
     //return the index of the element passed in parameters if it exists in the list.
     public indexOf = (v: any): number => findIndex(this.to().plain(), this.newNode(v).to().plain())
+
+    public last = (): Model | undefined => this.nodeAt(this.count() - 1)
 
     public limit = (limit: number): Collection => this.slice(0, limit)
 
@@ -134,15 +142,7 @@ export default class Collection extends Model  {
     public offset = (offset: number): Collection => this.slice(offset)
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
-    public orderBy = (iteratees: any[] = [], orders: any[] = []): Collection => {
-        const list = orderBy(this.to().plain(), iteratees, orders)
-        const ret = []
-        for (let elem of list){
-            const m = this.find(elem)
-            m && ret.push(m)
-        }
-        return this._newCollectionModelInstance(ret)
-    }
+    public orderBy = (...lodashParams: any): Collection => this.newCollection(orderBy(this._lodashTargetPredictor(lodashParams[0]), ...lodashParams))
 
     public pop = (): IAction => {
         const list = this.state.slice()
@@ -168,10 +168,7 @@ export default class Collection extends Model  {
         return initialAccumulator
     }
 
-    public reverse = (): Collection => {
-        const state = this.state.slice().reverse()
-        return this._newCollectionModelInstance(state)
-    }
+    public reverse = (): Collection => this.newCollection(this.state.slice().reverse())
 
     public shift = (): IAction => {
         const list = this.state.slice()
@@ -180,7 +177,7 @@ export default class Collection extends Model  {
         return this.action(shifted)
     }
 
-    public slice = (...indexes: any): Collection => this._newCollectionModelInstance(this.state.slice(...indexes))
+    public slice = (...indexes: any): Collection => this.newCollection(this.state.slice(...indexes))
 
     public splice = (...args: any): IAction => {
         const start = args[0]
@@ -241,10 +238,22 @@ export default class Collection extends Model  {
             const elemJSON = elem.to().plain()
             !find(ret, elemJSON) && ret.push(elemJSON)
         }
-        return this._newCollectionModelInstance(ret)
+        return this.newCollection(ret)
     }
 
-    public uniqBy = (predicate: any): Collection => this._newCollectionModelInstance(uniqBy(this.to().plain(), predicate))
+    public uniqBy = (predicate: any): Collection => this.newCollection(uniqBy(this._lodashTargetPredictor(predicate), predicate))
+
+    private _lodashTargetPredictor = (predicate: any) => {
+        let countFn = 0
+        if (Array.isArray(predicate)){
+            for (let o of predicate)
+                typeof o === 'function' && countFn++
+            if (countFn != 0 && countFn != predicate.length)
+                throw new Error(`If an array of predicate contains at least 1 function, all the other ones must be a function.`)
+            return countFn == 0 ? this.to().plain() : this.state
+        }
+        return typeof predicate === 'function' ? this.state : this.to().plain()
+    }
 
     private _getCollectionModel = (): any => this.super().option().collectionModel() as Collection
     private _getNodeModel = (): any => this.super().option().nodeModel() as Model

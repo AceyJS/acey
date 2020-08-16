@@ -32,7 +32,6 @@ export default class Watch {
     //extra
     public hasLocalStoreBeenPulled = () => this._hasLocalStoreBeenFetched
 
-
     public onStateChanged = (...props: any): number => this._stateSubscriber().notify(...props)
     public onStoreChanged = (...props: any) => this._storeSubscriber().notify(...props)
     public onLocalStoreFetched = () => {
