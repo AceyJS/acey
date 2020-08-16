@@ -106,6 +106,12 @@ export default class Collection extends Model  {
 
     public first = (): Model | undefined => this.nodeAt(0)
 
+    public forEach = (callback: (m: Model, index: number) => any) => {
+        for (let i = 0; i < this.count(); i++){
+            callback(this.state[i], i)
+        }
+    }
+    
     public groupBy = (predicate: any): IGrouped => {
         const d = groupBy(this._lodashTargetPredictor(predicate), predicate)
         const ret: IGrouped = {}
