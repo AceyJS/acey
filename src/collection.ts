@@ -1,5 +1,4 @@
 /* Lodash imports */
-import find from 'lodash/find'
 import chunk from 'lodash/chunk'
 import remove from 'lodash/remove'
 import findIndex from 'lodash/findIndex'
@@ -16,11 +15,19 @@ import isArray from 'lodash/isArray'
 import Model, {IAction}  from './model'
 import Errors from './errors'
 import { TObjectStringAny } from './model/utils'
+
 type Constructor<T> = new(...args: any[]) => T;
+
+type TOrder = 'desc' | 'asc'
 
 type TPredicateFn = (model: any, index: number) => any
 type TPredicatePickNode = string | TObjectStringAny | [string, any] | TPredicateFn 
 type TPredicatePickKey = string | TPredicateFn
+
+type TPredicateSort = string | string[] |  TPredicateFn | TPredicateFn[]
+type TOrderSort = TOrder | TOrder[]
+
+
 //  i) this class can be improved by adding more than you can usually find in lists.
 //It aims to be the parent of any model class representing a list of object/classes
 //for example in a todolist it would be the parent of the TodoList class containing a list of Todos
@@ -165,7 +172,11 @@ export default class Collection extends Model  {
     public offset = (offset: number): Collection => this.slice(offset)
 
     //return a sorted array upon the parameters passed. see: https://lodash.com/docs/4.17.15#orderBy
-    public orderBy = (...lodashParams: any): Collection => this.newCollection(orderBy(this._lodashTargetPredictor(lodashParams[0]), ...lodashParams))
+    public orderBy = (predicate: TPredicateSort, order: TOrderSort): Collection => {
+        return this.newCollection(
+            orderBy(this.state, this._treatPredicateSortNode(predicate), order)
+        )
+    }
 
     public pop = (): IAction => {
         const list = this.state.slice()
@@ -269,7 +280,40 @@ export default class Collection extends Model  {
 
     public uniqBy = (predicate: TPredicatePickKey): Collection => this.newCollection(uniqBy(this._lodashTargetPredictor(predicate), predicate))
 
-    private _treatPredicatePickNode = (predicate: TPredicatePickNode) => {
+
+    private _treatPredicateSortNode = (predicate: TPredicateSort) => {
+
+        const thError = () => new Error(`Each element of an array of predicate have all to be the same type, here string or callback function.`)
+
+        if (typeof predicate === 'string')
+            return (m: Model) => m.state[predicate]
+        
+        else if (isFunction(predicate))
+            return predicate
+
+        else if (isArray(predicate) && predicate.length > 0 && typeof predicate[0] === 'string'){
+            const ret: TPredicateFn[] = []
+            for (const p of predicate){
+                if (typeof p !== 'string')
+                    throw thError()
+                ret.push((m: Model) => m.state[p as string])
+            }
+            return ret
+        }
+        
+        else if (isArray(predicate) && predicate.length > 0 && typeof predicate[0] === 'function'){
+            for (const p of predicate){
+                if (typeof p !== 'function')
+                    throw thError()
+            }
+            return predicate
+        }
+
+        throw new Error(`wrong predicate.`)
+
+    }
+
+    private _treatPredicatePickNode = (predicate: TPredicatePickNode): TPredicateFn => {
         if (isFunction(predicate))
             return predicate
         

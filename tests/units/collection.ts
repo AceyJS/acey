@@ -149,7 +149,7 @@ describe('Collection: methods', () => {
             prevRandom = node.random()
         })
         prevRandom = 0
-        PostList.orderBy(['random'], ['asc']).map((node: PostModel, index: number) => {
+        PostList.orderBy((p: PostModel) => p.random(), 'asc').map((node: PostModel, index: number) => {
             expect(node.random()).to.be.gte(prevRandom)
             prevRandom = node.random()
         })
