@@ -281,6 +281,12 @@ export default class Collection extends Model  {
     public uniqBy = (predicate: TPredicatePickKey): Collection => this.newCollection(uniqBy(this._lodashTargetPredictor(predicate), predicate))
 
 
+
+
+    
+    ///////////////////////////////////////////////////////////////////////////////
+
+
     private _treatPredicateSortNode = (predicate: TPredicateSort) => {
 
         const thError = () => new Error(`Each element of an array of predicate have all to be the same type, here string or callback function.`)
