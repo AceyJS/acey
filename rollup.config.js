@@ -7,7 +7,7 @@ import pkg from './package.json'
 
 const config = {
     input: './index.ts',
-    external: ['lodash/uniqBy', 'lodash/nth', 'lodash/orderBy', 'lodash/size', 'lodash/cloneDeep', 'lodash/isEmpty', 'lodash/set', 'lodash/find', 'lodash/chunk', 'lodash/remove', 'lodash/findIndex', 'lodash/filter'],
+    external: ['lodash/isArray', 'lodash/isObjectLike', 'lodash/isPlainObject', 'lodash/isFunction',  'lodash/groupBy', 'lodash/uniqBy', 'lodash/nth', 'lodash/orderBy', 'lodash/size', 'lodash/cloneDeep', 'lodash/isEmpty', 'lodash/set', 'lodash/find', 'lodash/chunk', 'lodash/remove', 'lodash/findIndex', 'lodash/filter'],
     output: [
         {
             globals: {
@@ -23,6 +23,11 @@ const config = {
                 'lodash/remove': 'remove',
                 'lodash/findIndex': 'findIndex',
                 'lodash/filter': 'filter',
+                'lodash/groupBy': 'groupBy',
+                'lodash/isFunction': 'isFunction',
+                'lodash/isPlainObject': 'isPlainObject',
+                'lodash/isObjectLike': 'isObjectLike',
+                'lodash/isArray': 'isArray',
             },
             file: pkg.main,
             format: 'umd',
