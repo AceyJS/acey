@@ -38,7 +38,6 @@ class LocalStoreManager {
         /* if (!config.isReactNative() && Cookies.get(key)){
             throw Errors.cookiePriorityOverStore()
         } */
-
         this.engine().setItem(key, data)
         this.addKey(key, expires)
     }

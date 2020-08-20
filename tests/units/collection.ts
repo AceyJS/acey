@@ -52,7 +52,9 @@ describe('Collection: methods', () => {
     })
 
     it('concat', () => {
-        expect(PostList.concat([post, postModel]).to().string()).to.eq(new PostCollection([post, postModel, post], undefined).to().string())
+        const copy = PostList.copy()
+        copy.concat([post, postModel])
+        expect(copy.to().string()).to.eq(new PostCollection([post, postModel, post], undefined).to().string())
     })
 
     it('delete', () => {
@@ -233,19 +235,21 @@ describe('Collection: methods', () => {
     })
 
     it('append', () => {
-        let list = PostList.append([PostList.nodeAt(0)?.to().plain()])
+        let list = PostList.copy()
+        list.append([PostList.nodeAt(0)?.to().plain()])
         expect(list.count()).to.eq(5)
         
-        expect((list.nodeAt(0) as PostModel).to().string()).to.eq((list.nodeAt(1) as PostModel).to().string())
-        const newList = list.append([list.nodeAt(list.count() - 1), list.nodeAt(list.count() - 2)])
+        expect((list.nodeAt(0) as PostModel).to().string()).to.eq((list.nodeAt(4) as PostModel).to().string())
+        const newList = list.copy()
+        newList.append([list.nodeAt(1), list.nodeAt(2)])
+
         expect(newList.count()).to.eq(7)
-        expect(newList.nodeAt(newList.count() - 1)?.is().equal(newList.count() - 3))
-        expect(newList.nodeAt(newList.count() - 2)?.is().equal(newList.count() - 4))
     })
 
     it('prepend', () => {
         expect(PostList.nodeAt(0)?.is().equal(PostList.nodeAt(1))).to.eq(false)
-        let list = PostList.prepend([PostList.nodeAt(0)?.to().plain()])
+        const list = PostList.copy()
+        list.prepend([PostList.nodeAt(0)?.to().plain()])
         expect(list.count()).to.eq(5)
         expect(list.nodeAt(0)?.is().equal(list.nodeAt(1)))
     })

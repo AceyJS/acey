@@ -8,12 +8,19 @@ import orderBy from 'lodash/orderBy'
 import nth from 'lodash/nth'
 import uniqBy from 'lodash/uniqBy'
 import groupBy from 'lodash/groupBy'
-import every from 'lodash/every'
+import isFunction from 'lodash/isFunction'
+import isPlainObject from 'lodash/isPlainObject'
+import isObjectLike from 'lodash/isObjectLike'
+import isArray from 'lodash/isArray'
 
 import Model, {IAction}  from './model'
 import Errors from './errors'
+import { TObjectStringAny } from './model/utils'
 type Constructor<T> = new(...args: any[]) => T;
 
+type TPredicateFn = (model: any, index: number) => any
+type TPredicatePickNode = string | TObjectStringAny | [string, any] | TPredicateFn 
+type TPredicatePickKey = string | TPredicateFn
 //  i) this class can be improved by adding more than you can usually find in lists.
 //It aims to be the parent of any model class representing a list of object/classes
 //for example in a todolist it would be the parent of the TodoList class containing a list of Todos
@@ -46,7 +53,7 @@ export default class Collection extends Model  {
 
     public arrayOf = (key: string): any[] => this.map((m: Model) => m.state[key])
 
-    public append = (values: any[]): Collection => this.newCollection(values).concat(this.state.slice())
+    public append = (values: any[]): IAction => this.concat(values)
     
     public chunk = (nChunk: number): Collection[] => {
         const list: any[] = chunk(this.state, nChunk)
@@ -56,7 +63,11 @@ export default class Collection extends Model  {
         return list
     }
 
-    public concat = (...list: any): Collection => this.newCollection(this.state.slice().concat(this.to().listClass(...list)))
+    public concat = (list: any[]): IAction => {
+        const newList = this.state.slice().concat(this.to().listClass(list))
+        this.setState(newList)
+        return this.action(list.length)
+    }
     
     //Return the number of element in the array
     public count = (): number => this.state.length
@@ -84,7 +95,7 @@ export default class Collection extends Model  {
     }
 
     //delete all the nodes matching the predicate. see https://lodash.com/docs/4.17.15#remove
-    public deleteBy = (predicate: any): IAction => {
+    public deleteBy = (predicate: TPredicatePickNode): IAction => {
         const futureState = this._lodashTargetPredictor(predicate)
         const e = remove(futureState, predicate)
         !!e.length && this.setState(futureState)
@@ -97,26 +108,30 @@ export default class Collection extends Model  {
     }
 
     //find the first node matching the predicate see: https://lodash.com/docs/4.17.15#find
-    public find = (predicate: any): Model | undefined => this.newNode(find(this._lodashTargetPredictor(predicate), predicate))
+    public find = (predicate: TPredicatePickNode): Model | undefined => {
+        const index = this.findIndex(predicate)
+        if (index == -1)
+            return undefined
+        return this.nodeAt(index)
+    }
 
     //return the index of the first element found matching the predicate. see https://lodash.com/docs/4.17.15#findIndex
-    public findIndex = (predicate: any): number => findIndex(this._lodashTargetPredictor(predicate), predicate)
+    public findIndex = (predicate: TPredicatePickNode): number => findIndex(this._lodashTargetPredictor(predicate), predicate)
 
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
-    public filter = (predicate: any): Collection => this.newCollection(filter(this._lodashTargetPredictor(predicate), predicate))
+    public filter = (predicate: TPredicatePickNode): Collection => this.newCollection(filter(this.state, this._treatPredicatePickNode(predicate)))
 
     public filterIn = (key: string, arrayElems: any[]): Collection => this.filter((m: Model) => arrayElems.indexOf(m.state[key]) != -1)
 
     public first = (): Model | undefined => this.nodeAt(0)
 
     public forEach = (callback: (m: any, index: number) => any) => {
-        for (let i = 0; i < this.count(); i++){
+        for (let i = 0; i < this.count(); i++)
             callback(this.state[i], i)
-        }
     }
 
-    public groupBy = (predicate: any): IGrouped => {
-        const d = groupBy(this._lodashTargetPredictor(predicate), predicate)
+    public groupBy = (predicate: TPredicatePickKey): IGrouped => {
+        const d = groupBy(this.state, this._treatPredicatePickNode(predicate))
         const ret: IGrouped = {}
         Object.keys(d).map((key: string) => {
             ret[key] = this.newCollection(d[key])
@@ -159,7 +174,11 @@ export default class Collection extends Model  {
         return this.action(poped)
     }
 
-    public prepend = (...list: any): Collection => this.concat(...list)
+    public prepend = (list: any[]): IAction => {
+        const newList = this.to().listClass(list).concat(this.state.slice())
+        this.setState(newList)
+        return this.action(list.length)
+    }
     
     //add an element to the list
     public push = (v: any): IAction => {
@@ -236,33 +255,57 @@ export default class Collection extends Model  {
     }
 
     // Update the element at index or post it.
-    public updateWhere = (predicate: any, toSet: Object): IAction => {
-        let count = 0;
-        this.forEach((m: Model) => find([m.to().plain()], predicate) && m.setState(toSet) && count++ )
-        return this.action(count)
+    public updateWhere = (predicate: TPredicatePickNode, toSet: Object): IAction => {
+        const list = this.filter(predicate)
+        list.forEach((m: Model) => m.setState(toSet))
+        return list.action(list.count())
     }
 
     public uniq = (): Collection => {
-        let ret: any[] = []
-        this.forEach((m: Model) => {
-            const json = m.to().plain()
-            !find(ret, json) && ret.push(json)
-        })
-        return this.newCollection(ret)
+        let ret = this.newCollection([])
+        this.forEach((m: Model) => !ret.find(m.to().plain()) && ret.push(m))
+        return ret
     }
 
-    public uniqBy = (predicate: any): Collection => this.newCollection(uniqBy(this._lodashTargetPredictor(predicate), predicate))
+    public uniqBy = (predicate: TPredicatePickKey): Collection => this.newCollection(uniqBy(this._lodashTargetPredictor(predicate), predicate))
+
+    private _treatPredicatePickNode = (predicate: TPredicatePickNode) => {
+        if (isFunction(predicate))
+            return predicate
+        
+        else if (isObjectLike(predicate) && isPlainObject(predicate)){
+            return (m: Model) => {
+                const keys = Object.keys(predicate)
+                let count = 0
+                for (const key of keys)
+                    m.state[key] === (predicate as TObjectStringAny)[key] && count++
+                return count === keys.length
+            }
+        } 
+        
+        else if (isArray(predicate))
+            return (m: Model) => m.state[predicate[0] as string] === predicate[1]
+        
+        else if (typeof predicate === 'string')
+            return (m: Model) => !!m.state[predicate]
+
+        throw new Error(`Predicate value error, can be one of:
+    - string
+    - Object {[string]: any}
+    - Array[2] -> [key: string, value: any]
+    - Function ((model: Model, index: number) => boolean)`)
+    }
 
     private _lodashTargetPredictor = (predicate: any) => {
         let countFn = 0
-        if (Array.isArray(predicate)){
+        if (isArray(predicate)){
             for (let o of predicate)
-                typeof o === 'function' && countFn++
+                isFunction(o) && countFn++
             if (countFn != 0 && countFn != predicate.length)
                 throw new Error(`If an array of predicate contains at least 1 function, all the other ones must be a function.`)
             return countFn == 0 ? this.to().plain() : this.state
         }
-        return typeof predicate === 'function' ? this.state : this.to().plain()
+        return isFunction(predicate) ? this.state : this.to().plain()
     }
 
     private _getCollectionModel = (): any => this.super().option().collectionModel() as Collection
