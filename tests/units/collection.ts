@@ -8,6 +8,7 @@ import {
     PostModel,
     USER_DATA
 } from './datas'
+import { group } from 'console';
 
 describe('Collection: initialization', () => {
     it('Collection of Collection (must error)', () => {
@@ -279,4 +280,31 @@ describe('Collection: methods', () => {
         expect(PostList.uniqBy( (o: PostModel) => o.deviceOrigin().nConnexion() ).count()).to.eq(1)
         expect(PostList.uniqBy('id').count()).to.eq(3)
     })
+
+    it('groupBy', () => {
+        const grouped = PostList.groupBy((p: PostModel) => p.random())
+        expect(_.size(grouped)).to.eq(3)
+        const grouped2 = PostList.groupBy((p: PostModel) => p.deviceOrigin().nConnexion())
+        expect(_.size(grouped2)).to.eq(1)
+        const grouped3 = PostList.groupBy((p: PostModel) => p.ID())
+        expect(_.size(grouped3)).to.eq(3)
+    })
+
+    it('filterIn', () => {
+        const list = PostList.filterIn('id', ['57849', '13912111c'])
+        expect(list.count()).to.eq(3)
+        const list2 = PostList.filterIn('random', [12, 234543, 2349, 1234])
+        expect(list2.count()).to.eq(1)
+    })
+
+    it('arrayOf', () => {
+        const list = PostList.arrayOf('id')
+        expect(JSON.stringify(list)).to.eq(JSON.stringify(['57849', '13912111c', 'HELLO_GIRLS', '57849']))
+    })
+
+    it('deleteAll', () => {
+        PostList.deleteAll(PostList.slice(0, 2).state)
+        expect(PostList.count()).to.eq(2)
+    })
+
 })

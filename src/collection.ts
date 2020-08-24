@@ -14,6 +14,7 @@ import Errors from './errors'
 type Constructor<T> = new(...args: any[]) => T;
 
 import { 
+    IGrouped,
     collectionPredictor,
     treatPredicatePickNode,
     treatPredicateSortNode,
@@ -28,9 +29,6 @@ import {
 //for example in a todolist it would be the parent of the TodoList class containing a list of Todos
 //This can be useful to avoid redundant functions like sorting, filtering, pushing, deleting, updating etc...
 
-export interface IGrouped {
-    [propName: string]: Collection
-}
 
 export default class Collection extends Model  {
     

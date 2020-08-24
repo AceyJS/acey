@@ -5,6 +5,9 @@ import isObjectLike from 'lodash/isObjectLike'
 import isArray from 'lodash/isArray'
 import Collection from './collection'
 
+export interface IGrouped {
+    [propName: string]: Collection
+}
 export type TOrder = 'desc' | 'asc'
 
 export type TObjectStringAny = { [char: string]: any }
