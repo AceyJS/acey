@@ -135,6 +135,7 @@ export default Todolist
     | **watch**() |`IWatchAction` | return methods to **watch changes** on the Collection's **state**, **store** and **local store** |
     | -- | -- | -- |
     | **append**(values: (Collection or Object)[]) | `Collection` | Returns a fresh Collection with the Array passed in parameter **added at the end of the current Collection's state**. |
+    | **arrayOf**(key: string) |`any[]` | Returns an **Array of value** for the `key` in **each element** of the `Collection`. |
     | **chunk**(nChunk: number) |`Collection[]` | Returns an Array of collections **splited into groups of the length** of `nChunk`. |
     | **concat**(...list: any) |`Collection` | Creates a new Collection **concatenating the current state** with any values. |
     | **count()** |`number` | Returns the **length** of the Collection's state |
@@ -145,7 +146,9 @@ export default Todolist
     | **find**(predicate: any) | `Model or undefined` | **Find** the **first** node **matching** the predicate |
     | **findIndex**(predicate: any) | `number` | Return the **index** of the **first node matching** the predicate |
     | **filter**(predicate: any) | `Collection` | Returns a new **Collection filled** with **list of node matching** the predicate |
+    | **filterIn**(key: string, arrayElems: any[]) | `Collection` | Returns a new **Collection filled** with the nodes for whom the `key`'s value is **equal** to **one of the value** in the `arrayElems` passed in parameter. |
     | **first**() | `Model or undefined` | Returns the **head** node of the list
+    | **groupBy**(iteratee: any) | `IGrouped` | Returns an **object** composed of **keys generated** from the results of running each element of collection thru iteratee. The corresponding value of each key is a **Collection of elements** responsible for generating the key. |
     | **last**() | `Model or undefined` | Returns the **tail** node of the list  
     | **indexOf**(v: Object or Model) | `number` | Gets the **index of a node** in the list.
     | **limit**v(n: number) | `Collection` | **Picks up** the **`n` first elements** of the list  |
@@ -164,6 +167,7 @@ export default Todolist
     | **splice**(begin: number, nbToDelete[, elem1[, elem2[, ...]]]) | `Collection` | Same than the splice method for arrays  |
     | **updateAt**(v: Object or Model, index: number) | `IAction` | **Updates** the element **at index** with the Model or Object passed in parameter |
     | **updateWhere**(predicate: any, toSet: Object) | `IAction` | **Merges** the states of the Models **matching** the `predicate` **with `toSet`** Object value |
+    | **uniq**() | `IAction` | Returns a **new Collection** with **only unique** elements.|
     | **uniqBy**(iteratee: any) | `IAction` | Returns a **new Collection** with the `iteratee` by which **uniqueness** is computed. |
     
 <br />
