@@ -51,8 +51,8 @@ class User extends Model {
 **state** is the current Model's state.
 
 ```ts
-const user = User.create('Steve', 28)
-console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+const user = User.create('steve', 28)
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
 ```
 
 <br />
@@ -64,7 +64,7 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 **deleteKey** removes a key(s) in the `Model`'s state object
 
 ```ts
-console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
 user.deleteKeys('username', 'id')
 console.log(user.state) // {created_at: '2020-08-21T02:17:05.000Z', age: 28}
 ```
@@ -77,8 +77,8 @@ console.log(user.state) // {created_at: '2020-08-21T02:17:05.000Z', age: 28}
 
 ```ts
 console.log(user.state) // {created_at: '2020-08-21T02:17:05.000Z', age: 28}
-user.hydrate({id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28})
-console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+user.hydrate({id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28})
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
 ```
 
 ℹ️ *What's is the difference with* **`setState`** *?*
@@ -102,8 +102,8 @@ console.log(user.is().connected()) // false
 
 //equal
 console.log(user.is().equal(user)) // true
-console.log(user.is().equal( {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} )) // true
-console.log(user.is().equal( { username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} )) // false
+console.log(user.is().equal( {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} )) // true
+console.log(user.is().equal( { username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} )) // false
 console.log(user.is().equal( null )) // false
 
 //localStorePulled - Only usable when the Model is set has connected.
@@ -152,9 +152,9 @@ console.log(user.save()) // throw an Error because user is NOT connected
 **setState** updates the state by merging it with the Object parameter.
 
 ```ts
-console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
 user.setState({ username: 'Paul', age: 21 })
-console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Paul', created_at: '2020-08-21T02:17:05.000Z', age: 21}
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'paul', created_at: '2020-08-21T02:17:05.000Z', age: 21}
 ```
 
 ℹ️ *What's is the difference with* **`hydrate`** *?*
@@ -163,6 +163,7 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 
 **CLICK HERE FOR EXAMPLE ON GIST.**
 
+<br />
 
 ### `super`
 
@@ -170,9 +171,52 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 
 ```ts
 console.log(user.super()) // {prevState: Object, prevStateStore: Object, defaultState: Object}
-console.log(user.prevState) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+console.log(user.prevState) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
 console.log(user.prevStateStore) // null
-console.log(user.defaultState) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+console.log(user.defaultState) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+```
+
+<br />
+
+### `localStore`
+
+**localStore** returns the Model's LocalStoreManager to manage the Model state stored in the local store. (only accesible with a `connected` Model, in a React or Node env)
+
+*For this example let's suppose `user` is **connected**.*
+
+```ts
+//set
+user.localStore().set() //store the current Model's state to the store.
+/* or user.setState({ some_change }).store() */
+/* or user.action().store() */
+
+//get
+console.log(user.localStore().get()) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+
+//isActive
+console.log(user.localStore().isActive()) // true
+
+//pull
+user.setState({ username: 'NO_USERNAME', id: 'NO_ID', age: -1 })
+console.log(user.state) // {id: 'NO_ID', username: 'NO_USERNAME', created_at: '2020-08-21T02:17:05.000Z', age: -1}
+user.localStore().pull()
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+
+//remove
+user.localStore().remove()
+console.log(user.localStore().get()) // null
+```
+
+<br />
+
+### `to`
+
+**to** return methods to convert your Model's state into different data types (like string, JSON..)
+
+```ts
+console.log(user.to()) // {string: Function, plain: Function} 
+console.log(user.to().string()) // "{"id": "5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3", "username": "steve", "created_at": "2020-08-21T02:17:05.000Z", "age": "28"}"
+console.log(user.to().plain()) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
 ```
 
 
