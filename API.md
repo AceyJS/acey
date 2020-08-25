@@ -233,7 +233,7 @@ export default Todolist
     
 <br />
     
-- **LocalStoreManager** *(only ReactJS and React Native)*: 
+- **LocalStoreManager** *(only React and Node)*: 
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
