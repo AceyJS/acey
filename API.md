@@ -63,7 +63,7 @@ export default Todo
     | **save**() |`IAction` | **Dispatch** the Model's state to the Model's store. |
     | **setState**(state: Object) |`IAction` | **update the state** by merging it with the `Object` parameter. |
     | **super**() | `ISuper` | return methods used by the **acey system**. |
-    | **store**() |`LocalStoreManager`| **(Only if `connected` option is set to `true`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
+    | **localStore**() |`LocalStoreManager`| **(Only if `connected` option is set to `true`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
     | **to**() | `ITo` | return methods to **convert your Model's state** into different data types (like **string**, **JSON**..) |
     | **watch**() |`IWatchAction` | return methods to **watch changes** on the Model's **state**, **store** and **local store** |
     
