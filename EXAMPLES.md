@@ -8,6 +8,12 @@
 
 # Model.
 
+<p align="center">
+  <a>
+    <img src="https://siasky.net/EADADSyChLwhkcxglW4V9Kdce6xMBGNbEIixagA8iVHzMw" width="100%">
+  </a>
+</p>
+
 Each following methods will be used from the following `Model`:
 
 ```ts
@@ -83,7 +89,7 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 
 ℹ️ *What's is the difference with* **`setState`** *?*
 
-`hydrate` fills nested Models/Collections in your Model if there are, meanwhile `setState` just replace the old key-value with the new one in the parameter.
+`hydrate` fills nested Models in your Model if there are, meanwhile `setState` just replace the old key-value with the new one in the parameter.
 
 [There's a gist here](https://gist.github.com/Fantasim/7a5b02c3e3d381b4a8489d580b4d2642) to show you the difference between `hydrate` and `setState`
 
@@ -142,7 +148,7 @@ console.log(user.kids()) // { save: Function, store: Function }
 console.log(user.save()) // throw an Error because user is NOT connected
 ```
 
-ℹ️ `save` is only used when working with React. (See an example with React [here](https://github.com/arysociety/acey#1-a-react-counter))
+ℹ️ `save` makes sense to be used only with React. (See an example with React [here](https://github.com/arysociety/acey#1-a-react-counter))
 
 <br />
 
@@ -249,8 +255,121 @@ user.watch().localStoreFetch(() => {
 })
 ```
 
+<br />
+<br />
+
+# Collection.
+
+<p align="center" font-style="italic" >
+  <a>
+    <img src="https://siasky.net/GADqcD9yzvtu9lMGSVtKY5bXto96CJpFu7jTJyMy78iZrA" width="100%">
+  </a>
+</p>
 
 
+Each following methods will be used from the following `Collection`:
+
+```ts
+import { Model, Collection, IModelOptions } from 'acey' 
+
+const DEFAULT_STATE = {
+  id: '',
+  content: '',
+  created_at: new Date(),
+}
+
+class Todo extends Model {
+   
+   constructor(initialState = DEFAULT_STATE, options: IModelOptions){
+      super(initialState, options)
+   }
+   
+   ID = () => this.state.id
+   content = () => this.state.content
+   createdAt = () => this.state.created_at
+}
+
+class Todolist extends Collection {
+
+   constructor(initialState = [], options: IModelOptions){
+      super(initialState, [Todo, Todolist], options)
+   }
+}
+```
+
+
+<br />
+
+## Collection's values
+
+### `state`
+
+**state** is the current Collection's state.
+
+```ts
+const todolist = new Todolist([ {id: '1', content: 'Initial todo :)', created_at: '2020-08-21T02:17:05.000Z' } ], { connected: false }) 
+console.log(todolist.state) // [ Todo ]
+console.log(todolist.state[0].state) // { id: '1', content: 'Initial todo :)', created_at: '2020-08-21T02:17:05.000Z' }
+```
+
+<br />
+
+### `save`
+
+**save** dispatches the Collection's state to the Acey's store. (only accesible with a `connected` Collection)
+
+```ts
+console.log(todolist.save()) // throw an Error because todolist is NOT connected
+```
+
+ℹ️ `save` makes sense to be used only with React. (See an example with React [here](https://github.com/arysociety/acey#1-a-react-counter))
+
+<br />
+
+### `is`
+
+Same feature than [Model one](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#is).
+
+<br />
+
+### `setState`
+
+**setState** replaces the Collection state with the one passed in parameters.
+
+```ts
+console.log(todolist.state[0].state) // { id: '1', content: 'Initial todo :)', created_at: '2020-08-21T02:17:05.000Z' }
+user.setState([ { id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }  ])
+console.log(todolist.state[0].state) // { id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' } 
+```
+
+<br />
+
+### `super`
+Same feature than [Model one](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#super).
+
+<br />
+
+### `localStore`
+Same features than [Model one](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#localstore).
+
+<br />
+
+### `to`
+
+**to** returns methods to convert your Collection's state into different data types (like string, JSON..)
+
+```ts
+console.log(todolist.to()) // {string: Function, plain: Function} 
+console.log(todolist.to().string()) // [{"id": "2", "content": "Second todo :)", "created_at": "2020-08-21T02:17:05.000Z" }]
+console.log(todolist.to().plain()) // [{ id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }]
+console.log(todolist.to().listClass([{id: '1', content: 'Initial todo :)', created_at: '2020-08-21T02:17:05.000Z' }])) // [Todo]
+```
+
+<br />
+
+### `watch`
+
+Same features than [Model one](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#watch).
 
 
 
