@@ -372,5 +372,149 @@ console.log(todolist.to().listClass([{id: '1', content: 'Initial todo :)', creat
 Same features than [Model one](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#watch).
 
 
+<br />
+
+### `append`
+
+**append** returns a fresh Collection with the Array passed in parameter added at the end of the current Collection's state.
+
+```ts
+todolist.append([ {"id": "3", "content": "Third todo :)", "created_at": "2020-08-21T02:17:05.000Z" } ])
+console.log(todolist.to().plain()) // [{ id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }, {"id": "3", "content": "Third todo :)", "created_at": "2020-08-21T02:17:05.000Z" }]
+```
+
+<br />
+
+### `arrayOf`
+
+**arrayOf** returns an Array of value for the key in each element of the Collection.
+
+```ts
+console.log(todolist.arrayOf('id')) // ['2', '3']
+```
+
+<br />
+
+### `chunk`
+
+**chunk** returns an Array of collections splited into groups of the length of nChunk.
+
+```ts
+console.log(todolist.chunk(1)) // [ Todolist(1), Todolist(1) ] 
+```
+
+<br />
+
+### `chunk`
+
+**chunk** returns an Array of collections splited into groups of the length of nChunk.
+
+```ts
+console.log(todolist.chunk(1)) // [ Todolist(1), Todolist(1) ] 
+```
+
+<br />
+
+### `concat`
+
+Same use than [append](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#append).
+
+```ts
+console.log(todolist.chunk(1)) // [ Todolist(1), Todolist(1) ] 
+```
+
+<br />
+
+### `count`
+
+**count** returns the length of the Collection's state
+
+```ts
+console.log(todolist.count()) // 2
+```
+
+<br />
+
+### `copy`
+
+**copy** returns a fresh instance of the current Collection.
+
+```ts
+const copy = todolist.copy()
+console.log(todolist.is().equal(copy)) // true
+```
+
+<br />
+
+### `delete`
+
+**delete** deletes the Model passed in parameter if present in the list.
+
+```ts
+console.log(todolist.count()) // 2
+todolist.delete(todolist.state[0])
+console.log(todolist.count()) // 1
+```
+
+<br />
+
+### `deleteBy`
+
+**deleteBy** deletes all the nodes matching the predicate
+
+```ts
+todolist.append([ 
+  {"id": "4", "content": "A new todo", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "5", "content": "A new todo", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+])
+
+console.log(todolist.count()) // 4
+todolist.deleteBy({ content: "A new todo" })
+// or
+// todolist.deleteBy((todo: Todo) => todo.content() === "A new todo" )
+console.log(todolist.count()) // 2
+```
+
+<br />
+
+### `deleteIndex`
+
+**deleteIndex** removes an element at index.
+
+```ts
+console.log(todolist.count()) // 2
+todolist.deleteIndex(0)
+console.log(todolist.count()) // 1
+```
+
+<br />
+
+### `find`
+
+**find** finds the first node matching the predicate
+
+```ts
+console.log(todolist.find({id: 1})) // undefined
+console.log(todolist.find({id: 6})) // Todo
+// or
+// todolist.deleteBy((todo: Todo) => todo.ID() === 6)
+```
+
+<br />
+
+### `find`
+
+**find** finds the first node matching the predicate
+
+```ts
+console.log(todolist.find({id: 1})) // undefined
+console.log(todolist.find({id: 6})) // Todo
+// or
+// todolist.deleteBy((todo: Todo) => todo.ID() === 6)
+```
+
+
+
 
 
