@@ -1,0 +1,167 @@
+# 🏗️ Use example with Acey's methods. [10% completed]🏗️
+
+### Table of contents
+* [Model](#model)
+
+<br />
+
+
+# Model.
+
+Each following methods will be used from the following `Model`:
+
+```ts
+import { Model, IModelOptions } from 'acey' 
+
+const DEFAULT_STATE = {
+  id: '',
+  username: '',
+  created_at: new Date(),
+  age: 0
+}
+
+class User extends Model {
+   
+   static create(username: string, age: number) => {
+     return new User({ 
+        id: randomUIID(), 
+        username, 
+        created_at: new Date(),
+        age
+     }, { connected: false })
+   }
+   
+   constructor(initialState = DEFAULT_STATE, options: IModelOptions){
+      super(initialState, options)
+   }
+   
+   ID = () => this.state.id
+   username = () => this.state.username
+   createdAt = () => this.state.created_at
+   age = () => this.state.age
+}
+```
+
+<br />
+
+## Model's values
+
+### `state`
+
+**state** is the current Model's state.
+
+```ts
+const user = User.create('Steve', 28)
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+```
+
+<br />
+
+## Model's methods
+
+### `deleteKey`
+
+**deleteKey** removes a key(s) in the `Model`'s state object
+
+```ts
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+user.deleteKeys('username', 'id')
+console.log(user.state) // {created_at: '2020-08-21T02:17:05.000Z', age: 28}
+```
+
+<br />
+
+### `hydrate`
+
+**hydrate** fills the Model's state with the Object passed in parameter.
+
+```ts
+console.log(user.state) // {created_at: '2020-08-21T02:17:05.000Z', age: 28}
+user.hydrate({id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28})
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+```
+
+ℹ️ *What's is the difference with* **`setState`** *?*
+
+`hydrate` fills nested Models/Collections in your Model if there are meanwhile `setState` just replace the old key-value with the new one in the parameter.
+
+**CLICK HERE FOR EXAMPLE ON GIST.**
+
+<br />
+
+### `is`
+
+**is** returns methods giving informations about the Model's composition.
+
+```ts
+//is
+console.log(user.is()) // {connected: Function, equal: Function, localStorePulled: Function, empty: Function, localStorePulled: Function, keyGenerated: Function, localStoreEnabled: Function} 
+
+//connected
+console.log(user.is().connected()) // false
+
+//equal
+console.log(user.is().equal(user)) // true
+console.log(user.is().equal( {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} )) // true
+console.log(user.is().equal( { username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} )) // false
+console.log(user.is().equal( null )) // false
+
+//localStorePulled - Only usable when the Model is set has connected.
+console.log(user.is().localStorePulled()) // false
+
+//empty
+console.log(user.is().empty()) // false
+console.log(new User({}, {connected: false}).is().empty()) // true
+
+//keyGenerated - Used in the acey system, developers shouldn't have to use this function.
+console.log(user.is().keyGenerated()) // false
+
+//localStoreEnabled - Only usable when the Model is set has connected.
+console.log(user.is().localStoreEnabled()) // false
+```
+
+<br />
+
+### `kids`
+
+**kids** returns the Model's actions that interacts with the store (Acey store and local store). This method is used to be called as the options of a nested Model when instancing it.
+
+```ts
+console.log(user.kids()) // { save: Function, store: Function } 
+```
+
+**CLICK HERE FOR EXAMPLE ON GIST.**
+
+<br />
+
+### `save`
+
+**save** dispatches the Model's state to the Acey's store. (only accesible with a `connected` Model)
+
+```ts
+console.log(user.save()) // throw an Error because user is NOT connected
+```
+
+ℹ️ `save` is only used when working with React. (See an example with React [here](https://github.com/arysociety/acey#1-a-react-counter))
+
+<br />
+
+
+### `setState`
+
+**setState** updates the state by merging it with the Object parameter.
+
+```ts
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+user.setState({ username: 'Paul', age: 21 })
+console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Paul', created_at: '2020-08-21T02:17:05.000Z', age: 21}
+```
+
+ℹ️ *What's is the difference with* **`hydrate`** *?*
+
+`hydrate` fills nested Models/Collections in your Model if there are meanwhile `setState` just replace the old key-value with the new one in the parameter.
+
+**CLICK HERE FOR EXAMPLE ON GIST.**
+
+
+
