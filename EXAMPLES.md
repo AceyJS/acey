@@ -164,4 +164,20 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 **CLICK HERE FOR EXAMPLE ON GIST.**
 
 
+### `super`
+
+**super** returns methods used by the Acey system.
+
+```ts
+console.log(user.super()) // {prevState: Object, prevStateStore: Object, defaultState: Object}
+console.log(user.prevState) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+console.log(user.prevStateStore) // null
+console.log(user.defaultState) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'Steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+```
+
+
+
+
+
+
 
