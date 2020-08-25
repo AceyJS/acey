@@ -73,16 +73,16 @@ describe('Model: deleteKey', () => {
     const PostList = new PostCollection(USER_DATA.post_list, undefined)
 
     it('deleting a key on a Collection', () => {
-        expect(() => PostList.deleteKey('l')).to.throw(Error)
+        expect(() => PostList.deleteKeys('l')).to.throw(Error)
     });
     it('deleting a key on a Model : testing no Error', () => {
-        expect(() => User.deleteKey('l')).to.not.throw(Error)
+        expect(() => User.deleteKeys('l')).to.not.throw(Error)
     });
     it('deleting a key on a Model : testing result', () => {
         const key = 'first_name'
         const User = new UserModel(USER_DATA, undefined)
         const data = User.to().plain()
-        User.deleteKey(key)
+        User.deleteKeys(key)
         delete data[key]
         expect(User.to().string()).to.equal(JSON.stringify(data))
     });

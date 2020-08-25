@@ -212,9 +212,9 @@ const main = async () => {
             expect(i).to.eq(14)
             const head = PostList.nodeAt(0)
             head?.setState({content: 'Miky :)'}) //15
-            head?.deleteKey('content') //16
+            head?.deleteKeys('content') //16
             expect(i).to.eq(16)
-            head?.deleteMultiKey('id', 'random') //17
+            head?.deleteKeys('id', 'random') //17
             expect(i).to.eq(17)
             const count = PostList.count()
             PostList.delete(head) //18
@@ -255,7 +255,7 @@ const main = async () => {
                 expect(JSON.stringify(prevState)).to.not.eq(JSON.stringify(newState))
                 h++
             })
-            Post.deleteKey('random')
+            Post.deleteKeys('random')
             Post.setState({'content': 'new content'})
             watcher3.stop()
             Post.setState({'content': 'new content!'})

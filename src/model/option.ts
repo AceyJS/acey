@@ -6,6 +6,11 @@ import { generateUniqModelKey } from '../lib'
 
 type TOptionFunc = (() => IAction) | null
 
+export interface IUXOptions {
+    key?: string
+    connected: boolean
+}
+
 export interface IOptions {
     key: string
     connected: boolean

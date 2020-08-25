@@ -139,25 +139,26 @@ export default class Model {
     }
 
     //Only usable in a Model
-    public deleteKey = (key: string): IAction => {
+    public deleteKeys = (...keys: string[]): IAction => {
         if (this.is().collection())
             throw new Error(`deleteKey can't be used in a Collection`)
 
-        const prevStatePlain = this.to().plain()
-        key in this.state && delete this.state[key] && this._handleStateChanger(prevStatePlain)
-        return this.action()
-    }
+        const one = (key: string): IAction => {
+            const prevStatePlain = this.to().plain()
+            key in this.state && delete this.state[key] && this._handleStateChanger(prevStatePlain)
+            return this.action()            
+        }
 
-    //Only usable in a Model
-    public deleteMultiKey = (...keys: string[]): IAction => {
-        if (this.is().collection())
-            throw new Error(`deleteMultiKey can't be used in a Collection`)
-        const prevStatePlain = this.to().plain()
-        let inCount = 0
-        for (let i = 0; i < keys.length; i++)
-            delete this.state[keys[i]] && inCount++
-        !!inCount && this._handleStateChanger(prevStatePlain)
-        return this.action()
+        const multi = (keys: string[]): IAction => {
+            const prevStatePlain = this.to().plain()
+            let inCount = 0
+            for (let i = 0; i < keys.length; i++)
+                delete this.state[keys[i]] && inCount++
+            !!inCount && this._handleStateChanger(prevStatePlain)
+            return this.action()
+        }
+
+        return keys.length === 1 ? one(keys[0]) : multi(keys)
     }
     
     public hydrate = (state: any): IAction => {

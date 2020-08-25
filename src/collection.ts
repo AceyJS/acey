@@ -121,7 +121,10 @@ export default class Collection extends Model  {
     //pick up a list of node matching the predicate. see: https://lodash.com/docs/4.17.15#filter
     public filter = (predicate: TPredicatePickNode): Collection => this.newCollection(filter(this.state, treatPredicatePickNode(predicate)))
 
-    public filterIn = (key: string, arrayElems: any[]): Collection => this.filter((m: Model) => arrayElems.indexOf(m.state[key]) != -1)
+    public filterIn = (predicate: TPredicatePickKey, arrayElems: any[]): Collection => {
+        const value = (m: Model, index: number) => typeof predicate === 'string' ? m.state[predicate] : predicate(m, index)
+        return this.filter((m: Model, index: number) => arrayElems.indexOf(value(m, index)) != -1)
+    }
 
     public first = (): Model | undefined => this.nodeAt(0)
 

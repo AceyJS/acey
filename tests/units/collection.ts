@@ -295,6 +295,13 @@ describe('Collection: methods', () => {
         expect(list.count()).to.eq(3)
         const list2 = PostList.filterIn('random', [12, 234543, 2349, 1234])
         expect(list2.count()).to.eq(1)
+
+        const listA = PostList.filterIn((m: PostModel) => m.ID(), ['57849', '13912111c'])
+        expect(listA.count()).to.eq(3)
+        const listA2 = PostList.filterIn((m: PostModel) => m.random(), [12, 234543, 2349, 1234])
+        expect(listA2.count()).to.eq(1)
+
+
     })
 
     it('arrayOf', () => {
