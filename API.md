@@ -124,7 +124,7 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | **hydrate**(state: Object) | `IAction` | **fill the Collection's state** with the `Array` passed in parameter. |
+    | **hydrate**(state: Array) | `IAction` | **fill the Collection's state** with the `Array` passed in parameter. |
     | **is**() |`IsManager` | return **methods giving informations** about the **Collection's composition**. |
     | **kids**() | `IAction` | return the class actions (use to be passed as options in the instanciation of the Collection's Models.) |
     | **save**() |`IAction` | **Dispatch** the Collection's state to the Collection's store. |
