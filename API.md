@@ -63,7 +63,7 @@ export default Todo
     | **save**() |`IAction` | **Dispatch** the Model's state to the Model's store. |
     | **setState**(state: Object) |`IAction` | **update the state** by merging it with the `Object` parameter. |
     | **super**() | `ISuper` | return methods used by the **acey system**. |
-    | **store**() |`LocalStoreManager`| **(Only if `connected` option is set to `true`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
+    | **localStore**() |`LocalStoreManager`| **(Only if `connected` option is set to `true`)** return the Model's LocalStoreManager to deal with the local store related with the Model |
     | **to**() | `ITo` | return methods to **convert your Model's state** into different data types (like **string**, **JSON**..) |
     | **watch**() |`IWatchAction` | return methods to **watch changes** on the Model's **state**, **store** and **local store** |
     
@@ -124,7 +124,7 @@ export default Todolist
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
-    | **hydrate**(state: Object) | `IAction` | **fill the Collection's state** with the `Array` passed in parameter. |
+    | **hydrate**(state: Array) | `IAction` | **fill the Collection's state** with the `Array` passed in parameter. |
     | **is**() |`IsManager` | return **methods giving informations** about the **Collection's composition**. |
     | **kids**() | `IAction` | return the class actions (use to be passed as options in the instanciation of the Collection's Models.) |
     | **save**() |`IAction` | **Dispatch** the Collection's state to the Collection's store. |
@@ -151,15 +151,16 @@ export default Todolist
     | **groupBy**(iteratee: any) | `IGrouped` | Returns an **object** composed of **keys generated** from the results of running each element of collection thru iteratee. The corresponding value of each key is a **Collection of elements** responsible for generating the key. |
     | **last**() | `Model or undefined` | Returns the **tail** node of the list  
     | **indexOf**(v: Object or Model) | `number` | Gets the **index of a node** in the list.
-    | **limit**v(n: number) | `Collection` | **Picks up** the **`n` first elements** of the list  |
+    | **limit**(n: number) | `Collection` | Returns a collection filled with the `n` **first nodes** of the list.  |
     | **map**(callback: (v: Model, index: number) => any) | `any` | Creates a new array with the results of calling the `callback` for every Collection node (**same** than **javascript map** on arrays) |
     | **newCollection**(arr: Array) | `Collection` | Return **fresh instanced** Collection with `arr` passed in parameter | 
     | **newModel**(obj: Object) | `Model` | Return a **fresh instanced Collection's Model** built with `obj` passed in parameter | 
     | **nodeAt**(index: number) | `Model or undefined` | Returns the **node at `index`** in the list. |
-    | **offset**(n: number) | `Collection` | **Removes** the **`n` first elements** of the list  |
-    | **orderBy**(iteratees: any[], orders: any[]) | `Collection` | Returns a **sorted array** of instanced Model upon the parameters passed |
+    | **offset**(n: number) | `Collection` |  Returns a fresh instance of the collection removing the `n` **first nodes** of the list. |
+    | **orderBy**(iteratees: any[], orders: any[]) | `Collection` | Returns a **fresh Collection** with the nodes **sorted** upon the parameters passed |
     | **pop**() | `IAction` | **Remove** the **last node** in the list |
-    | **prepend**(values: (Collection | Object)[]) |`Collection` | Returns a fresh Collection with the **`Array`** passed in parameter **added at the beginning of the current Collection's state**. |
+    | **prepend**(values: Collection[] or Object[]) | `Collection` | Returns a fresh Collection with the **`Array`** passed in parameter **added at the beginning of the current Collection's state**. |
+    | **push**() | `IAction` | **Add** an element at the **end** in the list |
     | **reduce**(callback: (accumulator: any, currentValue: any) => any, initialAccumulator: any) | `any` | Reduces Collection to a value which is the accumulated result of running each element in collection, where each successive invocation is supplied the return value of the previous. If initialAccumulator is not given, the first Model of Collection is used as the initial value. |
     | **nth**(index: number) | `Model or undefined` | Gets the **node at index n** of the Collection. If n is negative, the nth node from the end is returned.  |
     | **shift**() | `IAction` | **Remove** the **first** element |
@@ -233,7 +234,7 @@ export default Todolist
     
 <br />
     
-- **LocalStoreManager** *(only ReactJS and React Native)*: 
+- **LocalStoreManager** *(only React and Node)*: 
 
     | Prototype | Return value | Description |
     | -- | -- | -- |
