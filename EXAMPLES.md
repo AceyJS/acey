@@ -471,8 +471,7 @@ todolist.append([
 
 console.log(todolist.count()) // 4
 todolist.deleteBy({ content: "A new todo" })
-// or
-// todolist.deleteBy((todo: Todo) => todo.content() === "A new todo" )
+/* or todolist.deleteBy((todo: Todo) => todo.content() === "A new todo") */
 console.log(todolist.count()) // 2
 ```
 
@@ -492,29 +491,72 @@ console.log(todolist.count()) // 1
 
 ### `find`
 
-**find** finds the first node matching the predicate
+**find** returns the first node matching the predicate, undefined if not found
 
 ```ts
 console.log(todolist.find({id: 1})) // undefined
 console.log(todolist.find({id: 6})) // Todo
-// or
-// todolist.deleteBy((todo: Todo) => todo.ID() === 6)
+/* or todolist.find((todo: Todo) => todo.ID() === 6) */
 ```
 
 <br />
 
-### `find`
+### `findIndex`
 
-**find** finds the first node matching the predicate
+**findIndex** returns the index of the first node matching the predicate, -1 if not found.
 
 ```ts
-console.log(todolist.find({id: 1})) // undefined
-console.log(todolist.find({id: 6})) // Todo
-// or
-// todolist.deleteBy((todo: Todo) => todo.ID() === 6)
+console.log(todolist.find({id: 1})) // -1
+console.log(todolist.find({id: 6})) // 0
+/* or todolist.find((todo: Todo) => todo.ID() === 6) */
 ```
 
+<br />
+
+### `filter`
+
+**filter** returns a new Collection filled with list of node matching the predicate
+
+```ts
+todolist.append([ 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "8", "content": "Content B", "created_at": "2020-08-21T02:17:05.000Z" } 
+])
+
+console.log(todolist.to().plain()) /* [ 
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "8", "content": "Content B", "created_at": "2020-08-21T02:17:05.000Z" } 
+]) */
 
 
+// Example 1
+console.log(todolist.filter({id: 6}) // [ Todo ]
+/* or todolist.filter((todo: Todo) => todo.ID() === 6) */
 
+// Example 2
+console.log(todolist.filter((todo: Todo) => todo.content().startsWith('Content'))) // [ Todo, Todo ] 
+```
+
+<br />
+
+### `filterIn`
+
+**filterIn** returns a new Collection filled with the nodes for whom the `key`'s value is equal to one of the value in the `arrayElems` passed in parameter.
+
+```ts
+console.log(todolist.filterIn('id', [7, 8, 9, 10])) // [Todo, Todo] 
+/* or todolist.filterIn((todo: Todo) => todo.ID(), [7, 8, 9, 10]) */
+```
+
+<br />
+
+### `first`
+
+**first** returns the head node of the list.
+
+```ts
+console.log(todolist.first()) // Todo
+console.log(todolist.first().to().plain()) // {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" }
+```
 
