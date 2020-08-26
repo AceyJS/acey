@@ -63,7 +63,7 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 
 ### `deleteKey`
 
-**deleteKey** removes a key(s) in the `Model`'s state object
+**deleteKey** removes key(s) in the `Model`'s state object
 
 ```ts
 console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
