@@ -1,6 +1,29 @@
-# 🏗️ Use example with Acey's methods. [10% completed]🏗️
+# API Example ✏️ 
 
 <br />
+
+<br />
+
+
+<p align="center">
+  <a href="#model">
+    <img width="20%" src="https://siasky.net/EAAzsnQ4WJc4Yg5pbj-Z-Dp7c7av6NV_jqakGpXoQrDh2A"/>
+  </a>
+
+  <img width="5%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+  
+  <a href="#collection">
+    <img width="20%" src="https://siasky.net/EABCA6-YMiNNSgZQr-SGFw8PTlRcRUy1umxSlx5l1NJBxw"/>
+  </a>
+
+</p>
+
+<br />
+
+<br />
+
+<br />
+
 
 # Model.
 
