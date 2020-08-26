@@ -189,8 +189,10 @@ console.log(user.defaultState) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', u
 ```ts
 //set
 user.localStore().set() //store the current Model's state to the store.
-/* or user.setState({ some_change }).store() */
-/* or user.action().store() */
+//or
+user.setState({ some_change }).store()
+//or
+user.action().store()
 
 //get
 user.localStore().get() // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
@@ -454,8 +456,10 @@ todolist.to().plain() /* [
 */
 
 todolist.delete(todolist.state[0])
-/* or todolist.delete(todolist.to().plain()[0]) */
-/* or todolist.delete(todolist.state[0].to().plain()) */
+//or
+todolist.delete(todolist.to().plain()[0])
+//or 
+todolist.delete(todolist.state[0].to().plain())
 
 todolist.to().plain() // [{ id: '3', content: 'Third todo :)', created_at: '2020-08-21T02:17:05.000Z' }]
 ```
@@ -481,7 +485,8 @@ todolist.to().plain() /* [
 ]
 
 todolist.deleteBy({ content: "A new todo" })
-/* or todolist.deleteBy((todo: Todo) => todo.content() === "A new todo") */
+//or
+todolist.deleteBy((todo: Todo) => todo.content() === "A new todo")
 
 todolist.to().plain() /* [
   { id: '3', content: 'Third todo :)', created_at: '2020-08-21T02:17:05.000Z' }
@@ -514,8 +519,11 @@ todolist.to().plain() /* [{ id: '6', content": 'AN UPPERCASE TODO', created_at: 
 
 ```ts
 todolist.find({id: 1}) // undefined
+
 todolist.find({id: 6}) // Todo
-/* or todolist.find((todo: Todo) => todo.ID() === 6) */
+//or
+todolist.find((todo: Todo) => todo.ID() === 6)
+
 ```
 
 <br />
@@ -526,8 +534,10 @@ todolist.find({id: 6}) // Todo
 
 ```ts
 todolist.find({id: 1}) // -1
+
 todolist.find({id: 6}) // 0
-/* or todolist.find((todo: Todo) => todo.ID() === 6) */
+//or
+todolist.find((todo: Todo) => todo.ID() === 6)
 ```
 
 <br />
@@ -551,7 +561,9 @@ todolist.to().plain() /* [
 
 // Example 1
 todolist.filter({id: 6}) // [ Todo ]
-/* or todolist.filter((todo: Todo) => todo.ID() === 6) */
+//or 
+todolist.filter((todo: Todo) => todo.ID() === 6)
+
 
 // Example 2
 todolist.filter((todo: Todo) => todo.content().startsWith('Content')) // [ Todo, Todo ] 
@@ -565,7 +577,8 @@ todolist.filter((todo: Todo) => todo.content().startsWith('Content')) // [ Todo,
 
 ```ts
 todolist.filterIn('id', [7, 8, 9, 10]) // [Todo, Todo] 
-/* or todolist.filterIn((todo: Todo) => todo.ID(), [7, 8, 9, 10]) */
+//or 
+todolist.filterIn((todo: Todo) => todo.ID(), [7, 8, 9, 10])
 ```
 
 <br />
@@ -720,7 +733,7 @@ todolist.to().plain() /* [
 **prepend** returns a fresh Collection with the Array passed in parameter added at the beginning of the current Collection's state.
 
 ```ts
-todolist.prepend([ {"id": "9", "content": "A preprended Todo", "created_at": "2020-08-21T02:17:05.000Z" } ])
+todolist.prepend([ { id: '9', content: "A preprended Todo", created_at: new Date() } ])
 todolist.to().plain() /* [
   {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
   {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
@@ -759,6 +772,197 @@ todolist.nth(2).to().plain() // {"id": "9", "content": "A preprended Todo", "cre
 todolist.nth(3).to().plain() // {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
 todolist.nth(-1).to().plain() // {"id": "9", "content": "A preprended Todo", "created_at": "2020-08-21T02:17:05.000Z" }
 ```
+
+<br />
+
+### `shift`
+
+**shift** removes the `first` node 
+
+```ts
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "9", "content": "A preprended Todo", "created_at": "2020-08-21T02:17:05.000Z" }
+]
+*/
+
+todolist.shift()
+
+todolist.to().plain() /* [
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "9", "content": "A preprended Todo", "created_at": "2020-08-21T02:17:05.000Z" }
+]
+*/
+```
+
+<br />
+
+### `slice`
+
+**slice** same than the [slice](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Array/slice) method for arrays
+
+```ts
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+
+todolist.slice() // Todolist(2)
+todolist.slice().to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+
+todolist.slice(1) //Todolist(1)
+todolist.slice(1).to().plain() // [{"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" }]
+
+todolist.slice(0, 1) //Todolist(1)
+todolist.slice(1).to().plain() // [{"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" }]
+
+```
+
+<br />
+
+### `splice`
+
+**splice** same than the [splice](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Array/splice) method for arrays
+
+```ts
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+
+todolist.splice(1, 1) // Todolist(1)
+
+todolist.splice(1, 1).to().plain() // [ {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } ]
+```
+
+<br />
+
+### `push`
+
+**push** Add an element at the end of the Collection
+
+```ts
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+
+todolist.push({ id: '10', content: "This is the 10th element !", created_at: new Date() })
+
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "10", "content": "This is the 10th element !", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+```
+
+<br />
+
+### `updateAt`
+
+**updateAt** updates the element at index with the Model or Object passed in parameterv
+
+```ts
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "10", "content": "This is the 10th element !", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+
+todolist.updateAt( { id: '11', content: "Todo replacing an old one", created_at: new Date() }, 0)
+
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "11", "content": "Todo replacing an old one", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "10", "content": "This is the 10th element !", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+```
+
+<br />
+
+### `updateWhere`
+
+**updateWhere** Merges the states of the Models matching the predicate with toSet Object value
+
+```ts
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "11", "content": "Todo replacing an old one", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "10", "content": "This is the 10th element !", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+
+todolist.updateWhere( { id: '11' }, { id: '6', content: 'AN UPPERCASE TODO' } )
+//or 
+todolist.updateWhere((todo: Todo) => todo.ID() === '11', { id: '6', content: 'AN UPPERCASE TODO' } )
+
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "10", "content": "This is the 10th element !", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+```
+
+<br />
+
+### `uniq`
+
+**uniq** returns a ``new Collection`` with the **unique** elements of the current one.
+
+```ts
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "10", "content": "This is the 10th element !", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+
+todolist.uniq() // Todolist(2)
+
+todolist.uniq().to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "10", "content": "This is the 10th element !", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+```
+
+<br />
+
+### `uniqBy`
+
+**uniqBy** Returns a new Collection with the iteratee by which uniqueness is computed.
+
+```ts
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "10", "content": "This is the 10th element !", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+
+todolist.uniqBy('id') // Todolist(2)
+//or 
+todolist.uniqBy( (todo: Todo) => todo.ID() ) // Todolist(2)
+
+todolist.uniqBy('id').to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "10", "content": "This is the 10th element !", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+*/
+```
+
 
 
 
