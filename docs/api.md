@@ -5,7 +5,6 @@
 
 <br />
 
-<br />
 
 <p align="center">
   <a href="#model">
@@ -31,7 +30,6 @@
 
 <br />
 
-<br />
 
 ## Model
 
