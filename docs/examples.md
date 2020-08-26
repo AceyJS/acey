@@ -1,4 +1,4 @@
-# API Example ✏️ 
+# [API](https://github.com/arysociety/acey/edit/master/docs/api.md) Examples ✏️ 
 
 <br />
 
