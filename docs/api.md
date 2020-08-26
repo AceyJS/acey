@@ -1,8 +1,6 @@
 
 # API 📐  
 
-## Table of contents
-
 <br />
 
 <br />
