@@ -151,7 +151,7 @@ export default Todolist
     | **groupBy**(iteratee: any) | `IGrouped` | Returns an **object** composed of **keys generated** from the results of running each element of collection thru iteratee. The corresponding value of each key is a **Collection of elements** responsible for generating the key. |
     | **last**() | `Model or undefined` | Returns the **tail** node of the list  
     | **indexOf**(v: Object or Model) | `number` | Gets the **index of a node** in the list.
-    | **limit**v(n: number) | `Collection` | **Picks up** the **`n` first elements** of the list  |
+    | **limit**(n: number) | `Collection` | **Picks up** the **`n` first elements** of the list  |
     | **map**(callback: (v: Model, index: number) => any) | `any` | Creates a new array with the results of calling the `callback` for every Collection node (**same** than **javascript map** on arrays) |
     | **newCollection**(arr: Array) | `Collection` | Return **fresh instanced** Collection with `arr` passed in parameter | 
     | **newModel**(obj: Object) | `Model` | Return a **fresh instanced Collection's Model** built with `obj` passed in parameter | 
