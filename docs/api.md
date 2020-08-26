@@ -147,7 +147,6 @@ export default Todolist
     | -- | -- | -- |
     | [**hydrate**](https://github.com/arysociety/acey/blob/master/docs/examples.md#hydrate-1)(state: Array) | `IAction` | **fill the Collection's state** with the `Array` passed in parameter. |
     | [**is**](https://github.com/arysociety/acey/blob/master/docs/examples.md#is-1)() |`IsManager` | return **methods giving informations** about the **Collection's composition**. |
-    | [**kids**](https://github.com/arysociety/acey/blob/master/docs/examples.md#kids-1)() | `IAction` | return the class actions (use to be passed as options in the instanciation of the Collection's Models.) |
     | [**save**](https://github.com/arysociety/acey/blob/master/docs/examples.md#save-1)() |`IAction` | **Dispatch** the Collection's state to the Collection's store. |
     | [**setState**](https://github.com/arysociety/acey/blob/master/docs/examples.md#setstate-1)(state: Array) |`IAction` | **replace the state** by the one passed in parameter. |
     | [**super**](https://github.com/arysociety/acey/blob/master/docs/examples.md#super-1)() | `ISuper` | return methods used by the **acey system**. |
