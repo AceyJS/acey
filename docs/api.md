@@ -1,7 +1,5 @@
 
-# Acey API 📐
-
-<br />
+# API 📐  
 
 ## Table of contents
 
