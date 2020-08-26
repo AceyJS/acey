@@ -45,7 +45,7 @@
 
 
 <p align="center">
-  <a target="_blank" href="https://github.com/arysociety/acey/blob/master/API.md">
+  <a target="_blank" href="https://github.com/arysociety/acey/blob/master/docs/API.md">
     <img width="20%" src="https://siasky.net/CAAkpr2DonQI6sv58Q0yYtyLpBOAmSS93vt1cZlQOx4riQ"/>
   </a>
 
