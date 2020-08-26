@@ -1,10 +1,6 @@
 # 🏗️ Use example with Acey's methods. [10% completed]🏗️
 
-### Table of contents
-* [Model](#model)
-
 <br />
-
 
 # Model.
 
@@ -101,29 +97,29 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 
 ```ts
 //is
-console.log(user.is()) // {connected: Function, equal: Function, localStorePulled: Function, empty: Function, localStorePulled: Function, keyGenerated: Function, localStoreEnabled: Function} 
+user.is() // {connected: Function, equal: Function, localStorePulled: Function, empty: Function, localStorePulled: Function, keyGenerated: Function, localStoreEnabled: Function} 
 
 //connected
-console.log(user.is().connected()) // false
+user.is().connected() // false
 
 //equal
-console.log(user.is().equal(user)) // true
-console.log(user.is().equal( {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} )) // true
-console.log(user.is().equal( { username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} )) // false
-console.log(user.is().equal( null )) // false
+user.is().equal(user) // true
+user.is().equal( {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} ) // true
+user.is().equal( { username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28} ) // false
+user.is().equal( null ) // false
 
 //localStorePulled - Only usable when the Model is set has connected.
-console.log(user.is().localStorePulled()) // false
+user.is().localStorePulled() // false
 
 //empty
-console.log(user.is().empty()) // false
-console.log(new User({}, {connected: false}).is().empty()) // true
+user.is().empty() // false
+new User({}, {connected: false}).is().empty()) // true
 
 //keyGenerated - Used in the acey system, developers shouldn't have to use this function.
-console.log(user.is().keyGenerated()) // false
+user.is().keyGenerated() // false
 
 //localStoreEnabled - Only usable when the Model is set has connected.
-console.log(user.is().localStoreEnabled()) // false
+user.is().localStoreEnabled() // false
 ```
 
 <br />
@@ -133,7 +129,7 @@ console.log(user.is().localStoreEnabled()) // false
 **kids** returns the Model's actions that interacts with the store (Acey store and local store). This method is used to be called as the options of a nested Model when instancing it.
 
 ```ts
-console.log(user.kids()) // { save: Function, store: Function } 
+user.kids() // { save: Function, store: Function } 
 ```
 
 [There's a gist here](https://gist.github.com/Fantasim/7a5b02c3e3d381b4a8489d580b4d2642) to show you when to use `kids` 
@@ -145,7 +141,7 @@ console.log(user.kids()) // { save: Function, store: Function }
 **save** dispatches the Model's state to the Acey's store. (only accesible with a `connected` Model)
 
 ```ts
-console.log(user.save()) // throw an Error because user is NOT connected
+user.save() // throw an Error because user is NOT connected
 ```
 
 ℹ️ `save` makes sense to be used only with React. (See an example with React [here](https://github.com/arysociety/acey#1-a-react-counter))
@@ -176,7 +172,7 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 **super** returns methods used by the Acey system.
 
 ```ts
-console.log(user.super()) // {prevState: Object, prevStateStore: Object, defaultState: Object}
+user.super() // {prevState: Object, prevStateStore: Object, defaultState: Object}
 console.log(user.prevState) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
 console.log(user.prevStateStore) // null
 console.log(user.defaultState) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
@@ -197,10 +193,10 @@ user.localStore().set() //store the current Model's state to the store.
 /* or user.action().store() */
 
 //get
-console.log(user.localStore().get()) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+user.localStore().get() // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
 
 //isActive
-console.log(user.localStore().isActive()) // true
+user.localStore().isActive() // true
 
 //pull (pull is automatically called when the Model is just instanced.)
 user.setState({ username: 'NO_USERNAME', id: 'NO_ID', age: -1 })
@@ -210,7 +206,7 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 
 //remove
 user.localStore().remove()
-console.log(user.localStore().get()) // null
+user.localStore().get() // null
 ```
 
 <br />
@@ -220,9 +216,9 @@ console.log(user.localStore().get()) // null
 **to** returns methods to convert your Model's state into different data types (like string, JSON..)
 
 ```ts
-console.log(user.to()) // {string: Function, plain: Function} 
-console.log(user.to().string()) // "{"id": "5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3", "username": "steve", "created_at": "2020-08-21T02:17:05.000Z", "age": "28"}"
-console.log(user.to().plain()) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
+user.to() // {string: Function, plain: Function} 
+user.to().string() // "{"id": "5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3", "username": "steve", "created_at": "2020-08-21T02:17:05.000Z", "age": "28"}"
+user.to().plain() // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
 ```
 
 <br />
@@ -232,7 +228,7 @@ console.log(user.to().plain()) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', u
 **watch** returns methods to watch changes on the Model's state, store and local store
 
 ```ts
-console.log(user.watch()) // {state: Function, store: Function, localStoreFetch: Function} 
+user.watch() // {state: Function, store: Function, localStoreFetch: Function} 
 
 let i = 0;
 user.watch().state((prevState, newState) => {
@@ -319,7 +315,7 @@ console.log(todolist.state[0].state) // { id: '1', content: 'Initial todo :)', c
 **save** dispatches the Collection's state to the Acey's store. (only accesible with a `connected` Collection)
 
 ```ts
-console.log(todolist.save()) // throw an Error because todolist is NOT connected
+todolist.save() // throw an Error because todolist is NOT connected
 ```
 
 ℹ️ `save` makes sense to be used only with React. (See an example with React [here](https://github.com/arysociety/acey#1-a-react-counter))
@@ -338,7 +334,10 @@ Same feature than [Model one](https://github.com/arysociety/acey/blob/master/EXA
 
 ```ts
 console.log(todolist.state[0].state) // { id: '1', content: 'Initial todo :)', created_at: '2020-08-21T02:17:05.000Z' }
-user.setState([ { id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }  ])
+
+todolist.setState([ { id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }  ])
+
+console.log(todolist.state) // [ Todo ]
 console.log(todolist.state[0].state) // { id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' } 
 ```
 
@@ -359,10 +358,10 @@ Same features than [Model one](https://github.com/arysociety/acey/blob/master/EX
 **to** returns methods to convert your Collection's state into different data types (like string, JSON..)
 
 ```ts
-console.log(todolist.to()) // {string: Function, plain: Function} 
-console.log(todolist.to().string()) // [{"id": "2", "content": "Second todo :)", "created_at": "2020-08-21T02:17:05.000Z" }]
-console.log(todolist.to().plain()) // [{ id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }]
-console.log(todolist.to().listClass([{id: '1', content: 'Initial todo :)', created_at: '2020-08-21T02:17:05.000Z' }])) // [Todo]
+todolist.to() // {string: Function, plain: Function} 
+todolist.to().string() // [{"id": "2", "content": "Second todo :)", "created_at": "2020-08-21T02:17:05.000Z" }]
+todolist.to().plain() // [{ id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }]
+todolist.to().listClass([{id: '1', content: 'Initial todo :)', created_at: '2020-08-21T02:17:05.000Z' }]) // [Todo]
 ```
 
 <br />
@@ -379,38 +378,35 @@ Same features than [Model one](https://github.com/arysociety/acey/blob/master/EX
 **append** returns a fresh Collection with the Array passed in parameter added at the end of the current Collection's state.
 
 ```ts
+todolist.to().plain() // [{ id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }]
+
 todolist.append([ {"id": "3", "content": "Third todo :)", "created_at": "2020-08-21T02:17:05.000Z" } ])
-console.log(todolist.to().plain()) // [{ id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }, {"id": "3", "content": "Third todo :)", "created_at": "2020-08-21T02:17:05.000Z" }]
+
+todolist.to().plain() /* [
+  { id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }, 
+  { id: '3', content: 'Third todo :)', created_at: '2020-08-21T02:17:05.000Z' }
+]
+*/
 ```
 
 <br />
 
 ### `arrayOf`
 
-**arrayOf** returns an Array of value for the key in each element of the Collection.
+**arrayOf** returns an `Array of value` for the `key` in each element of the Collection.
 
 ```ts
-console.log(todolist.arrayOf('id')) // ['2', '3']
+todolist.arrayOf('id') // ['2', '3']
 ```
 
 <br />
 
 ### `chunk`
 
-**chunk** returns an Array of collections splited into groups of the length of nChunk.
+**chunk** returns an `Array of collections` splited into groups of the `length` of nChunk.
 
 ```ts
-console.log(todolist.chunk(1)) // [ Todolist(1), Todolist(1) ] 
-```
-
-<br />
-
-### `chunk`
-
-**chunk** returns an Array of collections splited into groups of the length of nChunk.
-
-```ts
-console.log(todolist.chunk(1)) // [ Todolist(1), Todolist(1) ] 
+todolist.chunk(1) // [ Todolist(1), Todolist(1) ] 
 ```
 
 <br />
@@ -420,47 +416,55 @@ console.log(todolist.chunk(1)) // [ Todolist(1), Todolist(1) ]
 Same use than [append](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#append).
 
 ```ts
-console.log(todolist.chunk(1)) // [ Todolist(1), Todolist(1) ] 
+todolist.chunk(1) // [ Todolist(1), Todolist(1) ] 
 ```
 
 <br />
 
 ### `count`
 
-**count** returns the length of the Collection's state
+**count** returns the `length` of the **Collection's state** list.
 
 ```ts
-console.log(todolist.count()) // 2
+todolist.count() // 2
 ```
 
 <br />
 
 ### `copy`
 
-**copy** returns a fresh instance of the current Collection.
+**copy** returns a **fresh instance** of the current `Collection`.
 
 ```ts
 const copy = todolist.copy()
-console.log(todolist.is().equal(copy)) // true
+todolist.is().equal(copy) // true
 ```
 
 <br />
 
 ### `delete`
 
-**delete** deletes the Model passed in parameter if present in the list.
+**delete** deletes the `node` passed in parameter if present in the list.
 
 ```ts
-console.log(todolist.count()) // 2
+todolist.to().plain() /* [
+  { id: '2', content: 'Second todo :)', created_at: '2020-08-21T02:17:05.000Z' }, 
+  { id: '3', content: 'Third todo :)', created_at: '2020-08-21T02:17:05.000Z' }
+]
+*/
+
 todolist.delete(todolist.state[0])
-console.log(todolist.count()) // 1
+/* or todolist.delete(todolist.to().plain()[0]) */
+/* or todolist.delete(todolist.state[0].to().plain()) */
+
+todolist.to().plain() // [{ id: '3', content: 'Third todo :)', created_at: '2020-08-21T02:17:05.000Z' }]
 ```
 
 <br />
 
 ### `deleteBy`
 
-**deleteBy** deletes all the nodes matching the predicate
+**deleteBy** deletes `the nodes` matching the `predicate`
 
 ```ts
 todolist.append([ 
@@ -469,33 +473,48 @@ todolist.append([
   {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
 ])
 
-console.log(todolist.count()) // 4
+todolist.to().plain() /* [
+  { id: '3', content: 'Third todo :)', created_at: '2020-08-21T02:17:05.000Z' }
+  { "id": "4", "content": "A new todo", "created_at": "2020-08-21T02:17:05.000Z" } 
+  { "id": "5", "content": "A new todo", "created_at": "2020-08-21T02:17:05.000Z" } 
+  { "id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
+
 todolist.deleteBy({ content: "A new todo" })
 /* or todolist.deleteBy((todo: Todo) => todo.content() === "A new todo") */
-console.log(todolist.count()) // 2
+
+todolist.to().plain() /* [
+  { id: '3', content: 'Third todo :)', created_at: '2020-08-21T02:17:05.000Z' }
+  { "id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+]
 ```
 
 <br />
 
 ### `deleteIndex`
 
-**deleteIndex** removes an element at index.
+**deleteIndex** removes an element at `index`.
 
 ```ts
-console.log(todolist.count()) // 2
+todolist.to().plain() /* [
+  { id: '3', content: 'Third todo :)', created_at: '2020-08-21T02:17:05.000Z' }
+  { id: '6', content": 'AN UPPERCASE TODO', created_at: '2020-08-21T02:17:05.000Z' } 
+]
+
 todolist.deleteIndex(0)
-console.log(todolist.count()) // 1
+
+todolist.to().plain() /* [{ id: '6', content": 'AN UPPERCASE TODO', created_at: '2020-08-21T02:17:05.000Z' }]
 ```
 
 <br />
 
 ### `find`
 
-**find** returns the first node matching the predicate, undefined if not found
+**find** returns the **first** `node` **matching** the `predicate`, undefined if not found
 
 ```ts
-console.log(todolist.find({id: 1})) // undefined
-console.log(todolist.find({id: 6})) // Todo
+todolist.find({id: 1}) // undefined
+todolist.find({id: 6}) // Todo
 /* or todolist.find((todo: Todo) => todo.ID() === 6) */
 ```
 
@@ -503,11 +522,11 @@ console.log(todolist.find({id: 6})) // Todo
 
 ### `findIndex`
 
-**findIndex** returns the index of the first node matching the predicate, -1 if not found.
+**findIndex** returns the `index` of the **first node matching** the `predicate`, -1 if not found.
 
 ```ts
-console.log(todolist.find({id: 1})) // -1
-console.log(todolist.find({id: 6})) // 0
+todolist.find({id: 1}) // -1
+todolist.find({id: 6}) // 0
 /* or todolist.find((todo: Todo) => todo.ID() === 6) */
 ```
 
@@ -515,7 +534,7 @@ console.log(todolist.find({id: 6})) // 0
 
 ### `filter`
 
-**filter** returns a new Collection filled with list of node matching the predicate
+**filter** returns a new `Collection` filled with list of node **matching** the predicate
 
 ```ts
 todolist.append([ 
@@ -523,7 +542,7 @@ todolist.append([
   {"id": "8", "content": "Content B", "created_at": "2020-08-21T02:17:05.000Z" } 
 ])
 
-console.log(todolist.to().plain()) /* [ 
+todolist.to().plain() /* [ 
   {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
   {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
   {"id": "8", "content": "Content B", "created_at": "2020-08-21T02:17:05.000Z" } 
@@ -531,11 +550,11 @@ console.log(todolist.to().plain()) /* [
 
 
 // Example 1
-console.log(todolist.filter({id: 6}) // [ Todo ]
+todolist.filter({id: 6}) // [ Todo ]
 /* or todolist.filter((todo: Todo) => todo.ID() === 6) */
 
 // Example 2
-console.log(todolist.filter((todo: Todo) => todo.content().startsWith('Content'))) // [ Todo, Todo ] 
+todolist.filter((todo: Todo) => todo.content().startsWith('Content')) // [ Todo, Todo ] 
 ```
 
 <br />
@@ -545,7 +564,7 @@ console.log(todolist.filter((todo: Todo) => todo.content().startsWith('Content')
 **filterIn** returns a new Collection filled with the nodes for whom the `key`'s value is equal to one of the value in the `arrayElems` passed in parameter.
 
 ```ts
-console.log(todolist.filterIn('id', [7, 8, 9, 10])) // [Todo, Todo] 
+todolist.filterIn('id', [7, 8, 9, 10]) // [Todo, Todo] 
 /* or todolist.filterIn((todo: Todo) => todo.ID(), [7, 8, 9, 10]) */
 ```
 
@@ -553,10 +572,193 @@ console.log(todolist.filterIn('id', [7, 8, 9, 10])) // [Todo, Todo]
 
 ### `first`
 
-**first** returns the head node of the list.
+**first** returns the `head` node of the list.
 
 ```ts
-console.log(todolist.first()) // Todo
-console.log(todolist.first().to().plain()) // {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" }
+todolist.first() // Todo
+todolist.first().to().plain() // {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" }
 ```
+
+<br />
+
+### `groupBy`
+
+**groupBy** returns an object composed of **keys generated** from the results of running each element of collection thru iteratee. The corresponding value of each key is a **Collection of elements** responsible for generating the key.
+
+```ts
+todolist.grouped('id') // { '6': Todolist(1), '7': Todolist(1), '8': Todolist(1) }
+todolist.grouped('created_at') // { '2020-08-21T02:17:05.000Z': Todolist(3) }
+```
+
+<br />
+
+### `last`
+
+**groupBy** returns the `tail` node of the list
+
+```ts
+todolist.grouped('id') // { '6': Todolist(1), '7': Todolist(1), '8': Todolist(1) }
+todolist.grouped('created_at') // { '2020-08-21T02:17:05.000Z': Todolist(3) }
+```
+
+<br />
+
+### `indexOf`
+
+**indexOf** returns the `index` of **a node** in the list.
+
+```ts
+todolist.indexOf(todolist.state[1]) // 1
+```
+
+<br />
+
+### `limit`
+
+**limit** returns a collection filled with the `n` **first nodes** of the list 
+
+```ts
+todolist.count() // 3
+todolist.limit(2) // Todolist(2)
+todolist.limit(3) // Todolist(3)
+todolist.limit(4) // Todolist(3)
+```
+
+<br />
+
+### `map`
+
+**map** returns a new array filled with the return value of the callback called for each node of the Collection (same than javascript map on arrays)
+
+```ts
+todolist.map((todo: Todo, index: number) => todo.content()) // ["AN UPPERCASE TODO", "Content A", "Content B"]
+```
+
+<br />
+
+### `newCollection`
+
+**newCollection** returns **fresh instanced** `Collection` with the `state` passed in parameter.
+
+```ts
+todolist.newCollection([ todolist.state[0], todolist.state[1] ]) // Todolist(1)
+```
+
+<br />
+
+### `newModel`
+
+**newModel** returns a **fresh instanced** Collection's `Model` built with the object passed in parameter
+
+```ts
+todolist.newModel({ id: 0, content: 'empty', created_at: new Date() }) // Todo
+```
+
+<br />
+
+### `nodeAt`
+
+**nodeAt** returns the node at index in the list.
+
+```ts
+todolist.nodeAt(0) // Todo
+todolist.nodeAt(5) // undefined
+```
+
+<br />
+
+### `offset`
+
+**offset** Returns a fresh instance of the collection removing the n first nodes of the list.
+
+```ts
+todolist.offset(1) // [ Todo, Todo ]
+todolist.nodeAt(2) // [ Todo ]
+todolist.nodeAt(4) // []
+```
+
+<br />
+
+### `orderBy`
+
+**orderBy** returns a fresh Collection with the nodes sorted upon the parameters passed
+
+```ts
+todolist.arrayOf('id') // [ 6, 7, 8 ]
+todolist.orderBy('id', 'desc').arrayOf('id') // [ 8, 7, 6 ]
+
+todolist.arrayOf('content') // [ "AN UPPERCASE TODO", "Content A", "Content B" ]
+todolist.orderBy( [ (todo: Todo) => todo.content().length, 'content' ], ['asc', 'desc'] ).arrayOf('content') // [ "Content B", "Content A", "AN UPPERCASE TODO" ]
+```
+
+<br />
+
+### `pop`
+
+**pop** removes the last node in the list
+
+```ts
+todolist.to().plain() /* [ 
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "8", "content": "Content B", "created_at": "2020-08-21T02:17:05.000Z" } 
+]) */
+
+todolist.pop()
+
+todolist.to().plain() /* [ 
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+]) */
+```
+
+<br />
+
+
+### `prepend`
+
+**prepend** returns a fresh Collection with the Array passed in parameter added at the beginning of the current Collection's state.
+
+```ts
+todolist.prepend([ {"id": "9", "content": "A preprended Todo", "created_at": "2020-08-21T02:17:05.000Z" } ])
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "9", "content": "A preprended Todo", "created_at": "2020-08-21T02:17:05.000Z" }
+]
+*/
+```
+
+<br />
+
+### `reduce`
+
+**reduce** reduces `Collection` to a value which is the accumulated result of running each element, where each successive invocation is supplied the return value of the previous. If initialAccumulator is not given, the first Model of Collection is used as the initial value.
+
+```ts
+const initialValue = 0
+todolist.reduce((total: number, todo: Todo) => total += todo.ID(), initialValue) //22 (6 + 7 + 9)
+```
+
+<br />
+
+### `nth`
+
+**nth** Gets the `node` at **index** `n` of the Collection. If n is negative, the nth node from the end is returned.
+
+```ts
+todolist.to().plain() /* [
+  {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "7", "content": "Content A", "created_at": "2020-08-21T02:17:05.000Z" } 
+  {"id": "9", "content": "A preprended Todo", "created_at": "2020-08-21T02:17:05.000Z" }
+]
+*/
+
+todolist.nth(0).to().plain() // {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+todolist.nth(2).to().plain() // {"id": "9", "content": "A preprended Todo", "created_at": "2020-08-21T02:17:05.000Z" } 
+todolist.nth(3).to().plain() // {"id": "6", "content": "AN UPPERCASE TODO", "created_at": "2020-08-21T02:17:05.000Z" } 
+todolist.nth(-1).to().plain() // {"id": "9", "content": "A preprended Todo", "created_at": "2020-08-21T02:17:05.000Z" }
+```
+
+
 
