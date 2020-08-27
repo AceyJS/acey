@@ -541,3 +541,15 @@ config.done()
 yarn add acey-node-store
 ```
 
+
+<br />
+
+<br />
+
+## Small code demonstrations
+#### 1. **`hydrate`** vs **`setState`** and **Model nesting**. [Click here](https://gist.github.com/Fantasim/7a5b02c3e3d381b4a8489d580b4d2642)
+#### 2. Model's `local storage` cycle exlained. [Click here](https://gist.github.com/Fantasim/eddfd25f284245f490380c192771d534)
+
+
+
+
