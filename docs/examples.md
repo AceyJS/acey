@@ -1,6 +1,29 @@
-# 🏗️ Use example with Acey's methods. [10% completed]🏗️
+# [API](https://github.com/arysociety/acey/blob/master/docs/api.md) Examples ✏️ 
 
 <br />
+
+<br />
+
+
+<p align="center">
+  <a href="#model">
+    <img width="20%" src="https://siasky.net/EAAzsnQ4WJc4Yg5pbj-Z-Dp7c7av6NV_jqakGpXoQrDh2A"/>
+  </a>
+
+  <img width="5%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+  
+  <a href="#collection">
+    <img width="20%" src="https://siasky.net/EABCA6-YMiNNSgZQr-SGFw8PTlRcRUy1umxSlx5l1NJBxw"/>
+  </a>
+
+</p>
+
+<br />
+
+<br />
+
+<br />
+
 
 # Model.
 
@@ -63,7 +86,7 @@ console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username
 
 ### `deleteKey`
 
-**deleteKey** removes a key(s) in the `Model`'s state object
+**deleteKey** removes key(s) in the `Model`'s state object
 
 ```ts
 console.log(user.state) // {id: '5cd50f02-3c4d-4f09-a16f-0ab6ba2981e3', username: 'steve', created_at: '2020-08-21T02:17:05.000Z', age: 28}
@@ -312,6 +335,8 @@ console.log(todolist.state[0].state) // { id: '1', content: 'Initial todo :)', c
 
 <br />
 
+## Collection's methods
+
 ### `save`
 
 **save** dispatches the Collection's state to the Acey's store. (only accesible with a `connected` Collection)
@@ -324,9 +349,15 @@ todolist.save() // throw an Error because todolist is NOT connected
 
 <br />
 
+### `hydrate`
+
+Same feature than [Model one](https://github.com/arysociety/acey/blob/master/docs/examples.md#hydrate).
+
+<br />
+
 ### `is`
 
-Same feature than [Model one](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#is).
+Same feature than [Model one](https://github.com/arysociety/acey/blob/master/docs/examples.md#is).
 
 <br />
 
@@ -346,12 +377,12 @@ console.log(todolist.state[0].state) // { id: '2', content: 'Second todo :)', cr
 <br />
 
 ### `super`
-Same feature than [Model one](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#super).
+Same feature than [Model one](https://github.com/arysociety/acey/blob/master/docs/examples.md#super).
 
 <br />
 
 ### `localStore`
-Same features than [Model one](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#localstore).
+Same features than [Model one](https://github.com/arysociety/acey/blob/master/docs/examples.md#localstore).
 
 <br />
 
@@ -370,7 +401,7 @@ todolist.to().listClass([{id: '1', content: 'Initial todo :)', created_at: '2020
 
 ### `watch`
 
-Same features than [Model one](https://github.com/arysociety/acey/blob/master/EXAMPLES.md#watch).
+Same features than [Model one](https://github.com/arysociety/acey/blob/master/docs/examples.md#watch).
 
 
 <br />
