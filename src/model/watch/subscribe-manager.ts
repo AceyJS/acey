@@ -1,4 +1,4 @@
-import size from 'lodash/size'
+import size from 'lodash.size'
 import Model from '../'
 import { hash } from '../../lib'
 

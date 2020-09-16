@@ -1,4 +1,4 @@
-import set from 'lodash/set'
+import set from 'lodash.set'
 
 import Model from './'
 import Collection from '../collection'
@@ -43,9 +43,8 @@ const updateInState = (value: any, path: string, to: Model) => {
     }
 }
 
-
 export const hydrate = (from: any, to: Model) => {
-
+    
     const recur = (o: any, path: string) => {
         if (Model._isArray(o))
             updateInState(o, path, to)

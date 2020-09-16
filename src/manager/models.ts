@@ -3,7 +3,7 @@ import Manager from './manager'
 // import config from '../config'
 // import Errors from '../errors'
 import Model from '../model'
-import size from 'lodash/size'
+import size from 'lodash.size'
 
 export default class ModelsManager {
 

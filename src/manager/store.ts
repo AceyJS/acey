@@ -1,5 +1,5 @@
 import Manager from './manager'
-import cloneDeep from 'lodash/cloneDeep'
+import cloneDeep from 'lodash.clonedeep'
 import { IAction } from './transitions'
 
 export default class StoreManager {

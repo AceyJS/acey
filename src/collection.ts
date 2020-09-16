@@ -1,12 +1,10 @@
 /* Lodash imports */
-import chunk from 'lodash/chunk'
-import remove from 'lodash/remove'
-import findIndex from 'lodash/findIndex'
-import filter from 'lodash/filter'
-import orderBy from 'lodash/orderBy'
-import nth from 'lodash/nth'
-import uniqBy from 'lodash/uniqBy'
-import groupBy from 'lodash/groupBy'
+import remove from 'lodash.remove'
+import findIndex from 'lodash.findindex'
+import filter from 'lodash.filter'
+import orderBy from 'lodash.orderby'
+import uniqBy from 'lodash.uniqby'
+import groupBy from 'lodash.groupby'
 
 import Model, {IAction}  from './model'
 import Errors from './errors'
@@ -14,6 +12,8 @@ import Errors from './errors'
 type Constructor<T> = new(...args: any[]) => T;
 
 import { 
+    chunk,
+    nth,
     IGrouped,
     collectionPredictor,
     treatPredicatePickNode,

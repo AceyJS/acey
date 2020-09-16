@@ -248,27 +248,27 @@ describe('Collection: methods', () => {
     })
 
     it('prepend', () => {
-        expect(PostList.nodeAt(0)?.is().equal(PostList.nodeAt(1))).to.eq(false)
+        expect(PostList.nodeAt(0)?.is().equal(PostList.nodeAt(1) as PostModel)).to.eq(false)
         const list = PostList.copy()
         list.prepend([PostList.nodeAt(0)?.to().plain()])
         expect(list.count()).to.eq(5)
-        expect(list.nodeAt(0)?.is().equal(list.nodeAt(1)))
+        expect(list.nodeAt(0)?.is().equal(list.nodeAt(1) as PostModel))
     })
 
     it('chunk', () => {
         const list = PostList.chunk(2)
         expect(list.length).to.eq(2)
-        expect((list[0] as PostCollection).nodeAt(1)?.is().equal(PostList.nodeAt(1)))
-        expect((list[1] as PostCollection).nodeAt(1)?.is().equal(PostList.nodeAt(3)))
+        expect((list[0] as PostCollection).nodeAt(1)?.is().equal(PostList.nodeAt(1) as PostModel))
+        expect((list[1] as PostCollection).nodeAt(1)?.is().equal(PostList.nodeAt(3) as PostModel ))
         expect(list[0].count()).to.equal(2)
         expect(list[1].count()).to.equal(2)
     })
 
     it('nth', () => {
-        PostList.nth(-1)?.is().equal(PostList.nodeAt(3))
-        PostList.nth(0)?.is().equal(PostList.nodeAt(0))
-        PostList.nth(-2)?.is().equal(PostList.nodeAt(2))
-        PostList.nth(-3)?.is().equal(PostList.nodeAt(1))
+        PostList.nth(-1)?.is().equal(PostList.nodeAt(3)as PostModel)
+        PostList.nth(0)?.is().equal(PostList.nodeAt(0) as PostModel)
+        PostList.nth(-2)?.is().equal(PostList.nodeAt(2) as PostModel)
+        PostList.nth(-3)?.is().equal(PostList.nodeAt(1) as PostModel)
     })
 
     it('uniq', () => {

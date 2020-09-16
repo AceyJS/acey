@@ -1,4 +1,4 @@
-import isEmpty from 'lodash/isEmpty'
+import isEmpty from 'lodash.isempty'
 import Model from './'
 
 export default class IsManager {
@@ -12,7 +12,7 @@ export default class IsManager {
     private _model = (): Model => this._m
 
     public connected = (): boolean => this._model().super().option().isConnected() 
-    public equal = (m: any): boolean => {
+    public equal = (m: Model | Object): boolean => {
         const modelStringified = this._model().to().string()
         if (m instanceof Model){
             return m.to().string() === modelStringified

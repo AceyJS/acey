@@ -1,8 +1,7 @@
 import Model from './model'
-import isFunction from 'lodash/isFunction'
-import isPlainObject from 'lodash/isPlainObject'
-import isObjectLike from 'lodash/isObjectLike'
-import isArray from 'lodash/isArray'
+import isFunction from 'lodash.isfunction'
+import isPlainObject from 'lodash.isplainobject'
+import isObjectLike from 'lodash.isobjectlike'
 import Collection from './collection'
 
 export interface IGrouped {
@@ -28,7 +27,7 @@ export const treatPredicateSortNode = (predicate: TPredicateSort) => {
     else if (isFunction(predicate))
         return predicate
 
-    else if (isArray(predicate) && predicate.length > 0 && typeof predicate[0] === 'string'){
+    else if (Array.isArray(predicate) && predicate.length > 0 && typeof predicate[0] === 'string'){
         const ret: TPredicateFn[] = []
         for (const p of predicate){
             if (typeof p !== 'string')
@@ -38,7 +37,7 @@ export const treatPredicateSortNode = (predicate: TPredicateSort) => {
         return ret
     }
     
-    else if (isArray(predicate) && predicate.length > 0 && typeof predicate[0] === 'function'){
+    else if (Array.isArray(predicate) && predicate.length > 0 && typeof predicate[0] === 'function'){
         for (const p of predicate){
             if (typeof p !== 'function')
                 throw thError()
@@ -64,7 +63,7 @@ export const treatPredicatePickNode = (predicate: TPredicatePickNode): TPredicat
         }
     } 
     
-    else if (isArray(predicate))
+    else if (Array.isArray(predicate))
         return (m: Model) => m.state[predicate[0] as string] === predicate[1]
     
     else if (typeof predicate === 'string')
@@ -79,7 +78,7 @@ export const treatPredicatePickNode = (predicate: TPredicatePickNode): TPredicat
 
 export const collectionPredictor = (predicate: any, c: Collection) => {
     let countFn = 0
-    if (isArray(predicate)){
+    if (Array.isArray(predicate)){
         for (let o of predicate)
             isFunction(o) && countFn++
         if (countFn != 0 && countFn != predicate.length)
@@ -87,4 +86,16 @@ export const collectionPredictor = (predicate: any, c: Collection) => {
         return countFn == 0 ? c.to().plain() : c.state
     }
     return isFunction(predicate) ? c.state : c.to().plain()
+}
+
+export const nth = (arr: any, idx: number) => arr.slice(idx, idx + 1)[0]
+
+  
+export const chunk = (arr: any[], chunkSize = 1, cache: any[] = []) => {
+    const tmp = [...arr]
+    if (chunkSize <= 0) 
+        return cache
+    while (tmp.length) 
+        cache.push(tmp.splice(0, chunkSize))
+    return cache
 }

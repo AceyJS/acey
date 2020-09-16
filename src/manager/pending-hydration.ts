@@ -1,5 +1,5 @@
 import Manager from './manager'
-import size from 'lodash/size'
+import size from 'lodash.size'
 import Model from '../model'
 
 export default class PendingHydrationManager {
