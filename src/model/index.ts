@@ -46,14 +46,18 @@ export default class Model {
     }
 
     constructor(state: any, ...props: any){
-        this._defaultState = toPlain(state)
         this._is = new IsManager(this)
         this._option = new OptionManager(this, Object.assign({}, props[0], props[1]))
+        
+        const defaultState = typeof state === 'undefined' ? (this.is().collection() ? [] : {}) : state
+        this._defaultState = toPlain(defaultState)
+
         /* COOKIE ENABLE */
         // this._cookie = new CookieManager(this)
         this._localStore = new LocalStoreManager(this)
         this._watch = new WatchManager(this)
-        this._set(state)
+
+        this._set(defaultState)
         this.is().connected() && Manager.prepareModel(this)
     }
 
