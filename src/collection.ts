@@ -23,6 +23,7 @@ import {
     TOrderSort,
     TPredicateSort
 } from './lodash-utils'
+import { isCollectionInstance, isModelInstance } from './lib'
 
 //  i) this class can be improved by adding more than you can usually find in lists.
 //It aims to be the parent of any model class representing a list of object/classes
@@ -36,7 +37,7 @@ export default class Collection extends Model  {
         super([], Object.assign({}, ...props, { nodeModel: models[0], collectionModel: models[1] }))
 
         //check if nodeModel is not a Collection
-        if (this.newNode(undefined) instanceof Collection)
+        if (isCollectionInstance(this.newNode(undefined)))
             throw Errors.forbiddenMultiDimCollection()
         
         const assignWithStorage = async () => {
@@ -280,8 +281,8 @@ export default class Collection extends Model  {
     private _getCollectionModel = (): any => this.super().option().collectionModel() as Collection
     private _getNodeModel = (): any => this.super().option().nodeModel() as Model
 
-    private _isCollectionModel = (value: any): boolean => value instanceof this._getCollectionModel()
-    private _isNodeModel = (value: any): boolean => value instanceof this._getNodeModel()
+    private _isCollectionModel = (value: any): boolean => isCollectionInstance(value)
+    private _isNodeModel = (value: any): boolean => isModelInstance(value)
 
     private _newCollectionModelInstance = (defaultState: any) => new (this._getCollectionModel())(defaultState, this.kids())
     private _newNodeModelInstance = (defaultState: any) => new (this._getNodeModel())(defaultState, this.kids())  

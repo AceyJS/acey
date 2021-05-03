@@ -2,6 +2,7 @@ import set from 'lodash.set'
 
 import Model from './'
 import Collection from '../collection'
+import { isModelInstance } from '../lib'
 
 export const STORE_OPTION = 'store'
 const isStoreOption = (option: string) => option === STORE_OPTION
@@ -16,10 +17,10 @@ const splitPath = (path: string) => {
 const getValueAtPath = (path: string, to: Model) => {
     const pathSplited = splitPath(path)
     for (let i = 0; i < pathSplited.length; i++){
-        if (to instanceof Model)
+        if (isModelInstance(to))
             to = to.state[pathSplited[i]]
         else
-            to = to[pathSplited[i]]
+            to = (to as any)[pathSplited[i]]
     }
     return to
 }
@@ -31,9 +32,9 @@ const updateInState = (value: any, path: string, to: Model) => {
     
     const v: any = getValueAtPath(pathSplited.join('.'), to)
 
-    if (v instanceof Model && v.is().collection()){
+    if (isModelInstance(v) && v.is().collection()){
         v.setState(v.to().listClass(value))
-    } else if (v instanceof Model && !Model._isCollection(v.state[lastKey])){
+    } else if (isModelInstance(v) && !Model._isCollection(v.state[lastKey])){
         v.setState({[lastKey]: value})
     } else if (!!v.state && Model._isCollection(v.state[lastKey])){
         const collec = v.state[lastKey] as Collection
@@ -82,7 +83,7 @@ export const toPlain = (m: TObjectStringAny | Array<any>, option: string | void)
         }
 
         //if this is a Model class
-        if (o instanceof Model){
+        if (isModelInstance(o)){
             recur(o.state, path)
             return
         }

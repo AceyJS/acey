@@ -23,3 +23,33 @@ export const generateUniqModelKey = (m: Model): string => {
     }
     return key + suffix
 }
+
+export const isModelInstance = (v: any) => {
+    const methodList = [`_set`, `_handleStateChanger`, `_setPrevState`, `_setPrevStateStore`, `localStore`, `is`, `watch`, `action`, `save`, `setState`, `deleteKeys`, `hydrate`, `kids`, `to`] 
+    if (typeof v === 'object' && v !== null && !Array.isArray(v) ){
+        for (let meth of methodList){
+            if (!v.hasOwnProperty(meth)){
+                return false
+            }
+        }
+        return true
+    }
+    return false
+}
+
+export const isCollectionInstance = (v: any) => {
+    const methodList = [`_set`, `_handleStateChanger`, `_setPrevState`, `_setPrevStateStore`, `localStore`, `is`, `watch`, `action`, `save`, `setState`, `deleteKeys`, `hydrate`, `kids`, `to`,
+        `arrayOf`, `append`, `chunk`, `concat`, `count`, `copy`, `delete`, `deleteAll`, `deleteBy`, `deleteIndex`, `find`, `findIndex`, `filter`, `filterIn`, `first`, `forEach`, `groupBy`, `indexOf`,
+        `last`, `limit`, `map`, `newCollection`, `newNode`, `nodeAt`, `nth`, `offset`, `orderBy`, `pop`, `prepend`, `push`, `reduce`, `reverse`, `shift`, `slice`, `splice`, `updateAll`, `updateAt`,
+        `updateWhere`, `uniq`, `uniqBy`, `_getCollectionModel`, `_getNodeModel`, `_isCollectionModel`, `_isNodeModel`, `_newCollectionModelInstance`, `_newNodeModelInstance`
+    ] 
+    if (typeof v === 'object' && v !== null && !Array.isArray(v)){
+        for (let meth of methodList){
+            if (!v.hasOwnProperty(meth)){
+                return false
+            }
+        }
+        return true
+    }
+    return false
+}

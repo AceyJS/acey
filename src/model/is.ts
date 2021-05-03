@@ -1,4 +1,5 @@
 import isEmpty from 'lodash.isempty'
+import { isModelInstance } from '../lib'
 import Model from './'
 
 export default class IsManager {
@@ -14,8 +15,8 @@ export default class IsManager {
     public connected = (): boolean => this._model().super().option().isConnected() 
     public equal = (m: Model | Object): boolean => {
         const modelStringified = this._model().to().string()
-        if (m instanceof Model){
-            return m.to().string() === modelStringified
+        if (isModelInstance(m)){
+            return (m as any).to().string() === modelStringified
         }
         return JSON.stringify(m) === modelStringified
     }

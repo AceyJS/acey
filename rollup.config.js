@@ -36,6 +36,7 @@ const config = {
         url(),
         typescript({
             tsconfig: 'tsconfig.json',
+            tsconfigOverride: { compilerOptions: { module: 'es2015' } },
             clean: true
         }),
     ]
