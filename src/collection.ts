@@ -23,7 +23,7 @@ import {
     TOrderSort,
     TPredicateSort
 } from './lodash-utils'
-import { isCollectionInstance, isModelInstance } from './lib'
+import { isCollectionInstance } from './lib'
 
 //  i) this class can be improved by adding more than you can usually find in lists.
 //It aims to be the parent of any model class representing a list of object/classes
@@ -159,8 +159,8 @@ export default class Collection extends Model  {
         return ret
     }
 
-    public newCollection = (v: any): Collection => this._isCollectionModel(v) ? v : this._newCollectionModelInstance(v)
-    public newNode = (v: any): Model => this._isNodeModel(v) ? v : this._newNodeModelInstance(v)
+    public newCollection = (v: any): Collection => Collection.IsCollection(v) ? v : this._newCollectionModelInstance(v)
+    public newNode = (v: any): Model => Model.IsModel(v) ? v : this._newNodeModelInstance(v)
     
     public nodeAt = (index: number): Model | undefined => this.state[index] ? this.state[index] : undefined
 
@@ -237,7 +237,7 @@ export default class Collection extends Model  {
             return internalSplice(start, deleteCount)
 
         for (let i = 0; i < items.length; i++){
-            if (!this._isNodeModel(items[i]) && !Model._isObject(items[i]))
+            if (!Model.IsModel(items[i]) && !Model._isObject(items[i]))
                 throw new Error("items parameter must be an Objet or the same Model than collection's nodes")
             else 
                 items[i] = this.newNode(items[i])
@@ -277,13 +277,11 @@ export default class Collection extends Model  {
 
     public uniqBy = (predicate: TPredicatePickKey): Collection => this.newCollection(uniqBy(collectionPredictor(predicate, this), predicate))
 
-
     private _getCollectionModel = (): any => this.super().option().collectionModel() as Collection
     private _getNodeModel = (): any => this.super().option().nodeModel() as Model
 
-    private _isCollectionModel = (value: any): boolean => isCollectionInstance(value)
-    private _isNodeModel = (value: any): boolean => isModelInstance(value)
-
     private _newCollectionModelInstance = (defaultState: any) => new (this._getCollectionModel())(defaultState, this.kids())
     private _newNodeModelInstance = (defaultState: any) => new (this._getNodeModel())(defaultState, this.kids())  
+
+    static IsCollection = (value: any): boolean => isCollectionInstance(value) 
 }

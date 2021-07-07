@@ -2,7 +2,6 @@ import set from 'lodash.set'
 
 import Model from './'
 import Collection from '../collection'
-import { isModelInstance } from '../lib'
 
 export const STORE_OPTION = 'store'
 const isStoreOption = (option: string) => option === STORE_OPTION
@@ -17,7 +16,7 @@ const splitPath = (path: string) => {
 const getValueAtPath = (path: string, to: Model) => {
     const pathSplited = splitPath(path)
     for (let i = 0; i < pathSplited.length; i++){
-        if (isModelInstance(to))
+        if (Model.IsModel(to))
             to = to.state[pathSplited[i]]
         else
             to = (to as any)[pathSplited[i]]
@@ -32,15 +31,15 @@ const updateInState = (value: any, path: string, to: Model) => {
     
     const v: any = getValueAtPath(pathSplited.join('.'), to)
 
-    if (isModelInstance(v) && v.is().collection()){
+    if (Model.IsModel(v) && v.is().collection()){
         v.setState(v.to().listClass(value))
-    } else if (isModelInstance(v) && !Model._isCollection(v.state[lastKey])){
+    } else if (Model.IsModel(v) && !Model.IsCollection(v.state[lastKey])){
         v.setState({[lastKey]: value})
-    } else if (!!v.state && Model._isCollection(v.state[lastKey])){
+    } else if (v && !!v.state && Model.IsCollection(v.state[lastKey])){
         const collec = v.state[lastKey] as Collection
         collec.setState(collec.to().listClass(value))
     } else {
-        if (lastKey)
+        if (lastKey && v)
             v[lastKey] = value
     }
 }
@@ -83,7 +82,7 @@ export const toPlain = (m: TObjectStringAny | Array<any>, option: string | void)
         }
 
         //if this is a Model class
-        if (isModelInstance(o)){
+        if (Model.IsModel(o)){
             recur(o.state, path)
             return
         }

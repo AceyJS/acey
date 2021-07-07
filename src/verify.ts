@@ -1,6 +1,5 @@
 import Model from './model'
 import Errors from './errors'
-import { isModelInstance } from './lib'
 
 export const verifyIfContainAConnectedModel = (m: Model) => {
     let doesContain = false
@@ -10,7 +9,7 @@ export const verifyIfContainAConnectedModel = (m: Model) => {
         if (doesContain)
             return
 
-        if (isModelInstance(v)){
+        if (Model.IsModel(v)){
             if (v.is().connected()){
                 doesContain = true
                 return
@@ -52,7 +51,7 @@ export const verifyIfContainArrayOfModel = (v: Model) => {
         if (!v || v instanceof Date)
             return
 
-        if (isModelInstance(v)){
+        if (Model.IsModel(v)){
             if (v.is().collection()){
                 for (let e of v.state)
                     recur(e)
@@ -65,7 +64,7 @@ export const verifyIfContainArrayOfModel = (v: Model) => {
 
         if (Array.isArray(v)){
             for (let e of v){
-                if (isModelInstance(e)){
+                if (Model.IsModel(e)){
                     doesContain = true
                     return
                 }

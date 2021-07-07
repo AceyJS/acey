@@ -10,7 +10,7 @@ import LocalStoreManager from './local-store'
 import IsManager from './is'
 import OptionManager from './option'
 import WatchManager, {IWatchAction} from './watch'
-import { isModelInstance } from '../lib'
+import { isCollectionInstance, isModelInstance } from '../lib'
 
 export interface IAction {
     save(): IAction
@@ -192,7 +192,7 @@ export default class Model {
     
             let ret: Model[] = []
             for (let i = 0; i < elem.length; i++){
-                if (!isModelInstance(elem[i]))
+                if (!Model.IsModel(elem[i]))
                     ret.push(new (<any>nodeModel)(elem[i], this.super().option().kids()))
                 else 
                     ret.push(elem[i])
@@ -215,8 +215,9 @@ export default class Model {
     }
 
     static ParseStoredJSON = (data: string) => ParseJSONLocallyStored(data)
+    static IsModel = (value: any): boolean => isModelInstance(value)
+    static IsCollection = (value: any): boolean => isCollectionInstance(value)
 
     static _isArray = (value: any): boolean => Array.isArray(value)
-    static _isObject = (value: any): boolean => value !== null && typeof value === 'object' && !Array.isArray(value) && !isModelInstance(value) && !(value instanceof Date)
-    static _isCollection = (value: any): boolean => isModelInstance(value) && value.is().collection()
+    static _isObject = (value: any): boolean => value !== null && typeof value === 'object' && !Array.isArray(value) && !Model.IsModel(value) && !(value instanceof Date)
 }
