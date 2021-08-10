@@ -135,8 +135,9 @@ export default class Model {
             let action = this._set(o)
             this._handleStateChanger(prevStatePlain)
             return action
-        } else if (!Model._isObject(o))
+        } else if ((!Model._isObject(o) && o != null) || o == null)
             throw new Error("You can only set an object to setState on a Model")
+
 
         this._set(Object.assign({}, this.state, o))
         this._handleStateChanger(prevStatePlain)
@@ -170,7 +171,7 @@ export default class Model {
         hydrate(state, this)
         if (!this.is().empty())
             verifyAllModel(this)
-        return this.setState()
+        return this.action()
     }
 
     public kids = () => this.super().option().kids()
