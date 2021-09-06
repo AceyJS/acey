@@ -138,7 +138,6 @@ export default class Model {
         } else if ((!Model._isObject(o) && o != null) || o == null)
             throw new Error("You can only set an object to setState on a Model")
 
-
         this._set(Object.assign({}, this.state, o))
         this._handleStateChanger(prevStatePlain)
         return this.action()

@@ -12,14 +12,14 @@ export interface IUXOptions {
 }
 
 export interface IOptions {
-    key: string
-    connected: boolean
-    save: TOptionFunc
-    store: TOptionFunc
+    key?: string
+    connected?: boolean
+    save?: TOptionFunc
+    store?: TOptionFunc
     /* COOKIE ENABLE */
     //cookie: TOptionFunc,
-    nodeModel: Model | null
-    collectionModel: Model | null
+    nodeModel?: Model | null
+    collectionModel?: Model | null
 }
 
 export default class OptionManager { 
@@ -67,8 +67,8 @@ export default class OptionManager {
     
     public isKeyGenerated = (): boolean => this._isKeyGenerated  
     public get = (): IOptions => this._options
-    public key = (): string => this.get().key
-    public isConnected = (): boolean => this.get().connected  
+    public key = (): string => this.get().key as string
+    public isConnected = (): boolean => this.get().connected as boolean
     public nodeModel = () => this.get().nodeModel
     public collectionModel = () => this.get().collectionModel
 

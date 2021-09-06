@@ -26,13 +26,16 @@ const updateInState = (value: any, path: string, to: Model) => {
     
     const v = getValueAtPath(pathSplited, to)
 
-    if (v.is().collection()){
+    if (Model.IsModel(v) && v.is().collection()){
         v.setState(v.to().listClass(value))
-    } else if (!Model.IsCollection(v.state[lastKey])){
+    } else if (Model.IsModel(v) && !Model.IsCollection(v.state[lastKey])){
         v.setState({[lastKey]: value})
     } else if (v && !!v.state && Model.IsCollection(v.state[lastKey])){
         const collec = v.state[lastKey] as Collection
         collec.setState(collec.to().listClass(value))
+    } else {
+        if (lastKey && v)
+            (v as any)[lastKey] = value
     }
 }
 

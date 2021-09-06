@@ -55,7 +55,7 @@ describe('Model: setState', () => {
         expect(() => User.setState({post_list: [new PostModel(USER_DATA.post_list[0], undefined), new PostModel(USER_DATA.post_list[1], undefined) ]})).to.throw(Error)
     });
     it('setting an array', () => {
-        expect(() => User.setState({post_list: USER_DATA.post_list})).to.not.throw(Error)
+        expect(() => User.setState({ post_list: USER_DATA.post_list })).to.throw(Error)
     });
     it('setting a Collection in an object', () => {
         expect(() => User.setState({post_list: PostList})).to.not.throw(Error)
