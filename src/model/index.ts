@@ -66,8 +66,11 @@ export default class Model {
         if (Model._isObject(state) || Model._isArray(state)){
             this._state = this.is().collection() ? this.to().listClass(state) : state
         } else {
-            if (!this.is().collection())
+            if (!this.is().collection()){
+                if (Model.IsModel(state))
+                    return this._set(state.to().plain())
                 throw Errors.onlyObjectOnModelState()
+            }
             else 
                 throw Errors.onlyArrayOnCollectionState()
         }
