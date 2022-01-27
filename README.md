@@ -33,7 +33,7 @@
 </p>
 
 #### Seems great! 🤑 and it works as well with NodeJS, right?
-> **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached, like Redis 📚).<br /><br />So yeah, it works amazing for embedded systems, CLI tools, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
+> **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached 📚).<br /><br />So yeah, it works amazing for embedded systems, CLI tools, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
 
 <br />
 
@@ -505,12 +505,6 @@ config.done()
 ```sh
 yarn add @react-native-community/async-storage
 ```
-
-<br />
-
-### NextJS
-
-Refer to the [Next Acey wrapper documentation](https://github.com/Fantasim/next-acey-wrapper) 💡
 
 <br />
 
