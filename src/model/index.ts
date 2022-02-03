@@ -125,8 +125,12 @@ export default class Model {
                 this.super().watchManager.onStoreChanged(prevStateStore, newStorePlain)
             }
         }
-        else 
-            return this.action().save()
+        else {
+            const { save } = this.super().option().get()
+            if (save) 
+                return save()
+            throw Errors.unauthorizedSave(this)
+        }
         return this.action()
     }
 
