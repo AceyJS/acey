@@ -160,7 +160,7 @@ export default class Collection extends Model  {
     }
 
     public newCollection = (v: any): Collection => Collection.IsCollection(v) ? v : this._newCollectionModelInstance(v)
-    public newNode = (v: any): Model => Model.IsModel(v) ? v : this._newNodeModelInstance(v)
+    public newNode = (v: any): Model => this._newNodeModelInstance(Model.IsModel(v) ? v.to().plain() : v)
     
     public nodeAt = (index: number): Model | undefined => this.state[index] ? this.state[index] : undefined
 
@@ -264,9 +264,14 @@ export default class Collection extends Model  {
 
     // Update the element at index or post it.
     public updateWhere = (predicate: TPredicatePickNode, toSet: Object): IAction => {
-        const list = this.filter(predicate)
-        list.forEach((m: Model) => m.setState(toSet))
-        return list.action(list.count())
+        let idx = this.findIndex(predicate)
+        let count = 0
+        while (idx != -1){
+            this.nodeAt(idx)?.setState(toSet)
+            idx = this.findIndex(predicate)
+            count++
+        }
+        return this.action(count)
     }
 
     public uniq = (): Collection => {

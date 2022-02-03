@@ -198,7 +198,9 @@ export default class Model {
                 if (!Model.IsModel(elem[i]))
                     ret.push(new (<any>nodeModel)(elem[i], this.super().option().kids()))
                 else 
-                    ret.push(elem[i])
+                    ret.push(new (<any>nodeModel)(elem[i].to().plain(), this.super().option().kids()))
+
+                
             }
             return ret
         }
