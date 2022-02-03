@@ -126,7 +126,7 @@ export default class Model {
             }
         }
         else 
-            throw Errors.unauthorizedSave(this)
+            return this.action().save()
         return this.action()
     }
 
