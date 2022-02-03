@@ -160,7 +160,7 @@ export default class Collection extends Model  {
     }
 
     public newCollection = (v: any): Collection => Collection.IsCollection(v) ? v : this._newCollectionModelInstance(v)
-    public newNode = (v: any): Model => this._newNodeModelInstance(Model.IsModel(v) ? v.to().plain() : v)
+    public newNode = (v: any): Model => Model.IsModel(v) ? v : this._newNodeModelInstance(v)
     
     public nodeAt = (index: number): Model | undefined => this.state[index] ? this.state[index] : undefined
 
