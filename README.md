@@ -10,8 +10,8 @@
 
 # OOP State Manager built with Lodash. ⚡
 
-#### What super power it gives me ?
-> **To Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a one and same place. 🔌**
+#### What kind of power it gives me ?
+> **To Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a ONE and SAME place. 🔌**
 
 <br />
 
@@ -22,7 +22,7 @@
 </p>
 
 #### I work on React {Native}, can I use it ?
-> **Yes, Acey works smoothly with React environment, its dev experience is the logical evolution of Redux.<br />On Acey there is:<br />- No action types. ✅<br />- No reducers. ✅<br />- No selectors. ✅<br />- No context. ✅<br />AND you can trigger your actions from wherever you want without any binding. 💥<br />Nice hmm? 😉**
+> **Yes, Acey works smoothly with React environment, its dev experience is the logical evolution of Redux.<br />On Acey there is:<br />- No action types. ✅<br />- No reducers. ✅<br />- No selectors. ✅<br />- No context. ✅<br />AND you can trigger your actions from wherever you want without any binding. 💥**
 
 <br />
 
@@ -32,8 +32,8 @@
   </a>
 </p>
 
-#### Seems great! 🤑 and it works as well with NodeJS, right?
-> **Right, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey in the back-end, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached 📚).<br /><br />So yeah, it works amazing for embedded systems, CLI tools, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
+#### It works as well with NodeJS, right?
+> **Yes, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey, in NodeJS applications, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached 📚).<br /><br />So yeah, it works amazing for embedded systems, CLI tools, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
 
 <br />
 
