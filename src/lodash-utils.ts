@@ -67,7 +67,7 @@ export const treatPredicatePickNode = (predicate: TPredicatePickNode): TPredicat
         return (m: Model) => m.state[predicate[0] as string] === predicate[1]
     
     else if (typeof predicate === 'string')
-        return (m: Model) => !!m.state[predicate]
+        return (m: Model) => m.state[predicate]
 
     throw new Error(`Predicate value error, can be one of:
 - string

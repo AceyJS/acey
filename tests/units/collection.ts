@@ -288,6 +288,9 @@ describe('Collection: methods', () => {
         expect(_.size(grouped2)).to.eq(1)
         const grouped3 = PostList.groupBy((p: PostModel) => p.ID())
         expect(_.size(grouped3)).to.eq(3)
+        const grouped4 = PostList.groupBy('id')
+        expect(_.size(grouped4)).to.eq(3)
+
     })
 
     it('filterIn', () => {
