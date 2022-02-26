@@ -641,8 +641,8 @@ todolist.grouped('created_at') // { '2020-08-21T02:17:05.000Z': Todolist(3) }
 **groupBy** returns the `tail` node of the list
 
 ```ts
-todolist.grouped('id') // { '6': Todolist(1), '7': Todolist(1), '8': Todolist(1) }
-todolist.grouped('created_at') // { '2020-08-21T02:17:05.000Z': Todolist(3) }
+todolist.last() // Todo
+todolist.last().to().plain() // {"id": "8", "content": "Content B", "created_at": "2020-08-21T02:17:05.000Z" } 
 ```
 
 <br />
@@ -717,8 +717,8 @@ todolist.nodeAt(5) // undefined
 
 ```ts
 todolist.offset(1) // [ Todo, Todo ]
-todolist.nodeAt(2) // [ Todo ]
-todolist.nodeAt(4) // []
+todolist.offset(2) // [ Todo ]
+todolist.offset(4) // []
 ```
 
 <br />
