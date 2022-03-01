@@ -1,5 +1,5 @@
 ## Todo API in Node with Acey 🌕
-<img width="80%" src="https://siasky.net/_AQX4h4T-QWhT3lqM7gcPmuzPKm0tyhZk_zvEF9PBLdYiQ" />
+<img width="80%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f5f415158346834542d51576854336c714d376763506d757a504b6d307479685a6b5f7a7645463950424c64596951.gif?raw=true" />
 
 ### Run
 
