@@ -57,7 +57,7 @@
 
   <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
 
-  <a target="_blank" href="https://github.com/arysociety/acey-examples">
+  <a target="_blank" href="https://github.com/AceyJS/acey/tree/master/examples">
     <img width="20%" src="https://siasky.net/EACUxKJWNHB8qNYIYUrCFn3OwQn9vy-Q0HAnOPe2wopurw"/>
   </a>
 </p>
