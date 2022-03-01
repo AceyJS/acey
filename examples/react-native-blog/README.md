@@ -7,7 +7,7 @@
 
 1. Modules installation
 ```sh
-expo install
+yarn install
 ```
 
 2. Start
