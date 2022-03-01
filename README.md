@@ -1,7 +1,7 @@
 
 <p align="center" font-style="italic" >
   <a>
-    <img alt="acey" src="https://siasky.net/MAAA3n7zPsq4hUD9j23OHgOvJIU1dlFaxAuiQzCw9qFMHg" width="100%">
+    <img alt="acey" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f4d414141336e377a50737134685544396a32334f48674f764a495531646c466178417569517a43773971464d4867.png?raw=true" width="100%">
   </a>
 + Control. | - Code. | + Scalability. | - Debugging. | + Productivity.
 </p>
@@ -17,7 +17,7 @@
 
 <p align="center">
   <a>
-    <img src="https://cdn4.iconfinder.com/data/icons/logos-3/600/React.js_logo-256.png" width="70px">
+    <img src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f63646e342e69636f6e66696e6465722e636f6d2f646174612f69636f6e732f6c6f676f732d332f3630302f52656163742e6a735f6c6f676f2d3235362e706e67.png?raw=true" width="70px">
   </a>
 </p>
 
@@ -28,7 +28,7 @@
 
 <p align="center">
   <a>
-    <img src="https://cdn.freebiesupply.com/logos/thumbs/2x/nodejs-1-logo.png" width="130px">
+    <img src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f63646e2e66726565626965737570706c792e636f6d2f6c6f676f732f7468756d62732f32782f6e6f64656a732d312d6c6f676f2e706e67.png?raw=true" width="130px">
   </a>
 </p>
 
@@ -46,19 +46,19 @@
 
 <p align="center">
   <a target="_blank" href="https://github.com/arysociety/acey/blob/master/docs/api.md">
-    <img width="20%" src="https://siasky.net/CAAkpr2DonQI6sv58Q0yYtyLpBOAmSS93vt1cZlQOx4riQ"/>
+    <img width="20%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f4341416b707232446f6e514936737635385130795974794c70424f416d53533933767431635a6c514f7834726951.png?raw=true"/>
   </a>
 
   <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
   
   <a href="#get-started">
-    <img width="20%" src="https://siasky.net/IADMNB8ShW03w7rwttWPZqlsbKWWw25v_LSnGLOpUUtjCQ"/>
+    <img width="20%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f4941444d4e4238536857303377377277747457505a716c73624b5757773235765f4c536e474c4f705555746a4351.png?raw=true"/>
   </a>
 
   <img width="2%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
 
   <a target="_blank" href="https://github.com/AceyJS/acey/tree/master/examples">
-    <img width="20%" src="https://siasky.net/EACUxKJWNHB8qNYIYUrCFn3OwQn9vy-Q0HAnOPe2wopurw"/>
+    <img width="20%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f45414355784b4a574e484238714e594959557243466e334f77516e3976792d513048416e4f506532776f70757277.png?raw=true"/>
   </a>
 </p>
 
@@ -76,7 +76,7 @@
 
 ## 1. A React Counter
 
-<img width="80%" src="https://i.postimg.cc/13DD3SDM/tenor.gif" />
+<img width="80%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f692e706f7374696d672e63632f313344443353444d2f74656e6f722e676966.gif?raw=true" />
 
 <details><summary>See code</summary>
   <br />
@@ -135,7 +135,7 @@ export default App;
 
 ## 2. A RESTful NodeJS API
 
-<img width="80%" src="https://siasky.net/_AQX4h4T-QWhT3lqM7gcPmuzPKm0tyhZk_zvEF9PBLdYiQ" />
+<img width="80%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f5f415158346834542d51576854336c714d376763506d757a504b6d307479685a6b5f7a7645463950424c64596951.gif?raw=true" />
 
 
 <details><summary>See code</summary>
@@ -228,7 +228,7 @@ initServer().then((server) => {
 
 ## 3. A React-Native micro-blogging app
 
-<img height="550px" src="https://siasky.net/_AQ7OxKUidVsPZ6Ems-6GMmSVNBT5XaJEKbkJTGuGirGDg" />
+<img height="550px" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f5f4151374f784b5569645673505a36456d732d36474d6d53564e42543558614a454b626b4a544775476972474467.gif?raw=true" />
 
 
 <details><summary>See code</summary>
