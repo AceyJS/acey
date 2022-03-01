@@ -8,19 +8,19 @@
 
 <p align="center">
   <a href="#model">
-    <img width="20%" src="https://siasky.net/EAAzsnQ4WJc4Yg5pbj-Z-Dp7c7av6NV_jqakGpXoQrDh2A"/>
+    <img width="20%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f4541417a736e5134574a633459673570626a2d5a2d44703763376176364e565f6a71616b4770586f517244683241.png?raw=true"/>
   </a>
 
   <img width="5%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
   
   <a href="#collection">
-    <img width="20%" src="https://siasky.net/EABCA6-YMiNNSgZQr-SGFw8PTlRcRUy1umxSlx5l1NJBxw"/>
+    <img width="20%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f4541424341362d594d694e4e53675a51722d534746773850546c526352557931756d78536c78356c314e4a427877.png?raw=true"/>
   </a>
 
   <img width="5%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
 
   <a href="#interfaces">
-    <img width="20%" src="https://siasky.net/EACuwZuJQfGmZ0qap3qAuHMdn_TVPrNjbIlXpRuh6vp3SA"/>
+    <img width="20%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f45414375775a754a5166476d5a3071617033714175484d646e5f545650724e6a62496c5870527568367670335341.png?raw=true"/>
   </a>
 </p>
 
@@ -35,7 +35,7 @@
 
 <p align="center" font-style="italic" >
   <a>
-    <img src="https://siasky.net/EADADSyChLwhkcxglW4V9Kdce6xMBGNbEIixagA8iVHzMw" width="100%">
+    <img src="https://github.com/Fantasim/assets/blob/master/model.png?raw=true" width="100%">
   </a>
 </p>
 
@@ -96,7 +96,7 @@ export default Todo
 
 <p align="center" font-style="italic" >
   <a>
-    <img src="https://siasky.net/GADqcD9yzvtu9lMGSVtKY5bXto96CJpFu7jTJyMy78iZrA" width="100%">
+    <img src="https://github.com/Fantasim/assets/blob/master/collection.png" width="100%">
   </a>
 </p>
 
@@ -199,7 +199,7 @@ export default Todolist
 
 <p align="center">
   <a>
-    <img src="https://siasky.net/GACKFKVF4znkcrcpSl_oOMESCOPMKYm1qFqLCwTkmIGo1g" width="100%">
+    <img src="https://github.com/Fantasim/assets/blob/master/interfaces.png" width="100%">
   </a>
 </p>
 
