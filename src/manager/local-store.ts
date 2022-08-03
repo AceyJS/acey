@@ -1,7 +1,7 @@
 /* COOKIE ENABLE */ 
 //import * as Cookies from 'es-cookie';
 import config from '../config'
-import isEmpty from 'lodash.isempty'
+import { isEmpty } from 'lodash'
 import Errors from '../errors'
 
 class LocalStoreManager {

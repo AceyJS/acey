@@ -1,6 +1,6 @@
 import Manager from './manager'
 import Model from '../model'
-import size from 'lodash.size'
+import { size } from 'lodash'
 
 export interface IAction {
     payload: any

@@ -8,7 +8,7 @@ import {  verifyAllModel } from '../verify'
 // import CookieManager from './cookie'
 import LocalStoreManager from './local-store'
 import IsManager from './is'
-import OptionManager from './option'
+import OptionManager, { IOptions } from './option'
 import WatchManager, {IWatchAction} from './watch'
 import { isCollectionInstance, isModelInstance } from '../lib'
 
@@ -46,9 +46,9 @@ export default class Model {
         }
     }
 
-    constructor(state: any, ...props: any){
+    constructor(state: { [key: string]: any }, options: IOptions | void){
         this._is = new IsManager(this)
-        this._option = new OptionManager(this, Object.assign({}, props[0], props[1]))
+        this._option = new OptionManager(this, options || {})
         
         const defaultState = typeof state === 'undefined' ? (this.is().collection() ? [] : {}) : state
         this._defaultState = toPlain(defaultState)

@@ -1,4 +1,4 @@
-import Manager from './manager/'
+import Manager from './manager'
 
 const REACT = 'react'
 const REACT_NATIVE = 'react-native'

@@ -1,10 +1,11 @@
-/* Lodash imports */
-import remove from 'lodash.remove'
-import findIndex from 'lodash.findindex'
-import filter from 'lodash.filter'
-import orderBy from 'lodash.orderby'
-import uniqBy from 'lodash.uniqby'
-import groupBy from 'lodash.groupby'
+import { 
+    remove,
+    findIndex,
+    filter,
+    orderBy,
+    uniqBy,
+    groupBy
+} from 'lodash'
 
 import Model, {IAction}  from './model'
 import Errors from './errors'
@@ -24,6 +25,7 @@ import {
     TPredicateSort
 } from './lodash-utils'
 import { isCollectionInstance } from './lib'
+import { IOptions } from './model/option';
 
 //  i) this class can be improved by adding more than you can usually find in lists.
 //It aims to be the parent of any model class representing a list of object/classes
@@ -33,8 +35,8 @@ import { isCollectionInstance } from './lib'
 
 export default class Collection extends Model  {
     
-    constructor(list: any[] = [], models: [Constructor<Model>, Constructor<Collection>], ...props: any){
-        super([], Object.assign({}, ...props, { nodeModel: models[0], collectionModel: models[1] }))
+    constructor(list: any[] = [], models: [Constructor<Model>, Constructor<Collection>], options: IOptions){
+        super([], Object.assign({}, options, { nodeModel: models[0], collectionModel: models[1] }))
 
         //check if nodeModel is not a Collection
         if (isCollectionInstance(this.newNode(undefined)))
@@ -51,6 +53,7 @@ export default class Collection extends Model  {
 
         assignWithStorage()
     }
+
 
     public arrayOf = (key: string): any[] => this.map((m: Model) => m.state[key])
 

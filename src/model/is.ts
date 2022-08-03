@@ -1,4 +1,4 @@
-import isEmpty from 'lodash.isempty'
+import { isEmpty } from 'lodash'
 import Model from './'
 
 export default class IsManager {

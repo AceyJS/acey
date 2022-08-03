@@ -1,7 +1,10 @@
 import Model from './model'
-import isFunction from 'lodash.isfunction'
-import isPlainObject from 'lodash.isplainobject'
-import isObjectLike from 'lodash.isobjectlike'
+import { 
+    isFunction,
+    isPlainObject,
+    isObjectLike,
+} from 'lodash'
+
 import Collection from './collection'
 
 export interface IGrouped {
@@ -46,7 +49,6 @@ export const treatPredicateSortNode = (predicate: TPredicateSort) => {
     }
 
     throw new Error(`wrong predicate.`)
-
 }
 
 export const treatPredicatePickNode = (predicate: TPredicatePickNode): TPredicateFn => {
