@@ -7,7 +7,7 @@ import {
     groupBy
 } from 'lodash'
 
-import Model, {IAction}  from './model'
+import Model, {IAction, IPlainState}  from './model'
 import Errors from './errors'
 
 type Constructor<T> = new(...args: any[]) => T;
@@ -35,7 +35,7 @@ import { IOptions } from './model/option';
 
 export default class Collection extends Model  {
     
-    constructor(list: any[] = [], models: [Constructor<Model>, Constructor<Collection>], options: IOptions){
+    constructor(list: IPlainState[] | Model[] = [], models: [Constructor<Model>, Constructor<Collection>], options: IOptions){
         super([], Object.assign({}, options, { nodeModel: models[0], collectionModel: models[1] }))
 
         //check if nodeModel is not a Collection
@@ -53,7 +53,6 @@ export default class Collection extends Model  {
 
         assignWithStorage()
     }
-
 
     public arrayOf = (key: string): any[] => this.map((m: Model) => m.state[key])
 

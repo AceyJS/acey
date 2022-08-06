@@ -11,6 +11,7 @@ import IsManager from './is'
 import OptionManager, { IOptions } from './option'
 import WatchManager, {IWatchAction} from './watch'
 import { isCollectionInstance, isModelInstance } from '../lib'
+import Collection from '../collection'
 
 export interface IAction {
     save(): IAction
@@ -19,6 +20,8 @@ export interface IAction {
     store(expires: number | void): IAction
     value: any
 }
+
+export type IPlainState = { [key: string]: any }
 
 export default class Model {
 
@@ -46,7 +49,7 @@ export default class Model {
         }
     }
 
-    constructor(state: { [key: string]: any }, options: IOptions | void){
+    constructor(state: IPlainState, options: IOptions | void){
         this._is = new IsManager(this)
         this._option = new OptionManager(this, options || {})
         
