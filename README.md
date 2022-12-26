@@ -1,43 +1,40 @@
+**A robust, lightweight (~30kb) and portable object oriented state manager**
+
+<br />
 
 <p align="center" font-style="italic" >
   <a>
     <img alt="acey" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f4d414141336e377a50737134685544396a32334f48674f764a495531646c466178417569517a43773971464d4867.png?raw=true" width="100%">
   </a>
-+ Control. | - Code. | + Scalability. | - Debugging. | + Productivity.
+ + Reusability. | - Debugging. | - Code. | + Productivity.
 </p>
+
+<br />
+
+<br />
 
 <br />
 
 # OOP State Manager built with Lodash. ⚡
 
-#### What kind of power it gives me ?
-> **To Encapsulate your states inside Models and Collections to treat, access, format, and organize your data in a ONE and SAME place. 🔌**
+**Acey aims to be for States what React is for Components:**
+- Easily **code decoupled** and **reusable** states for JS applications.
+- **Lightweight** but **highly customisable** so there is no need for external librairies/tools when handling states
+- Robust by a *8boilerplate free** and **class oriented architecture**, so debugging is over. (no selectors, reducers, context, bindings, etc..)
 
 <br />
-
-<p align="center">
-  <a>
-    <img src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f63646e342e69636f6e66696e6465722e636f6d2f646174612f69636f6e732f6c6f676f732d332f3630302f52656163742e6a735f6c6f676f2d3235362e706e67.png?raw=true" width="70px">
-  </a>
-</p>
-
-#### I work on React {Native}, can I use it ?
-> **Yes, Acey works smoothly with React environment, its dev experience is the logical evolution of Redux.<br />On Acey there is:<br />- No action types. ✅<br />- No reducers. ✅<br />- No selectors. ✅<br />- No context. ✅<br />AND you can trigger your actions from wherever you want without any binding. 💥**
-
 <br />
 
-<p align="center">
-  <a>
-    <img src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f63646e2e66726565626965737570706c792e636f6d2f6c6f676f732f7468756d62732f32782f6e6f64656a732d312d6c6f676f2e706e67.png?raw=true" width="130px">
-  </a>
-</p>
+**Why Acey exists ?**
 
-#### It works as well with NodeJS, right?
-> **Yes, so Acey enable a built-in feature auto-syncing your states with your local storage. So Acey, in NodeJS applications, use this feature by storing your state in a JSON DB 🗄️.<br />When your program run, all your JSON files are pulled and directly added in the state of your collection (It's 100% cached 📚).<br /><br />So yeah, it works amazing for embedded systems, CLI tools, prototypes, MVP, or any other program that can work with a full DB cached. 💨**
+As with most libraries, it started with the tiredness of repetitions:
 
-<br />
+In December 2019, I was starting an umpteenth react native application and found myself coding the same states that I previously did in other apps. 
+Reusability of components was easy with React, but I couldn't find any existing state manager that would make state reusability cool but that also combine oriented object programming and smooth management of cache and local store.
 
-<br />
+These were the 2 most important requirements for Acey:
+- States are built the same way you create Components and re-use them in each of your projects.
+- States can be automatically synchronized with the local store and make your apps easily workable in offline mode.
 
 <br />
 
