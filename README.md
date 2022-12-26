@@ -68,63 +68,15 @@ These were the 2 most important requirements for Acey:
 <br />
 
 
-
 # Quick implementations
 
-## 1. A React Counter
 
-<img width="80%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f692e706f7374696d672e63632f313344443353444d2f74656e6f722e676966.gif?raw=true" />
+## 1. Designless todolist in ReactJS
 
-<details><summary>See code</summary>
-  <br />
- 
-**Step 1/2 - State** | `./counter-model.ts`
-```ts
-import { Model } from 'acey'
+<img width="40%" src="https://raw.githubusercontent.com/Fantasim/assets/master/aceyreactodolist.gif" />
 
-class CounterModel extends Model {
+[Try it online HERE](https://stackblitz.com/edit/react-acey-todo?file=src%2FApp.jsx&terminal=dev) (full app code in one single file)
 
-  constructor(initialState: any, options: any){
-    super(initialState, options)
-  }
-  
-  get = () => this.state.counter
-  
-  increment = () => this.setState({counter: this.get() + 1}).save()
-  decrement = () => this.setState({counter: this.get() - 1}).save()
-  
-  /* `save()` save the Model's state in the Acey Store */
-}
-
-/* A `connected` Model has its state connected with the Acey store */
-export default new CounterModel({counter: 0}, {connected: true, key: 'counter'})
-```
-
-<br />
-
-**Step 2/2 - Component** | `./app.tsx`
-```jsx
-import React from 'react'
-import { useAcey } from 'react-acey'
-import Counter from './counter-model'
-
-const App = () => {
-
-  /* Bind the Counter Model with component. */
-  useAcey([ Counter ])
-
-  return (
-    <div>
-      <button onClick={Counter.decrement}>decrement</button>
-      {Counter.get()}
-      <button onClick={Counter.increment}>increment</button>
-    </div>
-  );
-}
-
-export default App;
-```
-</details>
 
 
 <br />
@@ -220,10 +172,12 @@ initServer().then((server) => {
 ```
 </details>
 
+[Try it yourself HERE](https://github.com/AceyJS/acey/tree/master/examples/node-todo-api)
+
 <br />
 
 
-## 3. A React-Native micro-blogging app
+## 3. A React-Native micro-blogging app with Expi
 
 <img height="550px" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f5f4151374f784b5569645673505a36456d732d36474d6d53564e42543558614a454b626b4a544775476972474467.gif?raw=true" />
 
@@ -450,11 +404,14 @@ export default App;
 ```
 </details>
 
+[Try it yourself HERE](https://github.com/AceyJS/acey/tree/master/examples/react-native-blog)
+
 <br />
 
 <br />
 
 # Get Started
+
 ## Usage
 
 ```
@@ -468,6 +425,8 @@ To start the Acey engine, **you need to declare the configuration as done** at t
 Here's how, according to your environment: 
 
 ### ReactJS
+<br />
+
 ```js
 import { config } from 'acey' //HERE
 config.done() //HERE
@@ -484,12 +443,6 @@ ReactDOM.render(
 ```sh
 yarn add react-acey
 ```
-
-<br />
-
-**First implementation with Acey and ReactJS:** [Example > A simple counter](https://github.com/AceyJS/acey#1-a-react-counter)
-
-**Second implementation with Acey and ReactJS:** [Example > A designless todolist](https://github.com/AceyJS/acey/tree/master/examples/react-todolist)
 
 
 <br />
@@ -509,10 +462,6 @@ config.done()
 ```sh
 yarn add @react-native-community/async-storage
 ```
-
-<br />
-
-**First implementation with Acey and React Native:** [Example > A designless micro blogging app](https://github.com/AceyJS/acey#3-a-react-native-micro-blogging-app)
 
 <br />
 
@@ -545,14 +494,9 @@ yarn add acey-node-store
 
 <br />
 
-**First implementation with Acey and Node:** [Example > A restful API](https://github.com/AceyJS/acey#2-a-restful-nodejs-api)
-
-
 <br />
 
-<br />
-
-## Small code demonstrations
+## Advanced demonstrations/system explainations
 #### 1. **`hydrate`** vs **`setState`** and **Model nesting**. [Click here](https://gist.github.com/Fantasim/7a5b02c3e3d381b4a8489d580b4d2642)
 #### 2. Model's `local storage` cycle exlained. [Click here](https://gist.github.com/Fantasim/eddfd25f284245f490380c192771d534)
 
