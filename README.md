@@ -15,26 +15,26 @@
 
 <br />
 
-# OOP State Manager built with Lodash. ⚡
+# Object Oriented State Manager thought for React ⚡
 
-**Acey aims to be for States what React is for Components:**
+### Acey aims to be for States what React is for Components
 - Easily **code decoupled** and **reusable** states for JS applications.
 - **Lightweight** but **highly customisable** so there is no need for external librairies/tools when handling states
-- Robust by a *8boilerplate free** and **class oriented architecture**, so debugging is over. (no selectors, reducers, context, bindings, etc..)
+- Robust by a **boilerplate free** and **class oriented architecture**, so debugging is over. (no selectors, reducers, context, bindings, etc..)
 
 <br />
 <br />
 
-**Why Acey exists ?**
+## Why Acey exists ?
 
-As with most libraries, it started with the tiredness of repetitions:
+As with most libraries, it started with the tiredness of repetitions. 💡
 
 In December 2019, I was starting an umpteenth react native application and found myself coding the same states that I previously did in other apps. 
-Reusability of components was easy with React, but I couldn't find any existing state manager that would make state reusability cool but that also combine oriented object programming and smooth management of cache and local store.
+Reusability of components was easy with React, but I couldn't find any existing state manager that would make state reusability cool but that also combine oriented object programming and smooth management of cache and local store. 📱
 
 These were the 2 most important requirements for Acey:
-- States are built the same way you create Components and re-use them in each of your projects.
-- States can be automatically synchronized with the local store and make your apps easily workable in offline mode.
+- States are built the same way you create Components and re-use them in each of your projects. 🖥️
+- States can be automatically synchronized with the local store and make your apps easily workable in offline mode. 📡
 
 <br />
 
