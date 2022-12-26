@@ -490,6 +490,10 @@ yarn add react-acey
 
 <br />
 
+**First implementation with Acey and ReactJS:** [Example > A simple counter](https://github.com/AceyJS/acey#1-a-react-counter)
+
+<br />
+
 ### React-Native
 
 At the root of your app, bind the React Native Store Engine (AsyncStorage) with Acey to benefit Acey's key features.
@@ -505,6 +509,10 @@ config.done()
 ```sh
 yarn add @react-native-community/async-storage
 ```
+
+<br />
+
+**First implementation with Acey and React Native:** [Example > An ugly micro blogging app](https://github.com/AceyJS/acey#3-a-react-native-micro-blogging-app)
 
 <br />
 
@@ -534,6 +542,10 @@ config.done()
 ```sh
 yarn add acey-node-store
 ```
+
+<br />
+
+**First implementation with Acey and Node:** [Example > A restful API](https://github.com/AceyJS/acey#2-a-restful-nodejs-api)
 
 
 <br />
