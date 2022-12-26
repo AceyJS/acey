@@ -7,24 +7,11 @@ import pkg from './package.json'
 
 const config = {
     input: './index.ts',
-    external: ['lodash.isobjectlike', 'lodash.size', 'lodash.set', 'lodash.isplainobject', 'lodash.isfunction',  'lodash.groupby', 'lodash.uniqby', 'lodash.orderby', 'lodash.clonedeep', 'lodash.isempty', 'lodash.remove', 'lodash.findindex', 'lodash.filter'],
+    external: ['lodash'],
     output: [
         {
             globals: {
-                'lodash.uniqby': 'uniqBy',
-                'lodash/nth': 'nth',
-                'lodash.orderby': 'orderBy',
-                'lodash.clonedeep': 'cloneDeep',
-                'lodash.isempty': 'isEmpty',
-                'lodash.remove': 'remove',
-                'lodash.findindex': 'findIndex',
-                'lodash.set': 'set',
-                'lodash.size': 'size',
-                'lodash.filter': 'filter',
-                'lodash.groupby': 'groupBy',
-                'lodash.isfunction': 'isFunction',
-                'lodash.isplainobject': 'isPlainObject',
-                'lodash.isobjectlike': 'isObjectLike',
+                'lodash': 'lodash',
             },
             file: pkg.main,
             format: 'umd',

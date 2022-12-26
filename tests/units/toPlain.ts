@@ -21,3 +21,4 @@ describe('Testing toPlain (Model/Collection)', () => {
         expect(PostList.to().string()).to.equal(JSON.stringify(USER_DATA.post_list));
     });
 });
+

@@ -44,8 +44,6 @@ export default class Collection extends Model  {
         
         const assignWithStorage = async () => {
 
-            /* COOKIE ENABLE */
-            //if (!this.is().connected() || (!this.cookie().get() && !(await this.localStore().get()))){
             if (!this.is().connected() || !(await this.localStore().get())){
                 this.setState(list)
             }

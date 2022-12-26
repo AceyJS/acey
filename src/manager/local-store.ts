@@ -1,5 +1,3 @@
-/* COOKIE ENABLE */ 
-//import * as Cookies from 'es-cookie';
 import config from '../config'
 import { isEmpty } from 'lodash'
 import Errors from '../errors'
@@ -34,10 +32,6 @@ class LocalStoreManager {
 
         if (!this.isEnabled())
             throw Errors.localStoreDisabled()
-        /* COOKIE ENABLE */    
-        /* if (!config.isReactNative() && Cookies.get(key)){
-            throw Errors.cookiePriorityOverStore()
-        } */
         this.engine().setItem(key, data)
         this.addKey(key, expires)
     }

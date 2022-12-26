@@ -16,8 +16,6 @@ export interface IOptions {
     connected?: boolean
     save?: TOptionFunc
     store?: TOptionFunc
-    /* COOKIE ENABLE */
-    //cookie: TOptionFunc,
     nodeModel?: Model | null
     collectionModel?: Model | null
 }
@@ -31,8 +29,6 @@ export default class OptionManager {
         key: '',
         connected: false,
         save: null,
-        /* COOKIE ENABLE */
-        //cookie: null,
         store: null,
         nodeModel: null,
         collectionModel: null
@@ -100,8 +96,6 @@ export default class OptionManager {
     public kids = () => {
         return {
             save: this._model().action().save,
-            /* COOKIE ENABLE */
-            // cookie: this._model().action().cookie,
             store: this._model().action().store,
         }
     }

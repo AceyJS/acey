@@ -4,8 +4,6 @@ import Errors from '../errors'
 import { hydrate, toPlain, ParseJSONLocallyStored } from './utils'
 import {  verifyAllModel } from '../verify'
 
-/* COOKIE ENABLE */
-// import CookieManager from './cookie'
 import LocalStoreManager from './local-store'
 import IsManager from './is'
 import OptionManager, { IOptions } from './option'
@@ -15,8 +13,6 @@ import Collection from '../collection'
 
 export interface IAction {
     save(): IAction
-    /* COOKIE ENABLE */
-    //cookie(): IAction
     store(expires: number | void): IAction
     value: any
 }
@@ -30,8 +26,6 @@ export default class Model {
     private _prevState: any = null
     private _defaultState: any = null
 
-    /* COOKIE ENABLE */
-    // private _cookie: CookieManager
     private _localStore: LocalStoreManager
     private _is: IsManager
     private _option: OptionManager
@@ -56,8 +50,6 @@ export default class Model {
         const defaultState = typeof state === 'undefined' ? (this.is().collection() ? [] : {}) : state
         this._defaultState = toPlain(defaultState)
 
-        /* COOKIE ENABLE */
-        // this._cookie = new CookieManager(this)
         this._localStore = new LocalStoreManager(this)
         this._watch = new WatchManager(this)
 
@@ -98,19 +90,14 @@ export default class Model {
         return this._state
     }
 
-    /* COOKIE ENABLE */
-    // public cookie = (): CookieManager => this._cookie
     public localStore = (): LocalStoreManager => this._localStore
     public is = (): IsManager => this._is
     public watch = (): IWatchAction => this.super().watchManager.action()
     
     public action = (value: any = undefined): IAction => {
-        /* COOKIE ENABLE */
-        const { save, /* cookie, */ store } = this.super().option().get()
+        const { save, store } = this.super().option().get()
 
         return { 
-            /* COOKIE ENABLE */
-            // cookie: !cookie ? this.cookie().set : cookie,
             save: !save ? this.save : save,
             store: !store ? this.localStore().set : store,
             value

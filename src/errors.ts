@@ -2,7 +2,6 @@ import Model from './model'
 
 export default {
     unauthorizedSave: (m: Model) => new Error(`You've attempted to call save in the ${m.is().collection() ? 'Collection' : 'Model'} ${m.constructor.name} but you either didn't specify it as a connected ${m.is().collection() ? 'Collection' : 'Model'} or didn't specify the config has done at the root of your project: "config.done()"`),
-    // unauthorizedCookieAdd: (m: Model) => new Error(`You've attempted to call cookie in the ${m.is().collection() ? 'Collection' : 'Model'} ${m.constructor.name} (key: ${m.super().option().key()}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store.\n3. You didn't specify the config has done at the root of your project: "config.done()"\n4. You are using React Native`),
     unauthorizedLocalStore: (m: Model) => new Error(`You've attempted to call localStore in the ${m.is().collection() ? 'Collection' : 'Model'} ${m.constructor.name} (key: ${m.super().option().key()}), but this functionnality is unavailable in it for these reasons:\n1. Doesn't have a unique specified key in the building options.\n2. It is not connected to the store\n3. You didn't specify the config has done at the root of your project: "config.done()"\n`),
 
     onlyObjectOnModelState: () => new Error(`The state of a Model, can only be instanced and replaced with an object type.`),

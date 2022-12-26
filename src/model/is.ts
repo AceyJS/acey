@@ -24,8 +24,6 @@ export default class IsManager {
     public empty = (): boolean => isEmpty(this._model().state)
     public collection = (): boolean => Model._isArray(this._model().state)
     public keyGenerated = (): boolean => this._model().super().option().isKeyGenerated()
-    /* COOKIE ENABLE */
-    // public cookiesEnabled = (): boolean => this._model().cookie().isActive()
     public localStoreEnabled = (): boolean => this._model().localStore().isActive()
 
 }

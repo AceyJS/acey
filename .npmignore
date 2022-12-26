@@ -1,5 +1,6 @@
 node_modules
-./README.md
-./yarn.lock
+README.md
 tests
 examples
+yarn-error.log
+docs
