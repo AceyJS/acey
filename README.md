@@ -489,6 +489,9 @@ yarn add react-acey
 
 **First implementation with Acey and ReactJS:** [Example > A simple counter](https://github.com/AceyJS/acey#1-a-react-counter)
 
+**Second implementation with Acey and ReactJS:** [Example > A designless todolist](https://github.com/AceyJS/acey/tree/master/examples/react-todolist)
+
+
 <br />
 
 ### React-Native
@@ -509,7 +512,7 @@ yarn add @react-native-community/async-storage
 
 <br />
 
-**First implementation with Acey and React Native:** [Example > An ugly micro blogging app](https://github.com/AceyJS/acey#3-a-react-native-micro-blogging-app)
+**First implementation with Acey and React Native:** [Example > A designless micro blogging app](https://github.com/AceyJS/acey#3-a-react-native-micro-blogging-app)
 
 <br />
 
