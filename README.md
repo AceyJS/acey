@@ -84,7 +84,7 @@ These were the 2 most important requirements for Acey:
 
 ## 2. A RESTful NodeJS API
 
-<img width="80%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f5f415158346834542d51576854336c714d376763506d757a504b6d307479685a6b5f7a7645463950424c64596951.gif?raw=true" />
+<img width="80%" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f5f415158346834542d51576854336c714d37676350_lwqdWxn0.gif?raw=true" />
 
 
 <details><summary>See code</summary>
@@ -179,7 +179,7 @@ initServer().then((server) => {
 
 ## 3. A React-Native micro-blogging app with Expi
 
-<img height="550px" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f5f4151374f784b5569645673505a36456d732d36474d6d53564e42543558614a454b626b4a544775476972474467.gif?raw=true" />
+<img height="550px" src="https://github.com/Fantasim/assets/blob/master/68747470733a2f2f736961736b792e6e65742f5f4151374f784b5569645673505a36456d732d3647_0qx2i0IM.gif?raw=true" />
 
 
 <details><summary>See code</summary>
