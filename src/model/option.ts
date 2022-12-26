@@ -27,7 +27,7 @@ export default class OptionManager {
     
     private _options: IOptions = {
         key: '',
-        connected: false,
+        connected: true,
         save: null,
         store: null,
         nodeModel: null,
@@ -41,6 +41,10 @@ export default class OptionManager {
 
     private _init = (options: any) => {
         this._set(options)
+        //connected by default
+        if (this._options.connected != false){
+            this._options.connected = true
+        }
         const key = this.key()
 
         if (this.isConnected()){
