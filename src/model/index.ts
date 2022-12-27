@@ -9,7 +9,6 @@ import IsManager from './is'
 import OptionManager, { IOptions } from './option'
 import WatchManager, {IWatchAction} from './watch'
 import { isCollectionInstance, isModelInstance } from '../lib'
-import Collection from '../collection'
 
 export interface IAction {
     save(): IAction
@@ -45,7 +44,7 @@ export default class Model {
 
     constructor(state: IPlainState, options: IOptions | void){
         this._is = new IsManager(this)
-        this._option = new OptionManager(this, options || {})
+        this._option = new OptionManager(this, options)
         
         const defaultState = typeof state === 'undefined' ? (this.is().collection() ? [] : {}) : state
         this._defaultState = toPlain(defaultState)

@@ -8,6 +8,7 @@ import {
     UserModel,
     PostCollection
 } from './datas'
+import { IOptions } from '../../src/model/option';
 
 
 const DEFAULT_LAST_COST_CHANGE_STATE = {
@@ -25,18 +26,18 @@ const DEFAULT_STATE  = {
 
 class SocietyModel extends Model {
 
-    constructor(state = DEFAULT_STATE, options: any){
+    constructor(state = DEFAULT_STATE, options: IOptions | void){
         super(state, options)
     }
 }
 
 describe('Testing hydrate (Model/Collection)', () => {
-    const User = new UserModel(USER_DATA, undefined)
-    const User2 = new UserModel(USER_DATA_2, undefined)
+    const User = new UserModel(USER_DATA)
+    const User2 = new UserModel(USER_DATA_2)
 
-    const PostList = new PostCollection(USER_DATA.post_list, undefined)
-    const PostList2 = new PostCollection(USER_DATA_2.post_list, undefined)
-    const PostList3 = new PostCollection([], undefined)
+    const PostList = new PostCollection(USER_DATA.post_list)
+    const PostList2 = new PostCollection(USER_DATA_2.post_list)
+    const PostList3 = new PostCollection([])
 
     User.hydrate(USER_DATA_2)
 
@@ -70,7 +71,7 @@ describe('Testing hydrate (Model/Collection)', () => {
                 }
             }
         }
-        const s = new SocietyModel(undefined, {connected: false})
+        const s = new SocietyModel(undefined)
         expect(() => {
             s.hydrate(data)
         }).to.throw(Error)

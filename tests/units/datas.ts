@@ -1,4 +1,5 @@
 import { Model, Collection } from '../../index'
+import { IOptions } from '../../src/model/option'
 
 export const USER_DATA = {
     first_name: 'Mike',
@@ -109,7 +110,7 @@ const DEFAULT_DEVICE_STATE = {
 
 export class DeviceModel extends Model {
 
-    constructor(initialState: any = DEFAULT_DEVICE_STATE, options: any){
+    constructor(initialState: any = DEFAULT_DEVICE_STATE, options: IOptions | void){
         super(initialState, options)
     }
 
@@ -129,7 +130,7 @@ const DEFAULT_POST_STATE = {
 
 export class PostModel extends Model {
 
-    constructor(initialState: any = DEFAULT_POST_STATE, options: any){
+    constructor(initialState: any = DEFAULT_POST_STATE, options: IOptions | void){
         super(initialState, options)
         this.setState({
             device_origin: new DeviceModel(initialState.device_origin, this.kids())
@@ -144,7 +145,7 @@ export class PostModel extends Model {
 }
 
 export class PostCollection extends Collection {
-    constructor(initialState: any[] = [], options: any){
+    constructor(initialState: any[] = [], options: IOptions | void){
         super(initialState, [PostModel, PostCollection], options)
     }
 }
@@ -161,7 +162,7 @@ const DEFAULT_USER_STATE = {
 
 export class UserModel extends Model {
 
-    constructor(initialState: any = DEFAULT_USER_STATE, options: any){
+    constructor(initialState: any = DEFAULT_USER_STATE, options: IOptions | void){
         super(initialState, options)
         this.setState({
             device: new DeviceModel(initialState.device, this.kids()),

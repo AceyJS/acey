@@ -40,7 +40,7 @@ const main = async () => {
     const PostList = new PostCollection([], {connected: true, key: 'post-list'})
     const Post = new PostModel(post, {connected: true, key: 'post'}) 
     const Post3 = new PostModel(post, {connected: true})
-    const Post4 = new PostModel(post, {key: 'post5'})
+    const Post4 = new PostModel(post)
 
     let Post2: PostModel
 

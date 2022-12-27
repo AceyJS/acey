@@ -8,8 +8,8 @@ import {
 } from './datas'
 
 describe('Testing toPlain (Model/Collection)', () => {
-    const User = new UserModel(USER_DATA, undefined)
-    const PostList = new PostCollection(USER_DATA.post_list, undefined)
+    const User = new UserModel(USER_DATA)
+    const PostList = new PostCollection(USER_DATA.post_list)
 
     it('output should be equal with initialState (Model) 1/2', () => {
       expect(User.to().string()).to.equal(JSON.stringify(USER_DATA));

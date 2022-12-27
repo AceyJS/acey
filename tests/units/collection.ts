@@ -8,21 +8,22 @@ import {
     PostModel,
     USER_DATA
 } from './datas'
-import { group } from 'console';
+
+import { IOptions } from '../../src/model/option';
 
 describe('Collection: initialization', () => {
     it('Collection of Collection (must error)', () => {
         class CollectionOfCollection extends Collection {
-            constructor(data: any[] = [], options: any){
+            constructor(data: any[] = [], options: IOptions | void){
                 super(data, [PostCollection, CollectionOfCollection], options)
             }
         }    
-        expect(() => new CollectionOfCollection([], undefined)).to.throw(Error)
+        expect(() => new CollectionOfCollection([])).to.throw(Error)
     })
 })
 
 describe('Collection: methods', () => {
-    const PostList = new PostCollection([], undefined)
+    const PostList = new PostCollection([])
 
     const post = {
         id: '123456',
@@ -36,7 +37,7 @@ describe('Collection: methods', () => {
             ips: ['0.0.0.1', '192.167.0.3']
         }
     }
-    const postModel = new PostModel(post, undefined)
+    const postModel = new PostModel(post)
 
     it('push', () => {
         PostList.push(post)
@@ -55,7 +56,7 @@ describe('Collection: methods', () => {
     it('concat', () => {
         const copy = PostList.copy()
         copy.concat([post, postModel])
-        expect(copy.to().string()).to.eq(new PostCollection([post, postModel, post], undefined).to().string())
+        expect(copy.to().string()).to.eq(new PostCollection([post, postModel, post]).to().string())
     })
 
     it('delete', () => {
@@ -219,7 +220,7 @@ describe('Collection: methods', () => {
         PostList.updateAt(Object.assign({}, post, {id: '57849', content: 'gij43g34', random: 342}), 10)
         expect(PostList.count()).to.eq(4)
         expect((PostList.nodeAt(3) as PostModel).ID()).to.eq('57849')
-        const node2 = new PostModel(PostList.nodeAt(2)?.to().plain(), undefined)
+        const node2 = new PostModel(PostList.nodeAt(2)?.to().plain())
         node2.setState({'id': 'HELLO_GUYS'})
         PostList.updateAt(node2, 2)
         expect((PostList.nodeAt(2) as PostModel).ID()).to.eq('HELLO_GUYS')

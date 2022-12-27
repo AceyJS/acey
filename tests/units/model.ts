@@ -13,9 +13,9 @@ import {
 
 
 describe('Model: setState', () => {
-    const User = new UserModel(USER_DATA, undefined)
-    const User2 = new UserModel(USER_DATA_2, undefined)
-    const PostList = new PostCollection(USER_DATA.post_list, undefined)
+    const User = new UserModel(USER_DATA)
+    const User2 = new UserModel(USER_DATA_2)
+    const PostList = new PostCollection(USER_DATA.post_list)
     const ConnectedPostList = new PostCollection(USER_DATA.post_list, {connected: true})
 
     it('setting a Collection', () => {
@@ -52,7 +52,7 @@ describe('Model: setState', () => {
         expect(() => User.setState({pppppp23: 123456})).to.not.throw(Error)
     });
     it('setting an array of Model', () => {
-        expect(() => User.setState({post_list: [new PostModel(USER_DATA.post_list[0], undefined), new PostModel(USER_DATA.post_list[1], undefined) ]})).to.throw(Error)
+        expect(() => User.setState({post_list: [new PostModel(USER_DATA.post_list[0]), new PostModel(USER_DATA.post_list[1]) ]})).to.throw(Error)
     });
     it('setting an array', () => {
         expect(() => User.setState({ post_list: USER_DATA.post_list })).to.throw(Error)
@@ -69,8 +69,8 @@ describe('Model: setState', () => {
 });
 
 describe('Model: deleteKey', () => {
-    const User = new UserModel(USER_DATA, undefined)
-    const PostList = new PostCollection(USER_DATA.post_list, undefined)
+    const User = new UserModel(USER_DATA)
+    const PostList = new PostCollection(USER_DATA.post_list)
 
     it('deleting a key on a Collection', () => {
         expect(() => PostList.deleteKeys('l')).to.throw(Error)
@@ -80,7 +80,7 @@ describe('Model: deleteKey', () => {
     });
     it('deleting a key on a Model : testing result', () => {
         const key = 'first_name'
-        const User = new UserModel(USER_DATA, undefined)
+        const User = new UserModel(USER_DATA)
         const data = User.to().plain()
         User.deleteKeys(key)
         delete data[key]
@@ -89,8 +89,8 @@ describe('Model: deleteKey', () => {
 });
 
 describe('Model: toListClass', () => {
-    const User = new UserModel(USER_DATA, undefined)
-    const PostList = new PostCollection([], undefined)
+    const User = new UserModel(USER_DATA)
+    const PostList = new PostCollection([])
 
     const post = {
         id: '123456',
@@ -112,8 +112,8 @@ describe('Model: toListClass', () => {
 
 
 describe('Model: Local Storage and Date', () => {
-    const User = new UserModel(USER_DATA, undefined)
-    const PostList = new PostCollection(USER_DATA.post_list, undefined)
+    const User = new UserModel(USER_DATA)
+    const PostList = new PostCollection(USER_DATA.post_list)
 
     it('from a Model', () => {
         const uStr = User.to().string()

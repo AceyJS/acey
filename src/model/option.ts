@@ -27,24 +27,21 @@ export default class OptionManager {
     
     private _options: IOptions = {
         key: '',
-        connected: true,
+        connected: false,
         save: null,
         store: null,
         nodeModel: null,
         collectionModel: null
     }
 
-    constructor(m: Model, option: any){
+    constructor(m: Model, option: IOptions | void){
         this._m = m
         this._init(option)
     }
 
-    private _init = (options: any) => {
-        this._set(options)
-        //connected by default
-        if (this._options.connected != false){
-            this._options.connected = true
-        }
+    private _init = (options: IOptions | void) => {
+        this._set(options || this._options)
+
         const key = this.key()
 
         if (this.isConnected()){

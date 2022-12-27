@@ -32,10 +32,9 @@ import { IOptions } from './model/option';
 //for example in a todolist it would be the parent of the TodoList class containing a list of Todos
 //This can be useful to avoid redundant functions like sorting, filtering, pushing, deleting, updating etc...
 
-
 export default class Collection extends Model  {
     
-    constructor(list: IPlainState[] | Model[] = [], models: [Constructor<Model>, Constructor<Collection>], options: IOptions){
+    constructor(list: IPlainState[] | Model[] = [], models: [Constructor<Model>, Constructor<Collection>], options: IOptions | void){
         super([], Object.assign({}, options, { nodeModel: models[0], collectionModel: models[1] }))
 
         //check if nodeModel is not a Collection
