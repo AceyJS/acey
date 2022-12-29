@@ -15,7 +15,7 @@
 
 <br />
 
-# Object Oriented State Manager thought for React ⚡
+# Object Oriented State Manager tailored for React {Native} ⚡
 
 ### Acey aims to be for States what React is for Components
 - Easily **code decoupled** and **reusable** states for JS applications.
