@@ -68,6 +68,169 @@ These were the 2 most important requirements for Acey:
 <br />
 
 
+# Ways
+
+### Synchronise with local store
+
+<details><summary>See code</summary>
+
+```tsx
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+
+const myuser = new User({ id: 1, status: 'normal' }, {connected: true, key: 'user'});
+myuser.setState({ status: 'good' })
+//local store object: {}
+myuser.setState({ status: 'great' }).store()
+//local store object: {user: {id: 1, status: 'great'}}
+myuser.setState({ status: 'perfect' }).store()
+//local store object: {user: {id: 1, status: 'perfect'}}
+
+/*
+  Now when refreshing the page, the default state of my myuser will be: {id: 1, status: 'perfect'}
+*/
+```
+  
+</details>
+
+<br />
+
+### Rendering on order
+  
+<details><summary>See code</summary>
+
+```tsx
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+const myuser = new User({ id: 1, status: 'normal' });
+myuser.setState({ status: 'good' }); //doesn't re-render components
+myuser.setState({ status: 'great' }); //still doesn't re-render components
+myuser.setState({ status: 'perfect' }).save(); //NOW it re-render components :)
+
+export default function App() {
+  /* state changed 3 times, but re-rendered once only */
+  return (
+    <div>
+      <h1>{myuser.state.status}</h1>
+    </div>
+  );
+}
+```
+  
+</details>
+  
+<br />
+
+### Subscribe 
+  
+<details><summary>See code</summary>
+  
+```ts
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+
+const myuser = new User({ id: 1, status: 'normal' });
+myuser.watch().state((prev, after) => alert(prev.status + after.status));
+myuser.setState({ status: 'good' });
+// alert: "normal good"
+myuser.setState({ status: 'great' });
+// alert: "good great"
+```
+  
+</details>
+  
+<br />
+
+### Nested models
+
+<details><summary>See code</summary>
+  
+```ts
+class Device extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+    this.setState({
+    /* kids(): makes inherit the parent options */
+      device: new Device(state.device, this.kids()),
+    });
+  }
+  device = () => this.state.device;
+}
+
+const myuser = new User({
+    id: 1,
+    status: 'great',
+    device: {
+      platform: 'ios',
+      version: 125,
+    }
+});
+console.log(myuser.to().string()); // {"id":1,"status":"great","device":{"platform":"ios","version":125}}
+myuser.device().setState({ platform: 'android', version: 200 });
+console.log(myuser.to().string()); // {"id":1,"status":"great","device":{"platform":"android","version":200}}
+```
+  
+</details>
+
+<br />
+
+### Amazing for lists
+
+<details><summary>See code</summary>
+  
+```ts
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+class UserList extends Collection {
+  constructor(state: any, options: any) {
+    super(state, [User, UserList], options);
+  }
+}
+
+const users = new UserList([], {});
+users.append([
+  { id: 1, name: 'bob' },
+  { id: 2, name: 'alice' },
+]);
+//users = [{"id":1,"name":"bob"},{"id":2,"name":"alice"}]
+const alice = users.find({ name: 'alice' });
+//alice = {"id":2,"name":"alice"}
+users.delete(alice);
+//users = [{"id":1,"name":"bob"}]
+users.push({ id: 3, name: 'mike' });
+//users = [{"id":1,"name":"bob"},{"id":3,"name":"mike"}]
+console.log(users.orderBy('id', 'desc'));
+//print [{"id":3,"name":"mike"}, {"id":1,"name":"bob"}]
+
+/*
+...
+and 40 more methods to ease your life.
+*/
+```
+  
+</details>
+
+<br />
+
+<br />
+
 # Quick implementations
 
 
