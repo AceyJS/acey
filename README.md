@@ -29,12 +29,12 @@
 
 As with most libraries, it started with the tiredness of repetitions. 💡
 
-In December 2019, I was starting an umpteenth react native application and found myself coding the same states that I previously did in other apps. 
-Reusability of components was easy with React, but I couldn't find any existing state manager that would make state reusability cool but that also combine oriented object programming and smooth management of cache and local store. 📱
+In December 2019, I was starting an umpteenth **React-Native** application and found myself coding the same states that I previously did in other apps. 
+Reusability of components was easy with React, but I couldn't find any existing state manager that would make **state reusability** cool but that also combine **oriented object** programming and **smooth management of cached data** and **local store**. 📱
 
 These were the 2 most important requirements for Acey:
-- States are built the same way you create Components and re-use them in each of your projects. 🖥️
-- States can be automatically synchronized with the local store and make your apps easily workable in offline mode. 📡
+- **States** are built the **same way** you create Components and **re-use them** in each of your projects. 🖥️
+- **States** can be automatically **synchronized** with the **local store** and make your apps easily **workable in offline mode**. 📡
 
 <br />
 
