@@ -408,7 +408,7 @@ const App = () => {
     <>
       <ScrollView>
         <AddPostInput onSubmit={onSubmit} />
-        {PostList.sortByCreationDate().map((post) => {
+        {posts.sortByCreationDate().map((post) => {
           return (
             <View key={post.ID()}>
               <Post 
