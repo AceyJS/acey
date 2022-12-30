@@ -28,13 +28,13 @@
 
 <p align="center">
   <a target="_blank" href="https://twitter.com/aceyjs">
-    <img width="3%" src="https://cdn-icons-png.flaticon.com/512/889/889147.png"/>
+    <img width="32px" src="https://cdn-icons-png.flaticon.com/512/889/889147.png"/>
   </a>
   
-  <img width="3%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+  <img width="32px" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
   
   <a target="_blank" href="https://discord.com/channels/1058396126904078367">
-    <img width="3%" src="https://cdn-icons-png.flaticon.com/512/3670/3670157.png"/>
+    <img width="32px" src="https://cdn-icons-png.flaticon.com/512/3670/3670157.png"/>
   </a>
 </p>
 
