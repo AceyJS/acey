@@ -1,4 +1,4 @@
-**A robust, lightweight (~30kb) and portable object oriented state manager**
+**A robust, lightweight (~30kb), and portable object-oriented state manager**
 
 <br />
 
