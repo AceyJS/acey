@@ -50,7 +50,7 @@ Reusability of components was easy with React, but I couldn't find any existing 
 
 These were the 2 most important requirements for Acey:
 - **States** are built the **same way** you create Components and **re-use them** in each of your projects. 🖥️
-- **States** can be automatically **synchronized** with the **local store** and make your apps easily **workable in offline mode**. 📡
+- **Persistant** so the states can be automatically **synchronized** with the **local store** and make your apps easily **buildable in a no-network environment**. 📡
 
 <br />
 
