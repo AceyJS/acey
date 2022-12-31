@@ -130,6 +130,8 @@ myuser.setState({ status: 'great' }); //still doesn't re-render components
 myuser.setState({ status: 'perfect' }).save(); //NOW it re-render components :)
 
 export default function App() {
+   useAcey([ myuser ])
+   
   /* state changed 3 times, but re-rendered once only */
   return (
     <div>
