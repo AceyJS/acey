@@ -1,4 +1,4 @@
-**A robust, lightweight (~30kb) and portable object oriented state manager**
+**A robust, lightweight (~30kb), and portable object-oriented state manager**
 
 <br />
 
@@ -15,7 +15,8 @@
 
 <br />
 
-# Object Oriented State Manager thought for React ⚡
+
+# Object Oriented State Manager tailored for React {Native} ⚡
 
 ### Acey aims to be for States what React is for Components
 - Easily **code decoupled** and **reusable** states for JS applications.
@@ -25,16 +26,31 @@
 <br />
 <br />
 
+<p align="center">
+  <a target="_blank" href="https://twitter.com/aceyjs">
+    <img width="32px" src="https://cdn-icons-png.flaticon.com/512/889/889147.png"/>
+  </a>
+  
+  <img width="32px" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"/>
+  
+  <a target="_blank" href="https://discord.com/channels/1058396126904078367">
+    <img width="32px" src="https://cdn-icons-png.flaticon.com/512/3670/3670157.png"/>
+  </a>
+</p>
+
+<br />
+<br />
+
 ## Why Acey exists ?
 
 As with most libraries, it started with the tiredness of repetitions. 💡
 
-In December 2019, I was starting an umpteenth react native application and found myself coding the same states that I previously did in other apps. 
-Reusability of components was easy with React, but I couldn't find any existing state manager that would make state reusability cool but that also combine oriented object programming and smooth management of cache and local store. 📱
+In December 2019, I was starting an umpteenth **React-Native** application and found myself coding the same states that I previously did in other apps. 
+Reusability of components was easy with React, but I couldn't find any existing state manager that would make **state reusability** cool but that also combine **oriented object** programming and **smooth management of cached data** and **local store**. 📱
 
 These were the 2 most important requirements for Acey:
-- States are built the same way you create Components and re-use them in each of your projects. 🖥️
-- States can be automatically synchronized with the local store and make your apps easily workable in offline mode. 📡
+- **States** are built the **same way** you create Components and **re-use them** in each of your projects. 🖥️
+- **Persistant** so the states can be automatically **synchronized** with the **local store** and make your apps easily **buildable in a no-network environment**. 📡
 
 <br />
 
@@ -68,6 +84,171 @@ These were the 2 most important requirements for Acey:
 <br />
 
 
+# Ways
+
+### Synchronise with local store
+
+<details><summary>See code</summary>
+
+```tsx
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+
+const myuser = new User({ id: 1, status: 'normal' }, {connected: true, key: 'user'});
+myuser.setState({ status: 'good' })
+//local store object: {}
+myuser.setState({ status: 'great' }).store()
+//local store object: {user: {id: 1, status: 'great'}}
+myuser.setState({ status: 'perfect' }).store()
+//local store object: {user: {id: 1, status: 'perfect'}}
+
+/*
+  Now when refreshing the page, the default state of my myuser will be: {id: 1, status: 'perfect'}
+*/
+```
+  
+</details>
+
+<br />
+
+### Rendering on order
+  
+<details><summary>See code</summary>
+
+```tsx
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+const myuser = new User({ id: 1, status: 'normal' });
+myuser.setState({ status: 'good' }); //doesn't re-render components
+myuser.setState({ status: 'great' }); //still doesn't re-render components
+myuser.setState({ status: 'perfect' }).save(); //now it re-render components because the state's change has been saved
+
+export default function App() {
+   useAcey([ myuser ])
+   
+  /* state changed 3 times, but re-rendered once only */
+  return (
+    <div>
+      <h1>{myuser.state.status}</h1>
+    </div>
+  );
+}
+```
+  
+</details>
+  
+<br />
+
+### Subscribe 
+  
+<details><summary>See code</summary>
+  
+```ts
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+
+const myuser = new User({ id: 1, status: 'normal' });
+myuser.watch().state((prev, after) => alert(prev.status + after.status));
+myuser.setState({ status: 'good' });
+// alert: "normal good"
+myuser.setState({ status: 'great' });
+// alert: "good great"
+```
+  
+</details>
+  
+<br />
+
+### Nested models
+
+<details><summary>See code</summary>
+  
+```ts
+class Device extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+    this.setState({
+    /* kids(): makes inherit the parent options */
+      device: new Device(state.device, this.kids()),
+    });
+  }
+  device = () => this.state.device;
+}
+
+const myuser = new User({
+    id: 1,
+    status: 'great',
+    device: {
+      platform: 'ios',
+      version: 125,
+    }
+});
+console.log(myuser.to().string()); // {"id":1,"status":"great","device":{"platform":"ios","version":125}}
+myuser.device().setState({ platform: 'android', version: 200 });
+console.log(myuser.to().string()); // {"id":1,"status":"great","device":{"platform":"android","version":200}}
+```
+  
+</details>
+
+<br />
+
+### Amazing for lists
+
+<details><summary>See code</summary>
+  
+```ts
+class User extends Model {
+  constructor(state: any, options: any) {
+    super(state, options);
+  }
+}
+class UserList extends Collection {
+  constructor(state: any, options: any) {
+    super(state, [User, UserList], options);
+  }
+}
+
+const users = new UserList([], {});
+users.append([
+  { id: 1, name: 'bob' },
+  { id: 2, name: 'alice' },
+]);
+//users = [{"id":1,"name":"bob"},{"id":2,"name":"alice"}]
+const alice = users.find({ name: 'alice' });
+//alice = {"id":2,"name":"alice"}
+users.delete(alice);
+//users = [{"id":1,"name":"bob"}]
+users.push({ id: 3, name: 'mike' });
+//users = [{"id":1,"name":"bob"},{"id":3,"name":"mike"}]
+console.log(users.orderBy('id', 'desc'));
+//print [{"id":3,"name":"mike"}, {"id":1,"name":"bob"}]
+
+/*
+...
+and 40 more methods to ease your life.
+*/
+```
+  
+</details>
+
+<br />
+
+<br />
+
 # Quick implementations
 
 
@@ -96,25 +277,15 @@ import { Model, Collection } from 'acey'
 import { v4 as uuid } from 'uuid'
 
 export class TodoModel extends Model {
-    constructor(initialState: any = {}, options: any){
+    constructor(initialState = {}, options){
         super(initialState, options)
     }
 }
 
 export class TodoCollection extends Collection {
-    constructor(initialState: any, options: any){
+    constructor(initialState = [], options){
         super(initialState, [TodoModel, TodoCollection], options)
     }
-
-    create = (content: string) => {
-        todos.push({
-            id: uuid(),
-            created_at: new Date(),
-            content
-        }).store()
-        return todos.last()
-    }
-
     orderByLastCreation = () => this.orderBy(['created_at'], ['desc'])
 }
 
@@ -126,27 +297,21 @@ export default new TodoCollection([], {connected: true, key: 'todolist'})
 **Step 2/2 - Server** | `./index.ts`
 ```ts
 import { config } from 'acey'
-import express from 'express' 
-import morgan from 'morgan' //request logger
 import LocalStorage from 'acey-node-store'
 import todos from './todos'
 
 const initServer = async () => {
     config.setStoreEngine(new LocalStorage('./db'))
     await config.done()
-
-    const server = express()
-    server.use(express.json());
-    server.use(morgan('tiny'))
-    return server
+    return express()
 }
 
 initServer().then((server) => {
     console.log('Server started ')
 
     server.post('/', (req: express.Request, res: express.Response) => {
-        const t = todos.create(req.body.content)
-        res.json(t.to().plain())
+        todos.push({ id: uuid(), created_at: new Date(), content: req.body.content }).store()
+        res.json(todos.last().to().plain())
     })
     
     server.delete('/:id', (req: express.Request, res: express.Response) => {
@@ -185,7 +350,7 @@ initServer().then((server) => {
 <details><summary>See code</summary>
 <br />
 
-**Step 1/3 - State** | `./post.ts`
+**Step 1/2 - State** | `./post.ts`
 ```ts
 import { Model, Collection } from 'acey'
 import moment from 'moment'
@@ -200,9 +365,6 @@ export class PostModel extends Model {
     content = () => this.state.content
     createdAt = () => this.state.created_at
     formatedCreationDate = () => moment(this.createdAt()).format("MMM Do");
-
-    /* `save()` save the Model's state in the Acey Store */
-    updateContent = (content) => this.setState({content}).save().store()
 }
 
 export class PostCollection extends Collection {
@@ -211,187 +373,51 @@ export class PostCollection extends Collection {
     }
 
     sortByCreationDate = () => this.orderBy(['created_at'], ['desc'])
-    
-    create = (content) => {
-        PostList.push({
-          id: Math.random().toString(), 
-          content, 
-          created_at: new Date()
-        }).save().store()
-    }
-    
-    /* 
-      `store()` store the state in the Local Store
-      
-      (i) Acey auto-sync the local store's data with 
-          their Model/Collection when the app reload.
-    */
 }
+
+export default new PostCollection([], {connected: true, key: 'postlist'})
 ```
 
 <br />
 
-**Step 2/3 - Components**
-
-*Styles are not present to purposely make the code shorter and more readable.*
-
-`./components/add-post-input.js`
-
-```js
-import React, {useState} from 'react';
-import { 
-    View,
-    TextInput,
-    TouchableOpacity,
-    Text,
-    Dimensions
- } from 'react-native';
-
-const AddPostInput = (props) => {
-
-    const { onSubmit } = props
-
-    const [text, setText] = useState('')
-
-    const onLocalSubmit = () => {
-        onSubmit(text)
-        setText('')
-    }
-
-    const renderSubmitTouchable = () => (
-        <SubmitTouchable onPress={onLocalSubmit}>
-            <SubmitText>CREATE</SubmitText>
-        </SubmitTouchable>
-    )
-
-    return (
-        <Container>
-            <Input
-                value={text}
-                onChangeText={(text) => setText(text)}
-                multiline
-            />
-            {renderSubmitTouchable()}
-        </Container>        
-    )
-}
-
-export default AddPostInput
-```
-
-*Styles are not present to purposely make the code shorter and more readable.*
-
-`./components/post.js`
-
-```js
-import React, { useState } from 'react'
-import { 
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    Dimensions
-} from 'react-native';
-
-const Post = (props) => {
-    const {
-        post,
-        onDelete
-    } = props
-
-    const [updateText, setUpdateText] = useState(post.content())
-    const [isUpdating, setUpdatingStatus] = useState(false)
-
-    onSubmitUpdate = () => {
-        post.updateContent(updateText)
-        setUpdatingStatus(false)
-    }
-
-    const renderUpdateContainer = () => (
-        <UpdateContainer>
-            <UpdateInput multiline={true} value={updateText} onChangeText={(text) => setUpdateText(text)} />
-            <UpdateSubmitTouchable onPress={onSubmitUpdate}>
-                <UpdateSubmitText>
-                    UPDATE
-                </UpdateSubmitText>
-            </UpdateSubmitTouchable>
-        </UpdateContainer>
-    )
-
-    const renderAction = (title = '', color = '', onPress = null) => (
-        <ActionTouchable onPress={onPress} color={color}>
-            <ActionText color={color}>{title}</ActionText>
-        </ActionTouchable>
-    )
-
-    const renderActions = () => (
-        <ActionsWrapper>
-            {renderAction('Update', 'blue', () => setUpdatingStatus(true))}
-            {renderAction('Delete', 'red', () => onDelete(post))}
-        </ActionsWrapper>
-    )
-
-    return (
-        <Container>
-            {!isUpdating && <View>
-                <TopWrapper>
-                    <DateText>{post.formatedCreationDate()}</DateText>
-                </TopWrapper>
-                <ContentText>{post.content()}</ContentText>
-                {renderActions()}
-            </View>}
-            {isUpdating && renderUpdateContainer()}
-        </Container>
-    )
-
-}
-
-export default Post
-```
-
-<br />
-
-**Step 3/3 - Main**
-
-*Styles are not present to purposely make the code shorter and more readable.*
+**Step 2/2 - App**
 
 `./App.js`
 
 ```js
-import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-} from 'react-native';
+//React imports
+...
 
 import { config } from 'acey'
 import { useAcey } from 'react-acey'
-import { PostCollection } from './posts'
+import { posts } from './posts'
 
 import Post from './src/components/post'
 import AddPostInput from './src/components/add-post-input'
 
-const PostList = new PostCollection([], {connected: true, key: 'postlist'})
-config.setStoreEngine(AsyncStorage)
-config.done()
-
 const App = () => {
 
-  useAcey([ PostList ])
+  useAcey([ posts ])
 
-  const onSubmit = (content) => PostList.create(content)
-  const onDelete = (post) => PostList.delete(post).save().store()
+  /* 
+    save() method set the change state as done and re-render the required components
+    store() save the new state in the local storage
+  */
+  const onSubmit = (content) => posts.push({id: randomID(), created_at: new Date(), content: content}).save().store()
+  const onDelete = (post) => posts.delete(post).save().store()
 
   return (
     <>
       <ScrollView>
         <AddPostInput onSubmit={onSubmit} />
-        {PostList.sortByCreationDate().map((post, index) => {
+        {posts.sortByCreationDate().map((post) => {
           return (
-            <View key={index}>
-              <Post post={post} onDelete={onDelete} />
+            <View key={post.ID()}>
+              <Post 
+                content={post.content()}
+                date={post.formatedCreationDate())}
+                onDelete={onDelete}
+              />
             </View>
           )
         })}
