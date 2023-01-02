@@ -127,7 +127,7 @@ class User extends Model {
 const myuser = new User({ id: 1, status: 'normal' });
 myuser.setState({ status: 'good' }); //doesn't re-render components
 myuser.setState({ status: 'great' }); //still doesn't re-render components
-myuser.setState({ status: 'perfect' }).save(); //NOW it re-render components :)
+myuser.setState({ status: 'perfect' }).save(); //now it re-render components because the state's change has been saved
 
 export default function App() {
    useAcey([ myuser ])
