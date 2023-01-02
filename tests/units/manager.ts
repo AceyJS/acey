@@ -40,6 +40,7 @@ const main = async () => {
     const PostList = new PostCollection([], {connected: true, key: 'post-list'})
     const Post = new PostModel(post, {connected: true, key: 'post'}) 
     const Post3 = new PostModel(post, {connected: true})
+    console.log(Post3.super().option().key())
     const Post4 = new PostModel(post)
 
     let Post2: PostModel
@@ -59,6 +60,7 @@ const main = async () => {
             expect(manager.models().node('post-liste')).to.eq(undefined)
 
             Post2 = new PostModel(post2, {connected: true, key: 'post2'})
+
             expect(manager.models().count()).to.equal(CONNECTED_MODEL_COUNT)
         })
 

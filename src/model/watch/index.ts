@@ -11,20 +11,17 @@ export interface IWatchAction {
 
 export default class Watch {
 
-    private _m: Model
     private _stateSubscriberManager: SubscriberManager
     private _storeSubscriberManager: SubscriberManager
     private _localStoreFetchedSubscriberManager: SubscriberManager
     private _hasLocalStoreBeenFetched: boolean = false
 
     constructor(m: Model){
-        this._m = m
         this._stateSubscriberManager = new SubscriberManager(m, (m: Model) => m.watch().state)
         this._storeSubscriberManager = new SubscriberManager(m, null)
         this._localStoreFetchedSubscriberManager = new SubscriberManager(m, null)
     }
     
-    private _model = (): Model => this._m
     private _stateSubscriber = (): SubscriberManager => this._stateSubscriberManager
     private _storeSubscriber = (): SubscriberManager => this._storeSubscriberManager
     private _localStoreFetchedSubscriber = (): SubscriberManager => this._localStoreFetchedSubscriberManager
