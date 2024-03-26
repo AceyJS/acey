@@ -1,6 +1,7 @@
 import config from '../config'
 import { isEmpty } from 'lodash'
 import Errors from '../errors'
+import { reviver } from '../lib';
 
 class LocalStoreManager {
 
@@ -21,7 +22,7 @@ class LocalStoreManager {
 
     public getKeys = () => this._keys
     public toString = () => JSON.stringify(this._keys)
-    public toJSON = (keys: string) => this._keys = JSON.parse(keys)
+    public toJSON = (keys: string) => this._keys = JSON.parse(keys, reviver)
 
     public isEnabled = (): boolean => !!this.engine()
     public expirationSystemDisabled = (): boolean => config.isNodeJS()

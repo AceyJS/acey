@@ -54,3 +54,11 @@ export const isCollectionInstance = (v: any) => {
     }
     return true
 }
+
+export const reviver = (key: any, value: any) =>
+  value !== null &&
+  typeof value === "object" &&
+  "$bigint" in value &&
+  typeof value.$bigint === "string"
+    ? BigInt(value.$bigint)
+    : value;

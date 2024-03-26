@@ -2,6 +2,7 @@ import { set } from 'lodash'
 
 import Model from './'
 import Collection from '../collection'
+import { reviver } from '../lib'
 
 export const STORE_OPTION = 'store'
 const isStoreOption = (option: string) => option === STORE_OPTION
@@ -33,9 +34,8 @@ const updateInState = (value: any, path: string, to: Model) => {
     } else if (v && !!v.state && Model.IsCollection(v.state[lastKey])){
         const collec = v.state[lastKey] as Collection
         collec.setState(collec.to().listClass(value))
-    } else {
-        if (lastKey && v)
-            (v as any)[lastKey] = value
+    } else if (lastKey && v) {
+        (v as any)[lastKey] = value
     }
 }
 
@@ -44,9 +44,10 @@ export const hydrate = (from: any, to: Model) => {
     const recur = (o: any, path: string) => {
         if (Model._isArray(o))
             updateInState(o, path, to)
-        else if (Model._isObject(o))
+        else if (Model._isObject(o)){
             for (let key in o)
                 recur(o[key], path + '.' + key)
+        }
         else 
             updateInState(o, path, to)
     }
@@ -125,6 +126,6 @@ export const ParseJSONLocallyStored = (data: string) => {
 
         set(ret, path, o)
     }
-    recur(JSON.parse(data), '')
+    recur(JSON.parse(data, reviver), '')
     return ret
 }
