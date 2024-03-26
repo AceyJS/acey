@@ -134,6 +134,45 @@ describe('Model: Local Storage and Date', () => {
 
 });
 
+describe('Model: BigInt', () => {
+    
+    interface IState {
+        tick: BigInt
+        liquidity: BigInt
+    }
+    
+    class Slot0 extends Model {
+        constructor(initialState: IState, options: any){
+            super(initialState, options)
+        }
+
+        get = () => {
+            return {
+                tick: () => this.state.tick as BigInt,
+                liquidity: () => this.state.liquidity as BigInt
+            }
+        }
+    }
+
+    it ('BigInt', () => {
+        const slot0 = new Slot0({tick: BigInt(123456789), liquidity: BigInt(987654321)}, {connected: false})
+        const slot1 = new Slot0({tick: BigInt(0), liquidity: BigInt(0)}, {connected: false})
+        const uStr = slot0.to().string()
+        const uLocalStr = slot0.to().locallyStorableString()
+         const parsedLocalStr = Model.ParseStoredJSON(uLocalStr)
+        slot0.hydrate(parsedLocalStr)
+
+        expect(slot0.to().string()).to.equal(uStr)
+        expect(slot0.get().tick()).to.equal(BigInt(123456789))
+        expect(slot0.get().liquidity()).to.equal(BigInt(987654321))
+        expect(slot1.get().tick()).to.equal(BigInt(0))
+        expect(slot1.get().liquidity()).to.equal(BigInt(0))
+        slot1.hydrate(slot0.to().plain())
+        expect(slot1.get().tick()).to.equal(BigInt(123456789))
+        expect(slot1.get().liquidity()).to.equal(BigInt(987654321))
+    })
+})
+
 
 
 
