@@ -1,3 +1,6 @@
+(BigInt.prototype as any).toJSON = function () {
+    return { $bigint: this.toString() };
+};
 import { IAction } from './src/model/index'
 import { IUXOptions as IModelOptions } from './src/model/option'
 
