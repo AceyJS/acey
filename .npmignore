@@ -4,3 +4,4 @@ tests
 examples
 yarn-error.log
 docs
+.db
