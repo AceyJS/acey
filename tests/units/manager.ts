@@ -87,18 +87,6 @@ const main = async () => {
             expect(JSON.stringify(manager.store().node('post2'))).to.not.eq(Post2.to().string())
             expect(JSON.stringify(manager.store().node('post2'))).to.eq(JSON.stringify(post))
         })
-
-        // it('pending hydration', () => {
-        //     manager.pendingHydrationStore().set({'post2': post})
-        //     Post2.setState({content: 'wijfeofwefweofwe'})
-        //     expect(Post2.to().string()).to.eq(JSON.stringify(post2))
-        //     expect(manager.pendingHydrationStore().count()).to.eq(1)
-        //     manager.pendingHydrationStore().reset()
-        //     expect(manager.pendingHydrationStore().count()).to.eq(0)
-        //     manager.pendingHydrationStore().set({'post2': post})
-        //     manager.pendingHydrationStore().execute()
-        //     expect(Post2.to().string()).to.eq(JSON.stringify(post))
-        // })
     })
 
     describe('Connected Model: is', () => {
