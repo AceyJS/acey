@@ -17,7 +17,7 @@ export class SubscribeAction {
 
 
 export default class SubscriberManager {
-    private _subscribers: any = {}
+    private _subscribers: {[key: string]: Function} = {}
     private _m: Model
 
     private _kidsSubscribersActions: any = {} //for the node of a collection

@@ -16,7 +16,6 @@ export default class SubscribersManager {
     add = (callback: Function) => {
         callback()
         this.get().push(callback)
-        this.manager().pendingHydrationStore().execute()
     }
 
     notify = () => {

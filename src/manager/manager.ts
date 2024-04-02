@@ -2,7 +2,7 @@ import ModelsManager from './models'
 import SubscribersManager from './subscribers'
 import TransitionsManager from './transitions'
 import StoreManager from './store'
-import PendingHydrationManager from './pending-hydration'
+// import PendingHydrationManager from './pending-hydration'
 import LocalStoreManager from './local-store'
 
 import Model from '../model'
@@ -14,7 +14,7 @@ export default class Manager {
     private _transitionsManager: TransitionsManager
     private _store: StoreManager;
 
-    private _pendingHydrationStore: PendingHydrationManager;
+    // private _pendingHydrationStore: PendingHydrationManager;
     private _localStoreManager: any = null
     private _hasBeenInitialized: boolean = false
 
@@ -23,7 +23,7 @@ export default class Manager {
         this._modelsManager = new ModelsManager(this)
         this._transitionsManager = new TransitionsManager(this)
         this._store = new StoreManager(this)
-        this._pendingHydrationStore = new PendingHydrationManager(this)
+        // this._pendingHydrationStore = new PendingHydrationManager(this)
     }
 
     public reset = () => {
@@ -31,7 +31,7 @@ export default class Manager {
         this.models().reset()
         this.transitions().reset()
         this.store().reset()
-        this.pendingHydrationStore().reset()
+        // this.pendingHydrationStore().reset()
 
         this._hasBeenInitialized = false
     }
@@ -51,7 +51,7 @@ export default class Manager {
     public transitions = (): TransitionsManager => this._transitionsManager
     public subscribers = (): SubscribersManager => this._subscribersManager
     public store = (): StoreManager => this._store
-    public pendingHydrationStore = (): PendingHydrationManager => this._pendingHydrationStore
+    // public pendingHydrationStore = (): PendingHydrationManager => this._pendingHydrationStore
 
     public isInitialized = () => this._hasBeenInitialized
     public setInitialized = () => this._hasBeenInitialized = true
@@ -70,8 +70,7 @@ export default class Manager {
         if (!storedData && m.localStore().isActive())
             storedData = await m.localStore().get()
     
-        !this.pendingHydrationStore().node(key) && storedData && this.pendingHydrationStore().set({ [key]: storedData })
-        this.pendingHydrationStore().execute()
+        storedData && m.hydrate(storedData).save()
         m.super().watchManager.onLocalStoreFetched()
     }
 }

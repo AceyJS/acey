@@ -24,21 +24,22 @@ export default class Watch {
     
     private _stateSubscriber = (): SubscriberManager => this._stateSubscriberManager
     private _storeSubscriber = (): SubscriberManager => this._storeSubscriberManager
-    private _localStoreFetchedSubscriber = (): SubscriberManager => this._localStoreFetchedSubscriberManager
+    private _localStoreSubscriber = (): SubscriberManager => this._localStoreFetchedSubscriberManager
     
     //extra
     public hasLocalStoreBeenPulled = () => this._hasLocalStoreBeenFetched
 
     public onStateChanged = (...props: any): number => this._stateSubscriber().notify(...props)
     public onStoreChanged = (...props: any) => this._storeSubscriber().notify(...props)
+
     public onLocalStoreFetched = () => {
         this._hasLocalStoreBeenFetched = true
-        return this._localStoreFetchedSubscriber().notify()
+        return this._localStoreSubscriber().notify()
     }
 
     public state = (callback: TCallback): SubscribeAction => this._stateSubscriber().add(callback)
     public store = (callback: TCallback): SubscribeAction => this._storeSubscriber().add(callback)
-    public localStoreFetch = (callback: TCallback): SubscribeAction => this._localStoreFetchedSubscriber().add(callback)
+    public localStoreFetch = (callback: TCallback): SubscribeAction => this._localStoreSubscriber().add(callback)
 
     public action = (): IWatchAction => {
         return {

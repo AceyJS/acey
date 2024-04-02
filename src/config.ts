@@ -8,7 +8,6 @@ const NODEJS = 'node-js'
 class Config {
 
     private _env = REACT
-    private _isDev = true
     private _storeEngine: any = typeof document === 'undefined' ? null : localStorage
 
     constructor(){
@@ -26,11 +25,7 @@ class Config {
     isReact = () => this._env === REACT
     isNodeJS = () => this._env === NODEJS
 
-
     // setEnvAsNextJS = () => this._env = NEXT_JS
-
-    isDevMode = () => this._isDev
-    setAsProduction = () => this._isDev = false
 
     getStoreEngine = () => this._storeEngine
     setStoreEngine = (engine: any) => this._storeEngine = engine

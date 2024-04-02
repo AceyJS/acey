@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import Manager from '../manager'
 
 import Errors from '../errors'
@@ -104,11 +105,12 @@ export default class Model {
     }
     
     public save = () => {
+    
         if (this.is().connected()){
             const prevStateStore = Manager.store().node(this.super().option().key())
             const newStorePlain = this.to().plain()
 
-            if (JSON.stringify(prevStateStore) !== JSON.stringify(newStorePlain)){
+            if (!_.isEqual(prevStateStore, newStorePlain)){
                 Manager.store().dispatch({ payload: newStorePlain, type: this.super().option().key() })
                 this._setPrevStateStore(prevStateStore)
                 this.super().watchManager.onStoreChanged(prevStateStore, newStorePlain)
