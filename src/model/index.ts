@@ -13,7 +13,7 @@ import { isCollectionInstance, isModelInstance } from '../lib'
 
 export interface IAction {
     save(): IAction
-    store(expires: number | void): IAction
+    store(expires: number | void): Promise<void>
     value: any
 }
 

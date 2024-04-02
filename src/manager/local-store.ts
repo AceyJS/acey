@@ -27,14 +27,13 @@ class LocalStoreManager {
     public isEnabled = (): boolean => !!this.engine()
     public expirationSystemDisabled = (): boolean => config.isNodeJS()
 
-    public addElement = (key: string, data: string, expires: number = 7) => {
+    public addElement = async (key: string, data: string, expires: number = 7): Promise<void> => {
         if (!this.engine())
             return
-
         if (!this.isEnabled())
             throw Errors.localStoreDisabled()
-        this.engine().setItem(key, data)
-        this.addKey(key, expires)
+        await this.addKey(key, expires)
+        return this.engine().setItem(key, data)
     }
 
     public getElement = async (key: string) => {
@@ -53,7 +52,7 @@ class LocalStoreManager {
 
     public addKey = (key: string, expires: number = 7) => {
         if (this.expirationSystemDisabled())
-            return
+            return Promise.resolve()
         if (expires < 0) 
             throw new Error("expire value can't be negative.")
         if (!this.isEnabled())
@@ -62,18 +61,19 @@ class LocalStoreManager {
         const d = new Date()
         d.setSeconds(d.getSeconds() + (expires * 86400));
         this.getKeys()[key] = d.toString()
-        this.engine().setItem(this.LOCAL_STORAGE_KEYS_ID, this.toString())
+        return this.engine().setItem(this.LOCAL_STORAGE_KEYS_ID, this.toString()) as Promise<void>
     }
 
     public removeKey = (key: string) => {
         if (this.expirationSystemDisabled())
-            return
+            return Promise.resolve()
         if (!this.isEnabled())
             throw Errors.localStoreDisabled()
         if (this.getKeys()[key]){
             delete this.getKeys()[key]
-            this.engine().setItem(this.LOCAL_STORAGE_KEYS_ID, this.toString())
+            return this.engine().setItem(this.LOCAL_STORAGE_KEYS_ID, this.toString()) as Promise<void>
         }
+        return Promise.resolve()
     }
 
     public getKeyExpiration = (key: string) => {

@@ -22,22 +22,15 @@ export default class LocalStoreManager {
         }
         return undefined
     }
-    
-    public pull = () => {
-        this._throwErrorIfInactive()
-        const data = this.get()
-        data && this._model().hydrate(data).save()
-    }
 
     public set = (expires = 365) => {
         this._throwErrorIfInactive()
         const key = this._model().super().option().key()
         try {
-            Manager.localStoreManager().addElement(key, this._model().to().locallyStorableString(), expires)
+            return Manager.localStoreManager().addElement(key, this._model().to().locallyStorableString(), expires)
         } catch (e) {
-            console.log(`error from localStore set with ${this._model().is().collection() ? 'Collection' : 'Model'}: ${key}, ${e}`)
+            throw new Error(`error from localStore set with ${this._model().is().collection() ? 'Collection' : 'Model'}: ${key}, ${e}`)
         }
-        return this._model().action()
     }
     
     public remove = () => {

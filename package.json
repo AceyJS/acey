@@ -11,8 +11,8 @@
     "build": "NODE_ENV=production rollup -c",
     "clean": "rm -rf dist",
     "cleanf": "yarn clean && rm -rf node_modules",
-    "test": "mocha -r ts-node/register tests/units/index.ts",
-    "testo": "node tests/units/hydrate2.js"
+    "test": "mocha -r ts-node/register tests/units/index.ts && yarn test2",
+    "test2": "mocha -r ts-node/register tests/units/index2.ts"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +26,7 @@
     "@types/lodash": "^4.14.158",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.0",
+    "acey-node-store": "^1.1.1",
     "chai": "^4.2.0",
     "mocha": "^7.2.0",
     "rollup": "^2.77.2",

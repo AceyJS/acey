@@ -2,7 +2,6 @@ import ModelsManager from './models'
 import SubscribersManager from './subscribers'
 import TransitionsManager from './transitions'
 import StoreManager from './store'
-// import PendingHydrationManager from './pending-hydration'
 import LocalStoreManager from './local-store'
 
 import Model from '../model'
@@ -14,7 +13,6 @@ export default class Manager {
     private _transitionsManager: TransitionsManager
     private _store: StoreManager;
 
-    // private _pendingHydrationStore: PendingHydrationManager;
     private _localStoreManager: any = null
     private _hasBeenInitialized: boolean = false
 
@@ -23,7 +21,6 @@ export default class Manager {
         this._modelsManager = new ModelsManager(this)
         this._transitionsManager = new TransitionsManager(this)
         this._store = new StoreManager(this)
-        // this._pendingHydrationStore = new PendingHydrationManager(this)
     }
 
     public reset = () => {
@@ -31,7 +28,6 @@ export default class Manager {
         this.models().reset()
         this.transitions().reset()
         this.store().reset()
-        // this.pendingHydrationStore().reset()
 
         this._hasBeenInitialized = false
     }
